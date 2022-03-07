@@ -1,0 +1,9 @@
+Django==4.0.3
+flake8
+django-anymail
+reportlab
+requests
+django-filter
+django-select2
+gunicorn
+psycopg2-binary

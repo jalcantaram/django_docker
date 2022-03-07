@@ -1,0 +1,34 @@
+:root {
+  scroll-behavior: smooth;
+  ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+::selection {
+  background-color: rgba($success-lighter, 0.5);
+}
+
+.vh-70 {
+  height: 70vh;
+}
+
+// Colors
+
+.c-primary {
+  color: $primary;
+}
+
+.c-success-main {
+  color: $success-main;
+}
+
+.custom-file-label:after {
+  bottom: 0;
+  z-index: 3;
+  display: block;
+  height: calc(1.4em + .75rem);
+  content: "Buscar";
+  background-color: #e8e8e8;
+  border-left: inherit;
+  border-radius: 0 5px 5px 0;
+}

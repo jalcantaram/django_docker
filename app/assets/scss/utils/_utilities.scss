@@ -1,0 +1,36 @@
+.flex-grow-5 {
+  flex-grow: 0.5;
+}
+
+.turned {
+  transform: rotate(0.5turn);
+}
+
+.mb-25 {
+  margin-bottom: ($spacer * 0.75);
+}
+
+.is-mobile {
+  display: block;
+
+  .space-between {
+    display: flex;
+    justify-content: space-between;
+  }
+  @include breakpoint(large) {
+    display: none;
+  }
+}
+
+.is-desktop {
+  display: none;
+  @include breakpoint(medium) {
+    display: flex;
+  }
+}
+
+@include breakpoint(large) {
+  .border-left-lg {
+    border-left: 1px solid #aaaaaa;
+  }
+}

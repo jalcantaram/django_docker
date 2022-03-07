@@ -1,0 +1,136 @@
+.filtro-title {
+    color: $success-main;
+    font-weight: $font-weight-medium;
+    margin: 0;
+    padding: 10px;
+    @include breakpoint(medium-high) {
+        padding: 25px;
+    }
+}
+
+.filtro-form {
+    background-color: $gray-300;
+    display: flex;
+    padding: 5px;
+    @include breakpoint(medium-high) {
+        padding: 20px;
+    }
+}
+
+.filtro-group {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    label {
+        font-weight: bold;
+    }
+    input, select {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid $gray-800;
+        height: 32px;
+        color: $primary;
+        font-weight: bold;
+    }
+    @include breakpoint(medium-high){
+        margin: 0 13px;
+    }
+}
+
+.filtro-group input::placeholder {
+    color: $primary;
+}
+
+#id_name_content {
+    width: 30%;
+}
+
+.select-group {
+    position: relative;
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50px;
+        right: 14px;
+        border: 6px solid $gray-800;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+    select {
+        max-width: 100%;
+        min-width: 65px;
+        appearance: none;
+    }
+    option {
+        color: black;
+    }
+    label{
+        margin-bottom: 0;
+    }
+    @include breakpoint(medium-high) {
+        label{
+            margin-bottom: .5rem;
+        }
+    }
+}
+
+.filtro-button {
+    background-color: $primary;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    text-align: left;
+    position: relative;
+    height: 52px;
+    width: 90px;
+    @include shadow;
+    &::after {
+        content: url("/static/src/img/busqueda.svg");
+        position: absolute;
+        right: 5px;
+    }
+    @include breakpoint(medium-high){
+        height: 58px;
+        width: 95px;
+    }
+}
+
+.descargas {
+    li {
+        display: inline-block;
+        background-color: $primary;
+        padding: 10px;
+        @include shadow;
+        list-style: none;
+    }
+
+    button {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background-color: $primary;
+        color: white;
+    }
+
+    a, button {
+        color: white;
+        font-weight: $font-weight-bold;
+    }
+
+    ul {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+    }
+
+    li:first-child {
+        border-radius: 8px 0 0 8px;
+    }
+
+    li:last-child {
+        border-radius: 0 8px 8px 0;
+    }
+}

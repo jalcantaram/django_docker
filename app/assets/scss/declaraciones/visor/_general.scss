@@ -1,0 +1,134 @@
+body {
+    position: relative;
+}
+
+.visor-title {
+    color: $success-main;
+    text-align: center;
+
+    @include breakpoint(small-only) {
+        font-size: 32px;
+    }
+}
+
+.h1 {
+    @include breakpoint(small-only) {
+        font-size: 32px;
+    }
+}
+
+.visor-content {
+    margin: 50px 5% 0;
+}
+
+.visor-home {
+    @include breakpoint(medium-high) {
+        display: grid;
+    }
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 20px;
+    text-align: center;
+    article {
+        padding: 0 30px;
+    }
+
+    h3 {
+        color: $primary;
+        font-weight: bold;
+    }
+
+    p {
+        color: $gray-700;
+        font-size: 1.3em;
+        font-weight: $font-weight-medium;
+    }
+
+    .visor-center {
+        border-left: 3px solid $success-main;
+        border-right: 3px solid $success-main;
+
+        @include breakpoint(small-only) {
+            border: none;
+        }
+    }
+}
+
+p.c-success-main {
+    margin-left: 15px;
+}
+
+.table-visor {
+    thead {
+        background-color: $success-main;
+        color: white;
+    }
+
+    td {
+        background-color: white;
+        border-bottom: 1px solid $gray-800;
+    }
+}
+
+.visor-footer {
+    @include breakpoint(medium-high) {
+        bottom: 0;
+        position: relative;
+        display: block;
+    }
+}
+
+.visor-detail-content {
+    display: block;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 180px 1fr;
+
+    h4 {
+        color: $success-main;
+        font-size: 17px;
+    }
+
+    h5, h6 {
+        color: $primary;
+        font-size: 16px;
+    }
+
+    h5::before {
+        // content: "▹";
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    @include breakpoint(small-only){
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        &>:first-child {
+            grid-column: span 1;
+            h5::before {
+                content: url('/static/src/img/user_green.svg');
+            }
+        }
+    }
+}
+
+.visor-link-detail {
+    &::before {
+        content: "▹";
+        font-weight: bold;
+        font-size: 30px;
+        text-decoration: none;
+    }
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.text-blue {
+    font-weight: bold;
+    font-size: 16px;
+    color: #31708F;
+    background-color: #bcdff1;
+    padding: 10px;
+  }
+  

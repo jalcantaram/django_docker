@@ -1,0 +1,18 @@
+
+.visor-navbar {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 10px solid $gray-300;
+
+    img {
+        padding-right: 20px;
+        max-width: 30em;
+    }
+    @include breakpoint(small-only) {
+        img {
+            padding-right: 20px;
+            max-width: 100%;
+        }
+    }
+}

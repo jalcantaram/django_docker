@@ -1,0 +1,71 @@
+/* ----------- "Mixins" styles ------------ */
+// Breakpoint
+
+@mixin breakpoint($breakpoint) {
+  @if $breakpoint == 'small-only-iphone' {
+    @media (max-width: $bp-small) {
+      @content;
+    }
+  } @else if $breakpoint == 'small-only' {
+    @media (max-width: $bp-medium - 1) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium' {
+    @media (min-width: $bp-medium) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-print' {
+    @media print, (min-width: $bp-medium) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-only' {
+    @media (min-width: $bp-medium) and (max-width: $bp-medium-high - 1) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-and-lower' {
+    @media (max-width: $bp-medium-high - 1) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-high' {
+    @media (min-width: $bp-medium-high) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-high-only' {
+    @media (min-width: $bp-medium-high) and (max-width: $bp-large - 1) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-high-and-lower' {
+    @media (max-width: $bp-large - 1) {
+      @content;
+    }
+  } @else if $breakpoint == 'medium-high-print' {
+    @media print, (min-width: $bp-medium-high) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == 'large' {
+    @media (min-width: $bp-large) {
+      @content;
+    }
+  }
+
+  @else if $breakpoint == 'large-only' {
+    @media (min-width: $bp-large) and (max-width: $bp-large - 1) {
+      @content;
+    }
+  } @else if $breakpoint == 'xlarge' {
+    @media (min-width: $bp-xlarge) {
+      @content;
+    }
+  } @else if $breakpoint == 'homepage-max' {
+    @media (min-width: $bp-homepage-max) {
+      @content;
+    }
+  }
+}
+
+
+@mixin shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
