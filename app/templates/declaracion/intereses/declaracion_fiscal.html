@@ -1,0 +1,229 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Declaración fiscal</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">III. DECLARACIÓN FISCAL <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 mb-3 text-uppercase">3. DECLARACIÓN FISCAL<span class="text-black mx-1"></span></h2>
+        <div class="text-blue">
+            En caso de que hayas autorizado cargar tu información, es muy IMPORTANTE ingresar a cada uno de los apartados de la declaración patrimonial para verificar que tus datos estén completos y correctos de lo contrario es necesario que los actualices
+        </div>
+        <p class="text-sm font-italic text-muted font-weight-extralight mt-3">SUBE TU CONSTANCIA DE DECLARACIÓN FISCAL DEL ÚLTIMO PERIODO EMITIDA POR EL SERVICIO DE ADMINISTRACIÓN TRIBUTARIA (SAT).</p>
+        {% if agregar %}
+          <form action="{% url 'declaracion:declaracion-fiscal-agregar' folio_declaracion %}" method="post" enctype="multipart/form-data" novalidate>
+        {% elif editar_id %}
+          <form action="{% url 'declaracion:declaracion-fiscal-editar' folio_declaracion editar_id %}" method="post" enctype="multipart/form-data" novalidate>
+        {% else %}
+          <form action="{% url 'declaracion:declaracion-fiscal' folio_declaracion %}" method="post" enctype="multipart/form-data" novalidate>
+        {% endif %}
+            {% csrf_token %}
+            <div class="row">
+              {% include 'layout/no_aplica.html' %}
+            </div>
+            <div class="row row-form mt-3" style="{% if checked %}display: none;{% endif %}">
+              <div class="col-md-12 mb-3">
+                <label for="experiencia-nivel" class="label-primary">¿Respecto del ejercicio fiscal inmediato anterior, presentó declaración anual del impuesto sobre la renta?<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <div class="col-auto">
+                  <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="{{ declaracion_fiscal_form.isr_anual.id_for_label }}" name="{{ declaracion_fiscal_form.prefix }}-{{ declaracion_fiscal_form.isr_anual.name }}" class="custom-control-input" value="true"  {% if declaracion_fiscal_form.isr_anual.initial == 1 %} checked {% endif %}>
+                    <label class="custom-control-label text-rg" for="{{ declaracion_fiscal_form.isr_anual.id_for_label }}">Sí</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="{{ declaracion_fiscal_form.isr_anual.id_for_label }}1" name="{{ declaracion_fiscal_form.prefix }}-{{ declaracion_fiscal_form.isr_anual.name }}" class="custom-control-input" value="false" {% if declaracion_fiscal_form.isr_anual.initial == 0 %} checked {% endif %}>
+                    <label class="custom-control-label text-rg" for="{{ declaracion_fiscal_form.isr_anual.id_for_label }}1">No</label>
+                  </div>
+                </div>
+                {% if declaracion_fiscal_form.isr_anual.errors %} <div class="invalid-feedback porcentaje-lbl" style="display: block;">Este requerido</div> {% endif %}
+              </div>
+              <div class="col-md-12 declaracion-anterior"><p><p/>
+                  <h5>Informarción sobre el pago de impuestos sobre la renta (SAT)<span class="text-danger text-lg font-weight-bold">*</span></h5>
+              </div>
+              <div class="col-md-6 declaracion-anterior">
+                  <div class="form-group">
+                    {% include 'elementos/label.html' with text_label="Fecha de presentación" title_button="dd/mm/aaaa" is_required=True %}
+                      {% bootstrap_field declaracion_fiscal_form.presentacion show_label=False placeholder="dd/mm/aaaa" %}
+                  </div>
+                </div>
+              <div class="col-md-6 declaracion-anterior">
+                  <label for="experiencia-nivel" class="label-secondary">Número de operación proporcionado por el SAT<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Número de operación proporcionado por el SAT">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.num_sat show_label=False %}
+              </div>
+              <div class="col-md-6 declaracion-anterior">
+                  <label for="experiencia-nivel" class="label-secondary">Ingreso señalado en la declaración de ISR<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Ingreso señalado en la declaración de ISR">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.ingreso_isr show_label=False %}
+              </div>
+              <div class="col-md-6 declaracion-anterior">
+                  <label for="experiencia-nivel" class="label-secondary">Impuesto a cargo en la declaración de ISR<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Cargo a favor(+), a pagar(-)">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.impuesto_isr show_label=False %}
+              </div>
+              {% comment %} <div class="col-md-12">
+                <label for="retencion-impuestos" class="label-primary">¿Usted tuvo retención de impuesto en el año inmediato anterior por el Gobierno de la Ciudad de México?<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <div class="col-auto">
+                  <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="{{ declaracion_fiscal_form.is_retencion.id_for_label }}" name="{{ declaracion_fiscal_form.prefix }}-{{ declaracion_fiscal_form.is_retencion.name }}" class="custom-control-input" value="true"  {% if declaracion_fiscal_form.is_retencion.initial == 1 %} checked {% endif %}>
+                    <label class="custom-control-label text-rg" for="{{ declaracion_fiscal_form.is_retencion.id_for_label }}">Sí</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="{{ declaracion_fiscal_form.is_retencion.id_for_label }}1" name="{{ declaracion_fiscal_form.prefix }}-{{ declaracion_fiscal_form.is_retencion.name }}" class="custom-control-input" value="false" {% if declaracion_fiscal_form.is_retencion.initial == 0 %} checked {% endif %}>
+                    <label class="custom-control-label text-rg" for="{{ declaracion_fiscal_form.is_retencion.id_for_label }}1">No</label>
+                  </div>
+                </div>
+              </div> {% endcomment %}
+              <div class="col-md-12 declaracion-retencion">
+                  <h5>Retención de impuestos en el año inmediato anterior por el Gobierno de la Ciudad de México.
+                   <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Retención de impuesto en el año inmediato anterior por el Gobierno de la Ciudad de México">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                 </h5>
+              </div>
+              <div class="col-md-12 declaracion-retencion">
+                  <label for="experiencia-nivel" class="label-secundary">Periodo en que declara.</label>
+              </div>
+              <div class="col-md-6 declaracion-retencion">
+                  <label for="experiencia-nivel" class="label-secondary">Mes Inicio<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Mes Inicio">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.mes_inicio show_label=False %}
+              </div>
+              <div class="col-md-6 declaracion-retencion">
+                  <label for="experiencia-nivel" class="label-secondary">Mes Final<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Mes Final">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.mes_final show_label=False %}
+              </div>
+              <div class="col-md-6 declaracion-retencion">
+                  <label for="experiencia-nivel" class="label-secondary">Número de empleado<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Número de empleado">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.num_empleado show_label=False %}
+              </div>
+              <div class="col-md-6 declaracion-retencion">
+                  <label for="experiencia-nivel" class="label-secondary">Total de sueldos, salarios y conceptos asimilados<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Total de sueldos, salarios y conceptos asimilados">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.sueldos_total show_label=False %}
+              </div>
+              <div class="col-md-6 declaracion-retencion">
+                  <label for="experiencia-nivel" class="label-secondary">Impuesto retenido al contribuyente<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Impuesto retenido al contribuyente">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field declaracion_fiscal_form.impuesto_retenidos show_label=False %}
+              </div>
+              <div class="col-10">
+                <label class="mb-0 mt-2" for="{{ declaracion_fiscal_form.archivo.id_for_label }}">
+                  Constancia de declaración fiscal <span class="text-danger text-lg font-weight-bold">*</span>
+                </label>
+                {% if declaracion_fiscal.archivo and declaracion_fiscal.file_size > 10 %}
+                  <label for="rfc-representada" class="label-secondary">Archivo actual</label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="La extensión del archivo debera se en formato PDF">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  <a href="{% url 'declaracion:declaracion-fiscal-pdf' folio_declaracion declaracion_fiscal.id %}" target="_blank">{{ declaracion_fiscal.nombre }}</a>
+                {% endif %}
+                <div class="input-group my-3">
+                  <div>
+                    <label for="id_declaracion_fiscal-archivo" class="btn btn-primary mr-3" id="btn-img">Selecciona un documento</label>
+                    <label id="filename"></label>
+                  </div>
+                  {% bootstrap_field declaracion_fiscal_form.archivo show_label=False field_class='file_size' %} 
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group mr-4">
+                  <label for="fideicomiso-comentarios" class="label-secondary">ACLARACIONES/OBSERVACIONES</label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Detallar información respecto a la declaración fiscal.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+                </div>
+              </div>
+            </div>
+            {% include 'layout/guardar.html' %}
+            <div class="row">
+              <div class="col-12"><br /></div>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+  function display_fiscal(x, show){
+    var i;
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display=show;
+    } 
+  }
+  if(document.getElementById('id_declaracion_fiscal-archivo')){
+    $("#id_declaracion_fiscal-archivo").change(function() {
+      filename = this.files[0].name
+      $('#filename').text(filename);
+      if(filename == ""){
+        $('#btn-img').text("Selecciona un documento");  
+      }else{
+        $('#btn-img').text("Documento seleccionado");
+      }
+    });
+  }
+  //información
+  $is_fiscal = document.getElementById("id_declaracion_fiscal-isr_anual_0");
+  $is_fiscal1 = document.getElementById("id_declaracion_fiscal-isr_anual_01");
+  if($is_fiscal.checked){
+    display_fiscal(document.getElementsByClassName("declaracion-anterior"), "block");
+    document.getElementById('filename').parentElement.parentElement.parentElement.style.display = 'block';
+  }else{
+    display_fiscal(document.getElementsByClassName("declaracion-anterior"), "none");
+    document.getElementById('filename').parentElement.parentElement.parentElement.style.display = 'none';
+  }
+  $is_fiscal.addEventListener("click", function(){
+    display_fiscal(document.getElementsByClassName("declaracion-anterior"), "block");
+    document.getElementById('filename').parentElement.parentElement.parentElement.style.display = 'block';
+  });
+  $is_fiscal1.addEventListener("click", function(){
+    document.getElementById('filename').parentElement.parentElement.parentElement.style.display = 'none';
+    display_fiscal(document.getElementsByClassName("declaracion-anterior"), "none");
+  });
+  //retención
+  {% comment %} $is_retencion = document.getElementById("id_declaracion_fiscal-is_retencion");
+  $is_retencion1 = document.getElementById("id_declaracion_fiscal-is_retencion1");
+  if($is_retencion.checked){
+    display_fiscal(document.getElementsByClassName("declaracion-retencion"), "block")
+  }else{
+    display_fiscal(document.getElementsByClassName("declaracion-retencion"), "none");
+  }
+  $is_retencion.addEventListener("click", function(){
+    display_fiscal(document.getElementsByClassName("declaracion-retencion"), "block");
+  });
+  $is_retencion1.addEventListener("click", function(){
+    display_fiscal(document.getElementsByClassName("declaracion-retencion"), "none");
+  }); {% endcomment %}
+</script>
+{% endblock %}

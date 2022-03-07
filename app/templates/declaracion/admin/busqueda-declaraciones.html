@@ -1,0 +1,103 @@
+{% extends 'layout/base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block content %}
+  <form action="{% url 'declaracion:busqueda-declaraciones' %}" method="get" id="form">
+    <section class="container">
+      <div class="row row-md ">
+        <h1 class="text-gray text-xl font-weight-medium text-uppercase mt-5 line-height-md title-mobile text-mobile"><span class="text-primary-light font-weight-semibold">DECLARACIONES</span> Búsqueda</h1>
+        <div class="d-flex justify-content-center align-items-center flex-column flex-sm-row bg-gray p-4 rounded">
+          {% bootstrap_field form.page %}
+          <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.folio %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              <label> Ente público</label>
+              {% bootstrap_field form.ente show_label=False %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.cargo %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.tipo %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.estatus %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.completa %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.fecha_1 %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.fecha_2 %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+              {% bootstrap_field form.anio %}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-12 col-xl-12 ">
+              <button class="btn float-right btn-success-lighter text-uppercase font-weight-semibold mt-5"  type="submit">Buscar  <img src="{% static 'src/img/busqueda.svg' %}"/></button>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 ">
+              <strong>Se encontr{{ count|pluralize:"ó,aron" }} {{count}} declaraci{{ count|pluralize:"ón,ones" }}</strong>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4 ">
+              Completas: {{completa}}
+              <br>Iniciadas: {{completa_iniciada}}
+              <br>Transmitidas: {{completa_transmitida}}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4 ">
+              Simplificadas: {{simplificada}}
+              <br>Iniciadas: {{simplificada_iniciada}}
+              <br>Transmitidas: {{simplificada_transmitida}}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-4 ">
+              <button class="btn float-right btn-success-lighter text-uppercase font-weight-semibold mt-5" name="_formato" type="submit" value="csv" formaction="{% url 'declaracion:busqueda-declaraciones-export' %}">Exportar csv</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row row-md">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">FOLIO</th>
+              <th scope="col">ENTE PÚBLICO</th>
+              <th scope="col">CARGO</th>
+              <th scope="col">PLAZO DE REALIZACIÓN</th>
+              <th scope="col">FECHA DE FIRMA</th>
+              <th scope="col">INICIO DE CARGO</th>
+              <th scope="col">FIN DE CARGO</th>
+              <th scope="col">ESTATUS</th>
+              <th scope="col">Completa / Simplificada</th>
+              <th scope="col">VER DECLARACIÓN</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for declaracion in object_list %}
+            <tr>
+              <td>{{ declaracion.folio }}</td>
+              <td>{{ declaracion.dependencia }}</td>
+              <td>{{ declaracion.puesto }}</td>
+              <td>{{ declaracion.created_at|date:"d-m-Y" }}</td>
+              <td>{{ declaracion.fiel_fecha_firma|date:"d-m-Y"|default:"-" }}</td>
+              <td>{{ declaracion.datos_empleo_cargo_comision.posesion_inicio|date:"d-m-Y"|default:"-" }}</td>
+              <td>{{ declaracion.datos_empleo_cargo_comision.posesion_conclusion|date:"d-m-Y"|default:"-" }}</td>
+              <td>{{ declaracion.cat_estatus }}</td>
+              <td>{{ declaracion.info_personal_fija.puesto.completa|yesno:"Completa,Simplificada" }}</td>
+              <td><a href="{%  url 'declaracion:info-declaracion' declaracion.pk %}"> <img src="{% static 'src/img/contar2.svg' %}"></a></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="row row-md text-center">
+        <div class="col-12">
+          {% include 'elementos/paginator.html' %}
+        </div>
+      </div>
+    </section>
+  </form>
+{% endblock %}

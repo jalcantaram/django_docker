@@ -1,0 +1,75 @@
+{% load bootstrap4 %}
+<div class="row mb-2">
+  {% for fd in otro_field %}
+    {% if fd.data.index != '0' %}
+      {% if fd.data.value == 1 %}
+        <div class="col-3">
+          <div class="custom-control custom-radio custom-control-inline radio-secondary">
+            <input
+              type="radio"
+              id="{{ fd.id_for_label }}"
+              value="{{ fd.data.value }}"
+              name="{{ otro_field.html_name }}"
+              class="custom-control-input pais-rmx"
+              onchange="dui.radioMx(this.value,'id_{{ field.html_name }}')"
+              data-field-id="id_{{ field.html_name }}"
+              {% if fd.data.selected %}
+                checked
+              {% endif %}
+            />
+            <label class="custom-control-label text-rg" for="{{ fd.id_for_label }}">{{ fd.choice_label }}</label>
+          </div>
+        </div>
+      {% elif fd.data.value == 2 %}
+        <div class="col-3">
+          <div class="custom-control custom-radio custom-control-inline radio-secondary">
+            <input
+              {% if fd.data.selected %}
+                checked
+              {% endif %}
+              type="radio"
+              id="{{ fd.id_for_label }}"
+              value="{{ fd.data.value }}"
+              name="{{ otro_field.html_name }}"
+              class="custom-control-input pais-rmx"
+              onchange="dui.radioMx(this.value,'id_{{ field.html_name }}')"
+              data-field-id="id_{{ field.html_name }}"
+            />
+            <label class="custom-control-label text-rg" for="{{ fd.id_for_label }}">{{ fd.choice_label }}</label>
+          </div>
+        </div>
+      {% elif fd.data.value == 3 %}
+        {% if vacio %}
+          <div class="col-3">
+            <div class="custom-control custom-radio custom-control-inline radio-secondary">
+              <input
+                {% if fd.data.selected %}
+                  checked
+                {% endif %}
+                type="radio"
+                id="{{ fd.id_for_label }}"
+                value="{{ fd.data.value }}"
+                name="{{ otro_field.html_name }}"
+                class="custom-control-input pais-rmx"
+                onchange="dui.radioMx(this.value,'id_{{ field.html_name }}')"
+                data-field-id="id_{{ field.html_name }}"
+              />
+              <label class="custom-control-label text-rg" for="{{ fd.id_for_label }}">{{ fd.choice_label }}</label>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if pais_desabled %}
+    {% else %}
+    <div class="col-md-12 mt-3">
+      <div class="row {% if my_3 == False %}my-3{% endif %} {{ addClass }}">
+        <div class="col-md-4" id="id_{{ field.html_name }}_container">
+          <label for="cargo-municipio" class="label-secondary">{%if label %}{{label}}{% else %}ESPECIFIQUE PAÍS{% endif %}{% if pais %}<span class="text-danger text-lg font-weight-bold">*</span>:{% endif %}</label>
+          {% bootstrap_field field show_label=False field_class="pais" %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>

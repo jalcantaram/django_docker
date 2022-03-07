@@ -1,0 +1,15 @@
+{% load flujo_declaracion %}
+<h1 class="text-uppercase text-black h5">{{ title_header }} <span class="text-primary">{% tipo_declaracion %}</span></h1>
+<h2 class="h6 mb-0 text-uppercase">{{ subtitle_header }}<span class="text-primary"> {{ subtitle_thread }}</span></h2>
+{% if text_blue %}
+	<p class="text-blue">{{ text_blue }}</p>
+{% endif %}
+{% if text_small %}
+	<p class="text-muted text-sm mb-3">{{ text_small }}</p>
+{% endif %}
+{% if text_small2 %}
+	<p class="text-muted text-sm mb-3">{{ text_small2 }}</p>
+{% endif %}
+{% if text_small3 %}
+	<p class="text-muted text-sm mb-3">{{ text_small3 }}</p>
+{% endif %}

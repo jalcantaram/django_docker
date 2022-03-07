@@ -1,0 +1,390 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html' %}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Experiencia laboral</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL<span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 mb-3 mt-3 text-uppercase">
+          5. EXPERIENCIA LABORAL <span class="text-primary">(ÚLTIMOS CINCO EMPLEOS)</span>
+        </h2>
+        {% tipo_declaracion_code as tipo %}
+        {% if tipo == 'INICIAL' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de experiencia laboral.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'CONCLUSION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de experiencia laboral.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'MODIFICACION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de experiencia laboral.</li>
+            </ul>
+          </div>
+        {% endif %}
+        <p class="text-muted text-sm mb-3 mt-3">En caso de que el listado muestre tus datos del empleo actual eliminarlo ya que solo se debe ingresar los últimos 5 empleos sin contar el actual</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:experiencia-laboral-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:experiencia-laboral-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+          {% comment %} href="{% url 'declaracion:experiencia-laboral-agregar' folio_declaracion %}" {% endcomment %}
+          <a href="javascript:alta('declaracion:experiencia-laboral-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+            Agregar experiencia laboral
+            <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+          </a>
+          <form action="{% url 'declaracion:experiencia-laboral' folio_declaracion %}" method="post" novalidate>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="Nombre de la institución" titulo_tres="Cargo / Puesto" agregar=agregar editar_id=editar_id %}
+            {% csrf_token %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <input type="hidden" name="no_aplica" value="on">
+            {% aplica as not_submit %}
+            {% include 'layout/guardar.html' with not_submit=not_submit %}
+          </form>
+          <form class="areyousure" style="display: none;" action="{% url 'declaracion:experiencia-laboral' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+          {% csrf_token %}
+            <div class="row">
+              {% include 'layout/no_aplica.html' %}
+            </div>
+            {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="Nombre de la institución" titulo_tres="Cargo / Puesto" agregar=agregar editar_id=editar_id %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <div class="row-form" {% if checked %}style="display: none;"{% endif %}>
+              <div class="row">
+                <div class="col-12 my-2">
+                  <label class="label-primary mb-2">Para público NOMBRE DEL ENTE PÚBLICO / NOMBRE DE LA EMPRESA, SOCIEDAD O ASOCIACION</label>
+                </div> 
+              </div>
+              <div id="exper_lab">
+              <div class="row">
+                <div class="col-md-12">
+                  {% include 'elementos/label.html' with  text_label="ÁMBITO / SECTOR EN EL QUE LABORASTE" title_button="Elegir el ambito de pertenencia: sector publico, privado o social." is_required=True %}
+                  {% include 'layout/radiobuttons.html' with field_select=experiencia_laboral_form.fields.cat_ambitos_laborales  field_name=experiencia_laboral_form.cat_ambitos_laborales otro_name=experiencia_laboral_form.otro_ambitos_laborales col_o=5 col=3 %}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4" id="orden_gobierno">
+                  <label for="experiencia-nivel" class="label-secondary">NIVEL / ORDEN DE GOBIERNO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Elegir la opción estatal (local)">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field experiencia_laboral_form.cat_ordenes_gobierno show_label=False %}
+                </div>
+                <div class="col-md-4" id="poderes">
+                  <label class="label-secondary">ÁMBITO PÚBLICO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Elegir la naturaleza jurídica como: Ejecutivo, Legislativo, Judicial, órgano constitucional autónomo">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field experiencia_laboral_form.cat_poderes show_label=False %}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label for="exp-institucion" class="label-secondary">NOMBRE DEL ENTE PÚBLICO / NOMBRE DE LA EMPRESA, SOCIEDAD O ASOCIACION <span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Señalar el ente público al cual se encontró adscrita la plaza." id="nombre_publico">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Nombre de la institución en la que laboró." id="nombre_privado">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  {% bootstrap_field experiencia_laboral_form.nombre_institucion show_label=False placeholder="Señalar el ente público al cual se encontró adscrita la plaza" %}
+                </div>
+              </div>
+              <div class="row" id="rfc-experiencia-laboral">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="rfc" class="label-secondary">RFC moral (opcional)</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Los 9 caracteres básicos y los 3 caracteres de la homoclave.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field experiencia_laboral_form.rfc field_class='valida_rfc_moral' show_label=False placeholder="RFC" %}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exp-area" class="label-secondary">ÁREA DE ADSCRIPCIÓN / ÁREA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Nombre de la unidad administrativa o área en la que estuvo adscrito el declarante." id="area_publica">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Proporcione el área en la cual estaba adscrito." id="area_privada">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field  experiencia_laboral_form.unidad_area_administrativa show_label=False placeholder="Unidad administrativa / área" %}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exp-cargo" class="label-secondary">EMPLEO, CARGO Y COMISIÓN/PUESTO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Señalar el nombre que se estableció en su recibo de nómina u otro.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field experiencia_laboral_form.cargo_puesto show_label=False placeholder="Cargo / Puesto" %}
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="idFuncionPrincipal">
+                <div class="col-12">
+                  <label class="label-secondary mb-2">ESPECIFIQUE FUNCIÓN PRINCIPAL<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Funciones definidas para el encargo del declarante.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-8">
+                      {% bootstrap_field experiencia_laboral_form.cat_funciones_principales show_label=False %}
+                    </div>
+                    <div class="col-md-4">
+                      {% bootstrap_field experiencia_laboral_form.otra_funcion show_label=False placeholder="Otra función"%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-1">
+                  <label class="label-secondary">FECHA DE INGRESO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information fecha-pub" data-toggle="tooltip" tabindex="9999" title="Fecha de ingreso a la entidad pública donde realizó el encargo">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  <button type="button" class="btn btn-link p-0 btn-information fecha-priv" data-toggle="tooltip" tabindex="9999" title="Fecha de ingreso donde realizó el encargo">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field experiencia_laboral_form.fecha_ingreso show_label=False placeholder="Fecha de ingreso" %}
+                </div>
+                <div class="col-md-4 mb-1">
+                  <label class="label-secondary">FECHA DE EGRESO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information fecha-pub" data-toggle="tooltip" tabindex="9999" title="Fecha de salida de la entidad pública donde concluyo el encargo">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  <button type="button" class="btn btn-link p-0 btn-information fecha-priv" data-toggle="tooltip" tabindex="9999" title="Fecha de salida donde concluyó el encargo">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field experiencia_laboral_form.fecha_salida show_label=False placeholder="Fecha de salida" %}
+                </div>
+              </div>
+              <div class="row" id="idSectorAlQuePertenece">
+                <div class="col-12">
+                  <label class="label-secondary mb-2">SECTOR AL QUE PERTENECE<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Sector o Área laboral al que pertenece el encargo.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-8">
+                      {% bootstrap_field experiencia_laboral_form.cat_sectores_industria show_label=False %}
+                    </div>
+                    <div class="col-md-4">
+                      {% bootstrap_field experiencia_laboral_form.otro_sector show_label=False %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <label class="label-secondary mb-0">LUGAR DONDE SE UBICA <span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Dirección en la que se presta el empleo o comisión">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                </div>
+              </div>
+              {% include 'layout/nacionalidad.html' with field=domicilio_form.cat_pais otro_field=domicilio_form.ubicacion show_label=False pais_desabled=True %}
+              {% comment %} {% include 'declaracion/direccion.html' with form=domicilio_form nombre_via=True exterior=True %} {% endcomment %}
+              <div class="row mt-3">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="label-secondary mb-2">ACLARACIONES/OBSERVACIONES</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Aclaraciones y Observaciones.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+                  </div>
+                  <div class="text-right">
+                    <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">Guardar y agregar otra experiencia laboral&nbsp;<img src="/static/src/img/plus.svg" alt="agregar" class="svg"></button>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+            {% include 'layout/guardar.html' %}
+            <br><br>
+          </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'select2/i18n/es.js' %}"></script>
+  <script src="/static/smart-selects/admin/js/chainedfk.js"></script>
+  <script src="/static/smart-selects/admin/js/bindfields.js"></script>
+
+  {{ domicilio_form.media.js }}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      /**
+       * Si es privado no debería dejar desplegadas los campos siguientes: NIVEL/ORDEN DE GOBIERNO – PODER PUBLICO
+       */
+      let nombre_pub = document.getElementById("nombre_publico");
+      let nombre_pri = document.getElementById("nombre_privado");
+      let area_privada = document.getElementById("area_privada");
+      let area_publica = document.getElementById("area_publica");
+      let rfc_privado = document.getElementById("rfc-experiencia-laboral");
+      let fecha_pub = document.getElementsByClassName("fecha-pub");
+      let fecha_priv = document.getElementsByClassName("fecha-priv");
+      let saqp = document.getElementById('idSectorAlQuePertenece');
+      let efp = document.getElementById('idFuncionPrincipal');
+
+      // console.log(document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-1').checked);
+      if (document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-1').checked) {
+          nombre_pub.style.display = 'inline-block';
+          nombre_pri.style.display = 'none';
+          area_publica.style.display = 'inline-block';
+          area_privada.style.display = 'none';
+          rfc_privado.style.display= 'none';
+          for (let item of fecha_pub) {
+              item.style.display = 'inline-block';
+          }
+          for (let item of fecha_priv) {
+              item.style.display = 'none';
+          }
+          saqp.style.display = 'none';
+          efp.style.display = 'block';
+      } else if (document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-2').checked) {
+          // Es privado
+          nombre_pub.style.display = 'none';
+          nombre_pri.style.display = 'inline-block';
+          area_publica.style.display = 'none';
+          area_privada.style.display = 'inline-block';
+          rfc_privado.style.display= 'block';
+          for (let item of fecha_pub) {
+              item.style.display = 'none';
+          }
+          for (let item of fecha_priv) {
+              item.style.display = 'inline-block';
+          }
+          saqp.style.display = 'block';
+          efp.style.display = 'none';
+      } else if (document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-3').checked) {
+        nombre_pub.style.display = 'inline-block';
+          nombre_pri.style.display = 'none';
+          area_publica.style.display = 'inline-block';
+          area_privada.style.display = 'none';
+          rfc_privado.style.display= 'block';
+          for (let item of fecha_pub) {
+              item.style.display = 'none';
+          }
+          for (let item of fecha_priv) {
+              item.style.display = 'inline-block';
+          }
+          saqp.style.display = 'block';
+          efp.style.display = 'none';
+      }
+
+      document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-1').addEventListener('change', () => {
+          // Es publico algo html
+          nombre_pub.style.display = 'inline-block';
+          nombre_pri.style.display = 'none';
+          area_publica.style.display = 'inline-block';
+          area_privada.style.display = 'none';
+          rfc_privado.style.display= 'none';
+          for (let item of fecha_pub) {
+              item.style.display = 'inline-block';
+          }
+          for (let item of fecha_priv) {
+              item.style.display = 'none';
+          }
+          saqp.style.display = 'none';
+          efp.style.display = 'block';
+      });
+
+      document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-2').addEventListener('change', () => {
+          // Es privado
+          nombre_pub.style.display = 'none';
+          nombre_pri.style.display = 'inline-block';
+          area_publica.style.display = 'none';
+          area_privada.style.display = 'inline-block';
+          rfc_privado.style.display= 'block';
+          for (let item of fecha_pub) {
+              item.style.display = 'none';
+          }
+          for (let item of fecha_priv) {
+              item.style.display = 'inline-block';
+          }
+          saqp.style.display = 'block';
+          efp.style.display = 'none';
+      });
+      document.getElementById('id_experiencia_laboral-cat_ambitos_laborales-3').addEventListener('change', () => {
+          // Es privado
+          nombre_pub.style.display = 'inline-block';
+          nombre_pri.style.display = 'none';
+          area_publica.style.display = 'inline-block';
+          area_privada.style.display = 'none';
+          rfc_privado.style.display= 'block';
+          for (let item of fecha_pub) {
+              item.style.display = 'none';
+          }
+          for (let item of fecha_priv) {
+              item.style.display = 'inline-block';
+          }
+          saqp.style.display = 'block';
+          efp.style.display = 'none';
+      });
+    });
+  </script>
+{% endblock %}

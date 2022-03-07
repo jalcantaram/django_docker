@@ -1,0 +1,350 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Deudas</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 mb-3 text-uppercase mt-3">
+          {% tipo_declaracion_code as tipo %}
+          {% if tipo == 'MODIFICACION' %}
+            13. ADEUDOS / PASIVOS
+            <span class="text-primary">
+              (Saldo al 31 de diciembre del último año)
+            </span>
+          {% else %}
+            14. ADEUDOS / PASIVOS
+            <span class="text-primary">
+              (entre el 1 de enero y 31 de diciembre del año inmediato anterior)
+            </span>
+          {% endif %}
+        </h2>
+        {% tipo_declaracion_code as tipo %}
+        {% if tipo == 'INICIAL' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos adeudos / pasivos a la fecha de ingreso al empleo, cargo o comisión.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'CONCLUSION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos adeudos / pasivos a la fecha de conclusión del empleo, cargo o comisión.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'MODIFICACION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos adeudos / pasivos del año inmediato anterior.</li>
+            </ul>
+          </div>
+        {% endif %}
+        <p class="text-primary mt-3">
+          {% help_text_inicial 'Reportar la situación de adeudos/pasivos a la fecha de ingreso al empleo, cargo o comisión.' %}
+          {% help_text_modificacion 'Reportar la situación de adeudos/pasivos del año inmediato anterior.' %}
+          {% help_text_conclusion 'Reportar la situación de adeudos/pasivos a la fecha de conclusión del empleo, cargo o comisión.' %}
+        </p>
+        <p class="text-muted mb-3 mt-3 font-weight-bold">ADEUDOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS</p>
+        <p class="text-md text-muted font-weight-normal">TODOS LOS DATOS DE LOS ADEUDOS / PASIVOS A NOMBRE DE LA PAREJA, DEPENDIENTES ECONÓMICOS Y/O TERCEROS O QUE SEAN EN COPROPIEDAD CON EL DECLARANTE NO SERÁN PÚBLICOS</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:deudas-otros-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:deudas-otros-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+          {% comment %} href="{% url 'declaracion:deudas-otros-agregar' folio_declaracion %}" {% endcomment %}
+          <a href="javascript:alta('declaracion:deudas-otros-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+            Agregar adeudo o pasivo
+            <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+          </a>
+          <form action="{% url 'declaracion:deudas-otros' folio_declaracion %}" method="post" novalidate>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE ADEUDO" titulo_dos="TITULAR" titulo_tres="MONTO" agregar=agregar editar_id=editar_id %}
+            {% csrf_token %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <input type="hidden" name="no_aplica" value="on">
+            {% aplica as not_submit %}
+            {% include 'layout/guardar.html' with not_submit=not_submit %}
+          </form>
+          <form style="display: none;" action="{% url 'declaracion:deudas-otros' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+          {% csrf_token %}
+          <div class="row">
+            {% include 'layout/no_aplica.html' %}
+          </div>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE ADEUDO" titulo_dos="TITULAR" titulo_tres="MONTO" agregar=agregar editar_id=editar_id %}
+          {% if informacion_registrada %}
+            <div class="w-100" id="buttonDeleteAllDataList">
+              <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+            </div>
+          {% endif %}
+          {% if propietario_form.baja.initial %}
+            <div class="col-md-12">
+              <div class="alert alert-danger" role="alert">
+                  <label class="label-secondary">Estas deudas estan dadas de baja</label>
+              </div>
+            <div>
+          {% endif %}
+          <div style="{% if checked %}display: none;{% endif %}  {% if baja %}display: none;{% endif %}{% if propietario_form.baja.initial %}display: none;{% endif %}" class="row-form">
+            <div id="formset_propietarios">
+              {{ propietarios_formset.management_form }}
+              {% for propietario_form in propietarios_formset %}
+                <div id="copropietario{{ forloop.counter }}">
+                  <div class="row">
+                    {{ propietario_form.id }}
+                    <div class="col-md-6">
+                      <label for="{{ propietario_form.id_for_label }}" class="label-secondary mb-2">
+                        {% cycle 'TITULAR DEL ADEUDO / PASIVO' 'COPROPIETARIO' 'COPROPIETARIO' %}
+                        <span class="text-danger text-lg font-weight-bold">*</span>
+                      </label>
+                      {% bootstrap_field propietario_form.cat_titular_bienes show_label=False field_class="titular_bien" %}
+                    </div>
+                    <div class="col-md-3" id="dependientes-list" style="display:none;">
+                      <label class="label-secondary mb-2">DEPENDIENTES
+                        <span class="text-danger text-lg font-weight-bold">*</span>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccione algún dependiente que agregó en la sección 7. Datos del dependiente económico">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                      </label>
+                      {% bootstrap_field propietario_form.dependiente_economico show_label=False %}
+                    </div>
+                    <div class="col-md-3">
+                      <label class="label-secondary mb-2">PORCENTAJE
+                        <span class="text-danger text-lg font-weight-bold">*</span>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indique el porcentaje de propiedad">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                      </label>
+                      {% bootstrap_field propietario_form.porcentaje show_label=False placeholder="Porcentaje de propiedad" field_class="porcentaje" %}
+                      <div class="invalid-feedback porcentaje-lbl" style="display:none;">La suma del porcentaje tiene que ser igual a 100</div>
+                    </div>
+                  </div>
+                  <!-- identificación con terceros -->
+                  <div id="third-co" style="display:none;">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h6>Identificación de Terceros</h6>
+                      </div>
+                    </div>
+                    {% include 'layout/persona.html' with form=propietario_form curp_disable=True title="Tipo de persona del copropietario" label="del copropietario" tipo=True %}
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="rfc-dueño" class="label-secondary mb-2 ">RFC del Tercero</label>
+                          <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                            <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                          </button>
+                          <small class="text-help text-primary">(Si aplica)</small>
+                          {% bootstrap_field propietario_form.rfc show_label=False field_class='valida_rfc' placeholder="RFC CON HOMOCLAVE" %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end identificación con terceros -->
+                </div>
+              {% endfor %}
+              {{ propietarios_formset.non_form_errors.0 }}
+              <input type="hidden" id="is_conyuge" value="{{is_conyugue}}">
+              <input type="hidden" id="is_concubina" value="{{is_concubina}}">
+            </div>
+            {% comment %}
+              <div class="row">
+                <div class="col-12">
+                  {% include 'layout/radiobuttons.html' with field_select=deudas_otros_form.fields.cat_tipos_titulares field_name=deudas_otros_form.cat_tipos_titulares otro_name=deudas_otros_form.otro_titular col=2 col_o=4 %}
+                </div>
+              </div>
+            {% endcomment %}
+            <div class="row">
+              <div class="col-md-12">
+                <label class="label-secondary">TIPO DE ADEUDO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar adeudo que se declara.">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                {% bootstrap_field deudas_otros_form.cat_tipos_adeudos show_label=False %}
+              </div>
+              <div class="col-md-4">
+                {% bootstrap_field deudas_otros_form.otro_tipo_adeudo show_label=False %}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-7">
+                {% comment %} {% include 'layout/radiobuttons.html' with field_select=deudas_otros_form.fields.cat_tipos_adeudos field_name=deudas_otros_form.cat_tipos_adeudos otro_name=deudas_otros_form.otro_tipo_adeudo col=2 col_o=4 %} {% endcomment %}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="deudas-id" class="label-secondary">NÚMERO DE CUENTA O CONTRATO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Número de cuenta o contrato del préstamo otorgado.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field deudas_otros_form.numero_cuenta placeholder="Número de cuenta, contrato o identicador de la deuda" show_label=False%}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="label-secondary">FECHA DE ADQUISICIÓN DEL ADEUDO/PASIVO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="dd/mm/aaaa">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+                {% bootstrap_field deudas_otros_form.fecha_generacion placeholder="Especifique" show_label=False%}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <label for="deudas-monto" class="label-secondary">MONTO ORIGINAL DEL ADEUDO/PASIVO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Capturar cantidades sin comas, sin centavos y sin ceros a la izquierda">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field deudas_otros_form.monto_original placeholder="Especifique" show_label=False%}
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="deudas-moneda" class="label-secondary">TIPO DE MONEDA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Tipo de moneda del préstamo.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field deudas_otros_form.cat_monedas placeholder="Especifique" field_class="moneda" show_label=False%}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <label for="deudas-saldo" class="label-secondary">
+                  {% if tipo == 'MODIFICACION' %}
+                    SALDO AL 31 DE DICIEMBRE DEL ÚLTIMO AÑO
+                  {% elif tipo == 'CONCLUSION' %}
+                    SALDO INSOLUTO A LA FECHA DE CONCLUSIÓN DEL EMPLEO
+                  {% elif tipo == 'INICIAL' %}
+                    SALDO INSOLUTO A LA FECHA DE INICIO DEL EMPLEO
+                  {% endif %}
+                  <span class="text-danger text-lg font-weight-bold">*</span>
+                </label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Monto total pendiente de cobro.">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                {% bootstrap_field deudas_otros_form.saldo_pendiente placeholder="Saldo" show_label=False%}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <hr>
+              </div>
+            </div>
+            <h6>OTORGANTE DEL CRÉDITO</h6>
+            {% include 'layout/persona.html' with form=acreedor_form title="OTORGANTE DEL CRÉDITO" label="del otorgante" tipo=True curp_disable=True %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="rfc-dueño" class="label-secondary mb-2 ">RFC del Otorgante<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="R.F.C. con homoclave.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% comment %} <small class="text-help text-primary">(Si aplica)</small> {% endcomment %}
+                  {% bootstrap_field acreedor_form.rfc show_label=False field_class='valida_rfc' placeholder="RFC CON HOMOCLAVE" %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="label-secondary">¿DÓNDE SE LOCALIZA EL ADEUDO?<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar la nacionalidad.">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+                {% include 'layout/nacionalidad.html' with field=deudas_otros_form.cat_paises pais=True otro_field=deudas_otros_form.ubicacion %}
+                <div class="row">
+                  <div class="col-md-4" id="id_{{ deudas_otros_form.cat_paises.html_name }}_container_estado" style="display:none">
+                    <label class="label-secondary ">Entidad Federativa<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Entidad federativa del registro.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field deudas_otros_form.cat_entidades_federativas show_label=False %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="deudas-comentarios" class="label-secondary">ACLARACIONES Y OBSERVACIONES</label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Detallar información de alguna obligación.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field observaciones_form.observacion placeholder="Aclaraciones y Observaciones" show_label=False%}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="{% if baja %}display: block; {% else %} display: none; {% endif %}">
+              <input type="hidden" name="baja-deudas" id="baja-deudas" value="{% if baja %}True{% else %}False{% endif %}">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="deudas-comentarios" class="label-secondary">EN CASO DE BAJA DE LOS ADEUDOS INCLUIR EL MOTIVO</label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Especifique la razón por la cual quiere dar de baja estas deudas.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% if baja %}
+                  {% bootstrap_field observaciones_form.observacion placeholder="Aclaraciones y Observaciones" show_label=False%}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          <div class="text-right row-form" style="{% if checked %}display: none;{% endif %}">
+            <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-primary font-weight-semibold text-uppercase">
+              Guardar y agregar otro adeudo pasivo <img src="/static/src/img/plus.svg" alt="agregar" class="svg">
+            </button>
+          </div>
+          {% include 'layout/guardar.html' %}
+          <div class="row">
+            <div class="col-12"><br /></div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% include 'layout/modal_conyuge.html' %}
+  </div>
+{% endblock %}

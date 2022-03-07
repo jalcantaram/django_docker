@@ -1,0 +1,222 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html' %}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Participación en Empresas, Sociedades o Asociaciones</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">II. DECLARACIÓN DE INTERESES <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 mb-3 text-uppercase">1. PARTICIPACIÓN EN EMPRESAS, SOCIEDADES O ASOCIACIONES
+          <span class="text-primary">
+            {% tipo_declaracion as tipo %}
+            {% if tipo == "Declaración inicial" %}
+            (Hasta los 2 últimos años)
+            {% elif tipo == 'Declaración de modificación patrimonial' %}
+            {% elif tipo == 'Declaración de conclusión' %}
+            {% elif tipo == 'Declaración de modificación' %}
+            (Hasta los 2 últimos años)
+            {% else %}
+            {% endif %}
+          </span>
+        </h2>
+        <div class="text-blue">
+            En caso de que hayas autorizado cargar tu información, es muy IMPORTANTE ingresar a cada uno de los apartados de la declaración patrimonial para verificar que tus datos estén completos y correctos de lo contrario es necesario que los actualices
+        </div>
+        <p class="text-sm font-italic text-muted font-weight-extralight">TODOS LOS DATOS DE LA PARTICIPACIÓN EN EMPRESAS, SOCIEDADES O ASOCIACIONES DE LA PAREJA O DEPENDIENTES ECONÓMICOS NO SERÁN PÚBLICOS</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:empresas-sociedades-asociaciones-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:empresas-sociedades-asociaciones-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+        {% comment %} href="{% url 'declaracion:empresas-sociedades-asociaciones-agregar' folio_declaracion %}" {% endcomment %}
+          <a href="javascript:alta('declaracion:empresas-sociedades-asociaciones-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+            Agregar participación
+            <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+          </a>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="NOMBRE DE LA EMPRESA, SOCIEDAD O ASOCIACIÓN" titulo_dos="TIPO DE PARTICIPACIÓN" titulo_tres="SECTOR/INDUSTRIA" agregar=agregar editar_id=editar_id %}
+          <form action="{% url 'declaracion:empresas-sociedades-asociaciones' folio_declaracion %}" method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="no_aplica" value="on">
+            {% aplica as not_submit %}
+            {% include 'layout/guardar.html' with not_submit=not_submit %}
+          </form>
+          <form style="display: none;" action="{% url 'declaracion:empresas-sociedades-asociaciones' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+          {% csrf_token %}
+          <div class="row">
+            {% include 'layout/no_aplica.html' %}
+          </div>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="NOMBRE DE LA EMPRESA, SOCIEDAD O ASOCIACIÓN" titulo_dos="TIPO DE PARTICIPACIÓN" titulo_tres="SECTOR/INDUSTRIA" agregar=agregar editar_id=editar_id %}
+              <div class="row row-form" style="{% if checked %}display: none;{% endif %}">
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="form-group">
+                      <label for="" class="label-secondary">TIPO DE PERSONA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Tipo de persona.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field empresas_sociedades_form.tipo_persona show_label=False %}
+                    </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="nombre-empresa" class="label-secondary">NOMBRE DE LA EMPRESA, SOCIEDADES O ASOCIACIÓN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Nombre del Denominación o razón social.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field info_personal_var_form.razon_social show_label=False placeholder="Nombre de la empresa, sociedad o asociación" field_class='solo_letras' %}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label class="label-secondary">RFC moral<span class="text-danger text-lg font-weight-bold">*</span> <small class="text-help text-primary">(si aplica)</small></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="9 caracteres básicos y los 3 de la homoclave.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field info_personal_var_form.rfc field_class='valida_rfc_moral' show_label=False placeholder="RFC CON HOMOCLAVE" %}
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group porcentaje">
+                    <label class="label-secondary">PORCENTAJE DE PARTICIPACIÓN DE ACUERDO A ESCRITURA<span class="text-danger text-lg font-weight-bold">*</span> </label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar el % de participación en la empresa, sociedad o asociación."><img src="{% static 'src/img/info.svg'%}" alt="info" class="svg"></button>
+                    <div class="row">
+                      <div class="col-md-4">
+                        {% bootstrap_field empresas_sociedades_form.porcentaje show_label=False placeholder="Porcentaje Participación" field_class="porcentaje" %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <label class="label-secondary">TIPO DE PARTICIPACIÓN<span class="text-danger text-lg font-weight-bold">*</span> </label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar el tipo de participación.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field empresas_sociedades_form.tipo_Participacion show_label=False %}
+                    </div>
+                    <div class="col-md-4" id="otro-{{ empresas_sociedades_form.tipo_Participacion.html_name }}">
+                      <label class="label-secondary">OTRO TIPO DE PARTICIPACIÓN</label>
+                      {% bootstrap_field empresas_sociedades_form.otro_TipoParticipacion show_label=False %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="label-secondary">¿ RECIBE REMUNERACIÓN POR SU PARTICIPACIÓN ?<span class="text-danger text-lg font-weight-bold">*</span> </label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar si/no.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  <div class="row">
+                    <div class="col">
+                      <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                        <input
+                          {% if empresas_sociedades_form.actividad_economica.initial == True %} checked {% endif %}
+                          type="radio"
+                          id="empresas_sociedades-actividad_economica-si"
+                          name="empresas_sociedades-actividad_economica"
+                          value="true"
+                          class="custom-control-input">
+                        <label class="custom-control-label text-rg" for="empresas_sociedades-actividad_economica-si">Sí</label>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                        <input
+                          {% if empresas_sociedades_form.actividad_economica.initial == False %} checked {% endif %}
+                          type="radio"
+                          id="empresas_sociedades-actividad_economica-no"
+                          name="empresas_sociedades-actividad_economica"
+                          value="false"
+                          class="custom-control-input">
+                        <label class="custom-control-label text-rg" for="empresas_sociedades-actividad_economica-no">No</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group monto-neto">
+                    <label for="num-registro" class="label-secondary">MONTO MENSUAL NETO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Monto mensual sin centavos">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field empresas_sociedades_form.monto show_label=False placeholder="Monto mensual Neto" %}
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label class="label-secondary ">LUGAR DONDE SE UBICA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="País de registro.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% include 'layout/nacionalidad.html' with field=empresas_sociedades_form.cat_paises otro_field=empresas_sociedades_form.ubicacion pais=True %}
+                </div>
+                <div class="col-12 mt-2 row" id="id_{{ empresas_sociedades_form.cat_paises.html_name }}_container_estado">
+                  <div class="col-md-6">
+                    <label class="label-secondary ">ENTIDAD FEDERATIVA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Entidad federativa del registro.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field empresas_sociedades_form.cat_entidades_federativas show_label=False %}
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <label class="label-secondary">SECTOR PRODUCTIVO AL QUE PERTENECE<span class="text-danger text-lg font-weight-bold">*</span> </label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar el sector al que pertenece.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field info_personal_var_form.cat_sectores_industria show_label=False %}
+                    </div>
+                    <div class="col-md-4" id="otro-{{ info_personal_var_form.cat_sectores_industria.html_name }}">
+                      <label class="label-secondary">OTRO SECTOR</label>
+                      {% bootstrap_field info_personal_var_form.otro_sector show_label=False %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label class="label-secondary">ACLARACIONES Y OBSERVACIONES</label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Detallar información.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+                </div>
+              </div>
+              <div class="row mt-6 row-form justify-content-center" style="{% if checked %}display: none;{% endif %}">
+                <div class="col-12 text-right">
+                  <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-primary font-weight-semibold text-uppercase">GUARDAR Y AGREGAR OTRA PARTICIPACIÓN<img src="/static/src/img/plus.svg" alt="agregar" class="svg"></button>
+                </div>
+              </div>
+              {% include 'layout/guardar.html' %}
+              <div class="row">
+                <div class="col-12">
+
+                </div>
+              </div>
+          </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

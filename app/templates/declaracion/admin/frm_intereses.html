@@ -1,0 +1,626 @@
+{% load no_aplica %}
+{% load secciones %}
+
+  <!-- 1.- PARTICIPACIÓN EN EMPRESAS, SOCIEDADES O ASOCIACIONES -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">I. PARTICIPACIÓN EN EMPRESAS, SOCIEDADES O ASOCIACIONES</h4>
+    {% no_aplica declaracion.folio 'empresas-sociedades-asociaciones' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for empresa in declaracion.empresassociedades_set.all %}
+        <h6 class="h6 mb-3 text-uppercase font-weight-bold mt-2" style="font-size: 14px;">Empresa {{ forloop.counter }}</h6>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'declarante' '0' %} text-uppercase">
+              <dt>Declarante</dt>
+              <dd class="text-black_opciones">{{ empresa.declarante|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'pareja' '0' %} text-uppercase">
+              <dt>Pareja</dt>
+              <dd class="text-black_opciones">{{ empresa.pareja|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'dependiente' '0' %} text-uppercase">
+              <dt>Dependiente</dt>
+              <dd class="text-black_opciones">{{ empresa.dependiente|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa.empresa_infopersonalvar '2.1' 'razon_social' '0' %} text-uppercase">
+              <dt>Nombre de la empresa, sociedad o asociación</dt>
+              <dd class="text-black_opciones">{{ empresa.empresa_infopersonalvar.razon_social|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa.empresa_infopersonalvar '2.1' 'rfc' '0' %} text-uppercase">
+              <dt>RFC</dt>
+              <dd class="text-black_opciones">{{ empresa.empresa_infopersonalvar.rfc }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'porcentaje' '0' %} text-uppercase">
+              <dt>Porcentaje de participación</dt>
+              <dd class="text-black_opciones">{{ empresa.porcentaje|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'tipo_Participacion' '0' %} text-uppercase">
+              <dt>Tipo de participación</dt>
+              <dd class="text-black_opciones">
+                {% if empresa.tipo_Participacion.codigo == 'OTRO' %}
+                  {{ empresa.tipo_Participacion }} - {{ empresa.otro_TipoParticipacion }}
+                {% else %}
+                  {{ empresa.tipo_Participacion|default_if_none:"-" }}
+                {% endif %}
+              </dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'actividad_economica' '0' %} text-uppercase">
+              <dt>¿Recibe remuneración por su participación?</dt>
+              <dd class="text-black_opciones">{{ empresa.actividad_economica|yesno:"Sí,No" }}</dd>
+            </dl>
+            {% if empresa.actividad_economica %}
+              <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'monto' '0' %} text-uppercase">
+                <dt>Monto</dt>
+                <dd class="text-black_opciones">{{ empresa.monto|default_if_none:"-" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones text-uppercase">
+              <dt>LUGAR DONDE SE UBICA</dt>
+            </dl>
+            <dl class="p_opciones text-uppercase">
+              <dt>País</dt>
+              <dd class="text-black_opciones">{{ empresa.cat_paises }}</dd>
+            </dl>
+            {% if empresa.cat_paises.codigo == 'MEX' %}
+              <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'cat_entidades_federativas' '0' %} text-uppercase">
+                <dt>Entidad Federativa</dt>
+                <dd class="text-black_opciones">{{ empresa.cat_entidades_federativas|default_if_none:"N/A" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'sectores_industrias' '0' %} text-uppercase">
+              <dt>Sector/industria</dt>
+              <dd class="text-black_opciones">{{ empresa.sectores_industrias }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'observaciones' '0' %} text-uppercase">
+              <dt>Observaciones</dt>
+              <dd class="text-black_opciones">{{ empresa.observaciones }}</dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 1.- PARTICIPACIÓN EN EMPRESAS, SOCIEDADES O ASOCIACIONES -->
+
+  <!-- 2.- ¿PARTICIPA EN LA TOMA DE DECISIONES DE ALGUNA DE ESTAS INSTITUCIONES? -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">2. ¿PARTICIPA EN LA TOMA DE DECISIONES DE ALGUNA DE ESTAS INSTITUCIONES?</h4>
+    {% no_aplica declaracion.folio 'membresias' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for membresia in declaracion.membresias_set.all%}
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'declarante' '0' %} text-uppercase">
+              <dt>Declarante</dt>
+              <dd class="text-black_opciones">{{ membresia.declarante|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'pareja' '0' %} text-uppercase">
+              <dt>Pareja</dt>
+              <dd class="text-black_opciones">{{ membresia.pareja|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'dependiente' '0' %} text-uppercase">
+              <dt>Dependiente</dt>
+              <dd class="text-black_opciones">{{ membresia.dependiente|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'cat_tipos_instituciones' '0' %} text-uppercase">
+              <dt>Tipo de institución</dt>
+              <dd class="text-black_opciones">{{ membresia.tipos_instituciones }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'nombre_institucion' '0' %} text-uppercase">
+              <dt>Nombre de la institución</dt>
+              <dd class="text-black_opciones">{{ membresia.nombre_institucion }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'rfc' '0' %} text-uppercase">
+              <dt>RFC</dt>
+              <dd class="text-black_opciones">{{ membresia.rfc }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'puesto_rol' '0' %} text-uppercase">
+              <dt>Puesto/rol</dt>
+              <dd class="text-black_opciones">{{ membresia.puesto_rol }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'fecha_inicio' '0' %} text-uppercase">
+              <dt>Fecha de inicio</dt>
+              <dd class="text-black_opciones">
+                {% if membresia.fecha_inicio %}
+                  {{ membresia.fecha_inicio }}
+                {% endif %}
+              </dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'renumeracion' '0' %} text-uppercase">
+              <dt>¿Recibe remuneración por su participación?</dt>
+              <dd class="text-black_opciones">{{ membresia.renumeracion|yesno:"Sí,No" }}</dd>
+            </dl>
+            {% if membresia.renumeracion %}
+              <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'monto' '0' %} text-uppercase">
+                <dt>Monto</dt>
+                <dd class="text-black_opciones">{{ membresia.monto|default_if_none:"-" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones text-uppercase">
+              <dt>País</dt>
+              <dd class="text-black_opciones">{{ membresia.cat_paises }}</dd>
+            </dl>
+            {% if empresa.cat_paises.codigo == 'MEX' %}
+              <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'cat_entidades_federativas' '0' %} text-uppercase">
+                <dt>Entidad Federativa</dt>
+                <dd class="text-black_opciones">{{ membresia.cat_entidades_federativas|default_if_none:"N/A" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante membresia '2.2' 'observaciones' '0' %} text-uppercase">
+              <dt>Aclaraciones y Observaciones</dt>
+              <dd class="text-black_opciones">{{ membresia.observaciones }}</dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 2.- ¿PARTICIPA EN LA TOMA DE DECISIONES DE ALGUNA DE ESTAS INSTITUCIONES? -->
+
+{% comment %} {% if es_completa %}
+  {% if declaracion.declaracionfiscal_set.first %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25">3. Declaración fiscal</h4>
+    {% no_aplica declaracion.folio 'declaracion-fiscal' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for declaracion_fiscal in declaracion.declaracionfiscal_set.all %}
+        <h5 class="text-md text-uppercase mb-4">Declaración fiscal (PDF)</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'nombre_programa' '0' %} text-uppercase">
+              <dt>Archivo pdf</dt>
+              <dd class="text-black_opciones">
+                <a target="_blank" href="{% url 'declaracion:declaracion-fiscal-pdf' declaracion.folio declaracion_fiscal.id %}">
+                  {{ declaracion_fiscal.nombre }}
+                </a>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+{% endif %} {% endcomment %}
+
+  <!-- 3.- APOYOS O BENEFICIOS PÚBLICOS -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">3. APOYOS O BENEFICIOS PÚBLICOS </h4>
+    {% no_aplica declaracion.folio 'apoyos' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for apoyos in declaracion.infopersonalvar_set.first.apoyos_set.all %}
+        <h5 class="text-md text-uppercase mb-4">Apoyo o beneficio públicos en especie o monetario {{ forloop.counter }}</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'TipoBeneficiario' '0' %} text-uppercase">
+              <dt>Beneficiario</dt>
+              <dd class="text-black_opciones">
+                {% if apoyos.TipoBeneficiario.codigo == 'OTRO' %}
+                  {{ apoyos.otro_TipoBeneficiario|default_if_none:"-" }}
+                {% else %}
+                  {{ apoyos.TipoBeneficiario|default_if_none:"-" }}
+                {% endif %}
+              </dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'nombre_programa' '0' %} text-uppercase">
+              <dt>Nombre del programa público</dt>
+              <dd class="text-black_opciones">{{ apoyos.nombre_programa }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'institucion_otorgante' '0' %} text-uppercase">
+              <dt>Institución que otorga el apoyo</dt>
+              <dd class="text-black_opciones">{{ apoyos.institucion_otorgante }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'cat_ordenes_gobierno' '0' %} text-uppercase">
+              <dt>Nivel/orden de gobierno</dt>
+              <dd class="text-black_opciones">{{ apoyos.cat_ordenes_gobierno|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'tipos_apoyos' '0' %} text-uppercase">
+              <dt>Tipo de apoyo</dt>
+                {% if apoyos.cat_tipos_apoyos.codigo == 'OTRO' %}
+                  {% if apoyos.otro_tipo_apoyo == "" %} 
+                      <dt  style="color: black; font-weight: 700;"> {{apoyos.cat_tipos_apoyos}}</dt>
+                      <dl class="p_opciones--red text-uppercase"><dt style="color: red; font-weight: 700;"> Especifique el tipo de apoyo </dt>
+                        {{ apoyos.otro_tipo_apoyo|default_if_none:"-" }}
+                      </dd> 
+                    {% else %}
+                      <dd class="text-black_opciones">
+                          {{ apoyos.cat_tipos_apoyos|default_if_none:"-" }}
+                      </dd>
+                  {% endif %}
+                {% else %}
+                      <dd class="text-black_opciones">
+                          {{ apoyos.cat_tipos_apoyos|default_if_none:"-" }}
+                      </dd>
+                {% endif %}
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'recepcion_beneficio' '0' %} text-uppercase">
+              <dt>Forma de recepción</dt>
+              <dd class="text-black_opciones">{{ apoyos.recepcion_beneficio|default_if_none:"-" }}</dd>
+            </dl>
+            {% if apoyos.recepcion_beneficio.nombre == 'MONETARIO' %}
+              <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'valor_anual' '0' %} text-uppercase">
+                <dt>MONTO APROXIMADO DEL APOYO MENSUAL</dt>
+                <dd class="text-black_opciones">{{ apoyos.valor_anual|default_if_none:"-" }}</dd>
+              </dl>
+            {% else %}
+              <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'otro_apoyo' '0' %} text-uppercase">
+                <dt>ESPECIFICACIÓN DE APOYO</dt>
+                <dd class="text-black_opciones">{{ apoyos.otro_apoyo }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante apoyos '2.3' 'observaciones' '0' %} text-uppercase">
+              <dt>Observaciones</dt>
+              <dd class="text-black_opciones">{{ apoyos.observaciones }}</dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 3.- APOYOS O BENEFICIOS PÚBLICOS -->
+
+  <!-- 4.- REPRESENTACIÓN -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">4. REPRESENTACIÓN </h4>
+    {% no_aplica declaracion.folio 'representacion-activa' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for representacion in activas %}
+        <h5 class="text-md text-uppercase mb-4">Representación {{ forloop.counter }}</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'cat_tipos_representaciones' '0' %} text-uppercase">
+              <dt>Tipo de representación</dt>
+              <dd class="text-black_opciones">{{ representacion.cat_tipos_representaciones }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'declarante' '0' %} text-uppercase">
+              <dt>Declarante</dt>
+              <dd class="text-black_opciones">{{ representacion.declarante|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'pareja' '0' %} text-uppercase">
+              <dt>Pareja</dt>
+              <dd class="text-black_opciones">{{ representacion.pareja|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'dependiente' '0' %} text-uppercase">
+              <dt>Dependiente</dt>
+              <dd class="text-black_opciones">{{ representacion.dependiente|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'fecha_inicio' '0' %} text-uppercase">
+              <dt>Fecha de inicio</dt>
+              <dd class="text-black_opciones">{{ representacion.fecha_inicio|default_if_none:"-" }}</dd>
+            </dl>
+            {% if representacion.info_personal_var.es_fisica %}
+            <dl class="p_opciones{% obligatorio_faltante representacion.info_personal_var '2.4' 'nombre_completo' '0' %} text-uppercase">
+              <dt>Nombre de la parte representada</dt>
+              <dd class="text-black_opciones">{{ representacion.info_personal_var.nombre_completo }}</dd>
+            </dl>
+            {% else %}
+            <dl class="p_opciones{% obligatorio_faltante representacion.info_personal_var '2.4' 'nombre_completo' '0' %} text-uppercase">
+              <dt>Razón social</dt>
+              <dd class="text-black_opciones">{{ representacion.info_personal_var.nombre_completo }}</dd>
+            </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante representacion.info_personal_var '2.4' 'rfc' '0' %} text-uppercase">
+              <dt>RFC de la parte representada</dt>
+              <dd class="text-black_opciones">{{ representacion.info_personal_var.rfc }}</dd>
+            </dl>
+            {% if representacion.cat_tipos_representaciones.nombre == 'REPRESENTANTE' %}
+              <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'pagado' '0' %} text-uppercase">
+                <dt>¿Recibe remuneración por su participación?</dt>
+                <dd class="text-black_opciones">{{ representacion.pagado|yesno:"Sí,No" }}</dd>
+              </dl>
+              {% if representacion.pagado %}
+                <dl class="p_opciones{% obligatorio_faltante representacion '2.1' 'monto' '0' %} text-uppercase">
+                  <dt>Monto</dt>
+                  <dd class="text-black_opciones">{{ representacion.monto|default_if_none:"-" }}</dd>
+                </dl>
+              {% endif %}
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'cat_paises' '0' %} text-uppercase">
+              <dt>País</dt>
+              <dd class="text-black_opciones">{{ representacion.cat_paises }}</dd>
+            </dl>
+            {% if empresa.cat_paises.codigo == 'MEX' %}
+              <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'cat_entidades_federativas' '0' %} text-uppercase">
+                <dt>Entidad Federativa</dt>
+                <dd class="text-black_opciones">{{ representacion.cat_entidades_federativas|default_if_none:"N/A" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante representacion.info_personal_var '2.1' 'cat_sectores_industria' '0' %} text-uppercase">
+              <dt>Sector/industria</dt>
+              <dd class="text-black_opciones">{{ representacion.info_personal_var.cat_sectores_industria }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante representacion '2.4' 'observaciones' '0' %} text-uppercase">
+              <dt>Aclaraciones y Observaciones</dt>
+              <dd class="text-black_opciones">{{ representacion.observaciones }}</dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 4.- REPRESENTACIÓN -->
+
+  <!-- 5.- CLIENTES PRINCIPALES -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">5. CLIENTES PRINCIPALES </h4>
+    {% no_aplica declaracion.folio 'clientes-principales' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for clientes in declaracion.clientesprincipales_set.all %}
+        <h5 class="text-md text-uppercase mb-4">Cliente principal {{ forloop.counter }}</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'actividadIndependiente' '0' %} text-uppercase">
+              <dt>Actividad lucrativa independiente al empleo, cargo o comisión</dt>
+              <dd class="text-black_opciones">{{ clientes.actividadIndependiente|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'declarante' '0' %} text-uppercase">
+              <dt>Declarante</dt>
+              <dd class="text-black_opciones">{{ clientes.declarante|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'pareja' '0' %} text-uppercase">
+              <dt>Pareja</dt>
+              <dd class="text-black_opciones">{{ clientes.pareja|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'dependiente' '0' %} text-uppercase">
+              <dt>Dependiente</dt>
+              <dd class="text-black_opciones">{{ clientes.dependiente|yesno:"Sí,No" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'nombre_negocio' '0' %} text-uppercase">
+              <dt>Nombre o servicio</dt>
+              <dd class="text-black_opciones">{{ clientes.info_personal_var.nombre_negocio|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'rfc' '0' %} text-uppercase">
+              <dt>RFC</dt>
+              <dd class="text-black_opciones">{{ clientes.rfc|default_if_none:"-" }}</dd>
+            </dl>
+            {% if clientes.info_personal_var.es_fisica %}
+            <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'nombre_completo' '0' %} text-uppercase">
+              <dt>Nombre del cliente principal del negocio o actividad lucrativa</dt>
+              <dd class="text-black_opciones">{{ clientes.info_personal_var.nombre_completo }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'curp' '0' %} text-uppercase">
+              <dt>CURP del cliente principal del negocio o actividad lucrativa</dt>
+              <dd class="text-black_opciones">{{ clientes.info_personal_var.curp }}</dd>
+            </dl>
+            {% else %}
+            <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'nombre_completo' '0' %} text-uppercase">
+              <dt>Razón social</dt>
+              <dd class="text-black_opciones">{{ clientes.info_personal_var.nombre_completo }}</dd>
+            </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'rfc' '0' %} text-uppercase">
+              <dt>RFC del cliente principal</dt>
+              <dd class="text-black_opciones">{{ clientes.info_personal_var.rfc }}</dd>
+            </dl>
+            {% if clientes.info_personal_var.cat_sectores_industria.codigo == "OTRO" %}
+              <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'cat_sectores_industria' '0' %} text-uppercase">
+                <dt>Sector productivo</dt>
+                <dd class="text-black_opciones">{{ clientes.info_personal_var.otro_sector|default_if_none:'-' }}</dd>
+              </dl>
+              {% else %}
+                <dl class="p_opciones{% obligatorio_faltante clientes.info_personal_var '2.5' 'cat_sectores_industria' '0' %} text-uppercase">
+                  <dt>Sector productivo</dt>
+                  <dd class="text-black_opciones">{{ clientes.info_personal_var.cat_sectores_industria|default_if_none:'-' }}</dd>
+                </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'monto' '0' %} text-uppercase">
+              <dt>Monto aproximado del beneficio o ganancia mensual que obtiene del cliente principal</dt>
+              <dd class="text-black_opciones">{{ clientes.monto|default_if_none:'-' }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'cat_paises' '0' %} text-uppercase">
+              <dt>País</dt>
+              <dd class="text-black_opciones">{{ clientes.cat_paises }}</dd>
+            </dl>
+            {% if empresa.cat_paises.codigo == 'MEX' %}
+              <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'cat_entidades_federativas' '0' %} text-uppercase">
+                <dt>Entidad Federativa</dt>
+                <dd class="text-black_opciones">{{ clientes.cat_entidades_federativas|default_if_none:"N/A" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante clientes '2.5' 'observaciones' '0' %} text-uppercase">
+              <dt>Aclaraciones y Observaciones</dt>
+              <dd class="text-black_opciones">{{ clientes.observaciones }}</dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 5.- CLIENTES PRINCIPALES -->
+
+  <!-- 6.- BENEFICIOS PRIVADOS -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">6. BENEFICIOS PRIVADOS </h4>
+    {% no_aplica declaracion.folio 'beneficios-privados' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for beneficio in declaracion.beneficiosgratuitos_set.all %}
+        <h5 class="text-md text-uppercase mb-2">Beneficio privado {{ forloop.counter }}</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'cat_tipos_beneficios' '0' %} text-uppercase">
+              <dt>Tipo de beneficio</dt>
+              <dd class="text-black_opciones">
+                {% if beneficio.cat_tipos_beneficios and beneficio.cat_tipos_beneficios.codigo == 'O' %}
+                  {{ beneficio.otros_beneficios|default_if_none:"-" }}
+                {% else %}
+                  {{ beneficio.cat_tipos_beneficios|default_if_none:"-" }}
+                {% endif %}
+              </dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'TipoBeneficiario' '0' %} text-uppercase">
+              <dt>Beneficiario</dt>
+              <dd class="text-black_opciones">
+                {% if beneficio.TipoBeneficiario.codigo == 'OTRO' %}
+                  {{ beneficio.otro_TipoBeneficiario|default_if_none:"-" }}
+                {% else %}
+                  {{ beneficio.TipoBeneficiario|default_if_none:"-" }}
+                {% endif %}
+              </dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'es_fisica' '0' %} text-uppercase">
+              <dt>Identificación del otorgante</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.fisica_moral }}</dd>
+            </dl>
+            {% if beneficio.otorgante_infopersonalvar.es_fisica %}
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'nombres' '0' %} text-uppercase">
+              <dt>Nombre del otorgante</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.nombres|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'apellido1' '0' %} text-uppercase">
+              <dt>Primer apellido</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.apellido1|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'apellido2' '0' %} text-uppercase">
+              <dt>Segundo apellido</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.apellido2|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'curp' '0' %} text-uppercase">
+              <dt>CURP del otorgante</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.curp|default_if_none:"-" }}</dd>
+            </dl>
+            {% else %}
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'razon_social' '0' %} text-uppercase">
+              <dt>Razón social del otorgante</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.razon_social|default_if_none:"-" }}</dd>
+            </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante beneficio.otorgante_infopersonalvar '2.6' 'rfc' '0' %} text-uppercase">
+              <dt>RFC de fideicomitente.</dt>
+              <dd class="text-black_opciones">{{ beneficio.otorgante_infopersonalvar.rfc|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'recepcion_beneficio' '0' %} text-uppercase">
+              <dt>Forma de recepción del beneficio</dt>
+              <dd class="text-black_opciones">{{ beneficio.recepcion_beneficio|default_if_none:"-" }}</dd>
+            </dl>
+            {% if beneficio.recepcion_beneficio.nombre == 'MONETARIO' %}
+              <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'valor_beneficio' '0' %} text-uppercase">
+                <dt>MONTO MENSUAL APROXIMADO DEL BENEFICIO</dt>
+                <dd class="text-black_opciones">{{ beneficio.valor_beneficio|default_if_none:"-" }}</dd>
+              </dl>
+              <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'cat_monedas' '0' %} text-uppercase">
+                <dt>TIPO DE MONEDA</dt>
+                <dd class="text-black_opciones">{{ beneficio.cat_monedas|default_if_none:"-" }}</dd>
+              </dl>
+            {% else %}
+              <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'origen_beneficio' '0' %} text-uppercase">
+                <dt>Especificación del beneficio</dt>
+                <dd class="text-black_opciones">{{ beneficio.origen_beneficio|default_if_none:"-" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'cat_sectores_industria' '0' %} text-uppercase">
+              <dt>Sector productivo</dt>
+              <dd class="text-black_opciones">
+                {% if beneficio.cat_sectores_industria.codigo == 'OTRO' %}
+                  {{ beneficio.otro_sector|default_if_none:"-" }}
+                {% else%}
+                  {{ beneficio.cat_sectores_industria|default_if_none:"-" }}
+                {% endif %}
+              </dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante beneficio '2.6' 'observaciones' '0' %} text-uppercase">
+              <dt>Aclaraciones y Observaciones</dt>
+              <dd class="text-black_opciones">{{ beneficio.observaciones|default_if_none:"-" }}</dd>
+            </dl>
+          </div>
+        </div>
+        <br>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 6.- BENEFICIOS PRIVADOS -->
+
+  <!-- 7.- FIDEICOMISOS -->
+  {% if es_completa %}
+    <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">7. FIDEICOMISOS</h4>
+    {% no_aplica declaracion.folio 'fideicomisos' as checked %}
+    {% if checked %}
+      {% include 'declaracion/admin/frm_no_aplica.html' %}
+    {% else %}
+      {% for fideicomiso in declaracion.fideicomisos_set.all %}
+        <h2 class="h6 text-uppercase">FIDEICOMISO {{ forloop.counter }}</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'cat_tipos_fideicomisos' '0' %} text-uppercase"><dt>TIPO DE FIDEICOMISO</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.cat_tipos_fideicomisos|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'cat_tipo_participacion' '0' %} text-uppercase"><dt>TIPO DE PARTICIPACIÓN</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.cat_tipo_participacion|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'rfc' '0' %} text-uppercase"><dt>RFC DEL FIDEICOMISO</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.rfc|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso.fideicomitente.0 '2.7' 'nombre_completo' '0' %} text-uppercase"><dt>Nombre, denominación o razón social del fideicomitente</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.fideicomitente.0.nombre_completo|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso.fideicomitente.0 '2.7' 'fideicomitente_rfc' '0' %} text-uppercase"><dt>RFC del fideicomitente</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.fideicomitente.0.rfc|default_if_none:"-" }}</dd>
+            </dl>
+            {% if fideicomiso.fideicomitente.0.es_fisica %}
+              <dl class="p_opciones{% obligatorio_faltante fideicomiso.fideicomitente.0 '2.7' 'curp' '0' %} text-uppercase"><dt>CURP del fideicomitente </dt>
+                <dd class="text-black_opciones">{{ fideicomiso.fideicomitente.0.curp|default_if_none:"-" }}</dd>
+              </dl>
+            {% endif %}
+
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso.fiduciario.0 '2.7' 'nombre_completo' '0' %} text-uppercase"><dt>Nombre, denominación o razón social del fiduciario</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.fiduciario.0.nombre_completo|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso.fiduciario.0 '2.7' 'fiduciario_rfc' '0' %} text-uppercase"><dt>RFC del fiduciario</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.fiduciario.0.rfc|default_if_none:"-" }}</dd>
+            </dl>
+            {% if fideicomiso.fiduciario.0.es_fisica %}
+              <dl class="p_opciones{% obligatorio_faltante fideicomiso.fiduciario.0 '2.7' 'curp' '0' %} text-uppercase"><dt>CURP del fiduciario</dt>
+                <dd class="text-black_opciones">{{ fideicomiso.fiduciario.0.curp|default_if_none:"-" }}</dd>
+              </dl>
+            {% endif %}
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso.fideicomisario.0 '2.7' 'nombre_completo' '0' %} text-uppercase"><dt>Nombre, denominación o razón social del fideicomisario</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.fideicomisario.0.nombre_completo|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso.fideicomisario.0 '2.7' 'rfc' '0' %} text-uppercase"><dt>RFC del fideicomisario</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.fideicomisario.0.rfc|default_if_none:"-" }}</dd>
+            </dl>
+            {% if fideicomiso.fideicomisario.0.es_fisica %}
+              <dl class="p_opciones{% obligatorio_faltante fideicomiso.fideicomisario.0 '2.7' 'curp' '0' %} text-uppercase"><dt>CURP del fideicomisario </dt>
+                <dd class="text-black_opciones">{{ fideicomiso.fideicomisario.0.curp|default_if_none:"-" }}</dd>
+              </dl>
+            {% endif %}
+            {% if fideicomiso.cat_sectores_industria.codigo == 'OTRO' %}
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'otro_sector' '0' %} text-uppercase"><dt>SECTOR AL QUE PERTENECE - OTRO</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.otro_sector|default_if_none:"-" }}</dd>
+            </dl>  
+            {% else %}
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'cat_sectores_industria' '0' %} text-uppercase"><dt>SECTOR AL QUE PERTENECE</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.cat_sectores_industria|default_if_none:"-" }}</dd>
+            </dl>
+            {% endif%}
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'cat_paises' '0' %} text-uppercase"><dt>¿ DÓNDE SE LOCALIZA EL FIDEICOMISO ?</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.cat_paises|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante fideicomiso '2.7' 'observaciones' '0' %} text-uppercase"><dt>ACLARACIONES/OBSERVACIONES</dt>
+              <dd class="text-black_opciones">{{ fideicomiso.observaciones }}</dd>
+            </dl>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    <hr class="my-3">
+  {% endif %}
+  <!-- 7.- FIDEICOMISOS -->

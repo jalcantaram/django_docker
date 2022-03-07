@@ -1,0 +1,181 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Clientes principales</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">II. DECLARACIÓN DE INTERESES <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 mb-3 text-uppercase">5. CLIENTES PRINCIPALES <span class="text-black mx-1"></span><span class="text-primary">(HASTA LOS 2 ÚLTIMOS AÑOS)</span></h2>
+        <div class="text-blue">
+            En caso de que hayas autorizado cargar tu información, es muy IMPORTANTE ingresar a cada uno de los apartados de la declaración patrimonial para verificar que tus datos estén completos y correctos de lo contrario es necesario que los actualices
+        </div>
+        <p class="text-sm font-italic text-muted font-weight-extralight">TODOS LOS DATOS DE CLIENTES PRINCIPALES DE LA PAREJA O DEPENDIENTES ECONÓMICOS NO SERÁN PÚBLICOS</p>
+        <p class="text-muted text-sm mb-3">SE MANIFESTARÁ EL BENEFICIO O GANANCIA DIRECTA DEL DECLARANTE SI SUPERA MENSUALMENTE 250 UNIDADES DE MEDIDA Y ACTUALIZACIÓN (UMA)</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+        <form class="areyousure" action="{% url 'declaracion:clientes-principales-agregar' folio_declaracion %}" method="post" novalidate>
+          {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:clientes-principales-editar' folio_declaracion editar_id %}" method="post" novalidate>
+            {% else %}
+            {% comment %} href="{% url 'declaracion:clientes-principales-agregar' folio_declaracion %}" {% endcomment %}
+            <a href="javascript:alta('declaracion:clientes-principales-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+              Agregar cliente principal
+              <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+            </a>
+            {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="NOMBRE DE LA EMPRESA O SERVICIO QUE PROPORCIONA" titulo_dos="CLIENTE PRINCIPAL" titulo_tres="SECTOR/INDUSTRIA" agregar=agregar editar_id=editar_id %}
+            <form action="{% url 'declaracion:clientes-principales' folio_declaracion %}" method="post" novalidate>
+              {% csrf_token %}
+              <input type="hidden" name="no_aplica" value="on">
+              {% aplica as not_submit %}
+              {% include 'layout/guardar.html' with not_submit=not_submit %}
+            </form>
+            <form style="display: none;" action="{% url 'declaracion:clientes-principales' folio_declaracion %}" method="post" novalidate>
+              {% endif %}
+              {% csrf_token %}
+              <div class="row">
+                {% include 'layout/no_aplica.html' %}
+              </div>
+              {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="¿Realiza alguna actividad lucrativa independiente al empleo cargo o comisión?" titulo_dos="CLIENTE PRINCIPAL" titulo_tres="SECTOR/INDUSTRIA" agregar=agregar editar_id=editar_id %}
+              <div class="row row-form" style="{% if checked %}display: none;{% endif %}">
+              <div class="col-md-12 mb-3">
+                <label for="experiencia-nivel" class="label-primary">¿Realiza alguna actividad lucrativa independiente al empleo cargo o comisión?</label>
+                <div class="col-auto">
+                  <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="{{ clientes_principales_form.actividadIndependiente.id_for_label }}" name="{{ clientes_principales_form.prefix }}-{{ clientes_principales_form.actividadIndependiente.name }}" class="custom-control-input" value="true"  {% if clientes_principales_form.actividadIndependiente.initial == 1 %} checked {% endif %}>
+                    <label class="custom-control-label text-rg" for="{{ clientes_principales_form.actividadIndependiente.id_for_label }}">Sí</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="{{ clientes_principales_form.actividadIndependiente.id_for_label }}1" name="{{ clientes_principales_form.prefix }}-{{ clientes_principales_form.actividadIndependiente.name }}" class="custom-control-input" value="false" {% if clientes_principales_form.actividadIndependiente.initial == 0 %} checked {% endif %}>
+                    <label class="custom-control-label text-rg" for="{{ clientes_principales_form.actividadIndependiente.id_for_label }}1">No</label>
+                  </div>
+                </div>
+              </div>
+                <div class="" id="actividadLucrativa" {% if clientes_principales_form.actividadIndependiente.initial == 1 %} style="display:block;" {% else %} style="display:none;" {% endif %}>
+                  <div class="col-12">
+                      <div class="form-group">
+                        <label for="" class="label-secondary">TIPO DE PERSONA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Tipo de persona.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field clientes_principales_form.tipo_persona show_label=False %}
+                      </div>
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="form-group">
+                      <label for="tipo-representacion" class="label-secondary">NOMBRE DE LA EMPRESA O SERVICIO QUE PROPORCIONA</label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Nombre o naturaleza del negocio / actividad lucrativa">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field info_personal_var_form.nombre_negocio show_label=False field_class='solo_letras'%}
+
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <label class="label-secondary">RFC moral <span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="9 caracteres básicos y los 3 de la homoclave.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field clientes_principales_form.rfc field_class='valida_rfc_moral' show_label=False placeholder="RFC CON HOMOCLAVE" %}
+                  </div>
+                  <div class="col-12">
+                    {% include 'layout/persona.html' with form=info_personal_var_form curp_disable=True title="IDENTIFICACIÓN DEL CLIENTE PRINCIPAL" label=" del cliente principal del negocio o actividad lucrativa" tipo=True nombre=True curp=True razon=True  %}
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="form-group">
+                      <label for="curp-representada" class="label-secondary">RFC del cliente principal<span class="text-danger text-lg font-weight-bold">*</span><small class="text-help text-primary">(si aplica)</small></label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field info_personal_var_form.rfc field_class='valida_rfc' show_label=False placeholder="RFC del cliente principal" %}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="label-secondary mb-2">SECTOR PRODUCTIVO AL QUE PERTENECE<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar el sector al que pertenece.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    <div class="row">
+                      <div class="col-md-8">
+                        {% bootstrap_field info_personal_var_form.cat_sectores_industria show_label=False %}
+                      </div>
+                      <div class="col-md-4" id="otro-{{ info_personal_var_form.cat_sectores_industria.html_name }}">
+                        {% bootstrap_field info_personal_var_form.otro_sector show_label=False %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="form-group">
+                      <span for="observaciones" class="label-secondary">MONTO APROXIMADO DEL BENEFICIO O GANANCIA MENSUAL QUE SE OBTIENE DEL CLIENTE PRINCIPAL<span class="text-danger text-lg font-weight-bold">*</span></span>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Monto neto sin centavos.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field clientes_principales_form.monto show_label=False placeholder="Ganancia Mensual"%}
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="label-secondary ">LUGAR DONDE SE UBICA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="País de registro.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% include 'layout/nacionalidad.html' with field=clientes_principales_form.cat_paises otro_field=clientes_principales_form.ubicacion pais=True %}
+                  </div>
+                  <div class="col-12 mt-2 row" id="id_{{ clientes_principales_form.cat_paises.html_name }}_container_estado">
+                    <div class="col-md-6">
+                      <label class="label-secondary ">ENTIDAD FEDERATIVA<span class="text-danger text-lg font-weight-bold">*</span> </label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Entidad federativa del registro.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field clientes_principales_form.cat_entidades_federativas show_label=False %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="observaciones" class="label-secondary">ACLARACIONES/OBSERVACIONES</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Detallar información de los clientes.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+                  </div>
+                </div>
+              </div>
+              <div class="text-right row-form" style="{% if checked %}display: none;{% endif %}">
+                <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+                  Guardar y agregar otro cliente
+                  <img src="/static/src/img/plus.svg" alt="agregar" class="svg">
+                </button>
+              </div>
+              {% include 'layout/guardar.html' %}
+              <div class="row">
+                <div class="col-12"><br /></div>
+              </div>
+            </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

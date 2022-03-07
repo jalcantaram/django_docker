@@ -1,0 +1,30 @@
+{% load static %}
+<div class="modal fade" id="modal-cancelar-declaracion" tabindex="-1" role="dialog" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+        <div class="modal-body text-center">
+            <a href="javascript:void();" data-dismiss="modal" aria-label="Close">
+            <img src="{% static 'src/img/close.svg' %}" alt="Cerrar" class="svg">
+            </a>
+            <br/>
+            <br/>
+            <p class="text-lg w-75 mb-3 mx-auto text-uppercase">¿Está seguro de que quiere eliminar la declaración en curso?</p>
+            <br/>
+            <strong class="text-sm mb-3 mx-auto text-uppercase">Nota: si confirmas que deseas eliminar la declaración en curso ya no podras recuperar la información ingresada.</strong>
+            <br/>
+            <br/>
+            <br/>
+            <form action="{% url 'declaracion:eliminar-declaracion' folio %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger my-3">
+                <span>SI ESTOY SEGURO</span>
+            </button>
+            <button type="button" class="btn btn-secondary my-3" data-dismiss="modal" aria-label="Close">
+                <span class="texto-chico-boton">CANCELAR</span>
+            </button>
+            </form>
+            <br/>
+        </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,262 @@
+{% load static %}
+{% load secciones %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+  <!-- 8.- (COPLETA) 6.- (CORTA) - INGRESOS NETOS DEL DECLARANTE -->
+  <div class="row mb-2">
+    <div class="col-12 mb-2">
+      <hr class="linea" />
+      <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">
+        {% if es_completa %}
+          8. INGRESOS NETOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS
+        {% else %}
+          6. INGRESOS NETOS DEL DECLARANTE
+        {% endif %}
+      </h4>
+      {% if sueldos_publicos %}
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'remuneracionMensualNeta' '0' %} text-uppercase">
+          <dt>
+            {% tipo_declaracion_code as tipo %}
+            {% if tipo == 'CONCLUSION' %}
+              I. REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO
+            {% elif tipo == 'MODIFICACION' %}
+              I. REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO
+            {% elif tipo == 'INICIAL' %}
+              I. REMUNERACIÓN MENSUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO
+            {% endif %}
+          </dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionMensualNeta|default_if_none:"" }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'otros_ingresos_declarante' '0' %} text-uppercase">
+          <dt>
+            {% if tipo == 'CONCLUSION' %}
+              II. OTROS INGRESOS ANUALES DEL DECLARANTE
+            {% elif tipo == 'MODIFICACION' %}
+              II. OTROS INGRESOS ANUALES DEL DECLARANTE
+            {% else %}
+              II. OTROS INGRESOS MENSUALES DEL DECLARANTE
+            {% endif %}
+          </dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.otros_ingresos_declarante }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'remuneracionActividadIndus' '0' %} text-uppercase">
+          <dt>II.1 POR ACTIVIDAD INDUSTRIAL, COMERCIAL Y/O EMPRESARIAL</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionActividadIndus|default_if_none:"" }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'razonSocial' '0' %} text-uppercase">
+          <dt>NOMBRE O RAZÓN SOCIAL</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.razonSocial }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'tipoNegocio' '0' %} text-uppercase">
+          <dt>TIPO DE NEGOCIO</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.tipoNegocio }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'remuneracionActFinan' '0' %} text-uppercase">
+          <dt>II.2 POR ACTIVIDAD FINANCIERA</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionActFinan|default_if_none:""  }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'tipoActFinan' '0' %} text-uppercase">
+          <dt>TIPO DE INSTRUMENTO QUE GENERÓ EL RENDIMIENTO O GANANCIA</dt>
+          <dd class="text-black_opciones">
+            {% if sueldos_publicos.tipoActFinan.codigo == 'OTRO' %}
+              {{ sueldos_publicos.otroTipoInstrumentoGanancia|default_if_none:"" }}
+            {% else %}
+              {{ sueldos_publicos.tipoActFinan|default_if_none:"" }}
+            {% endif%}
+          </dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'remuneracionServProf' '0' %} text-uppercase">
+          <dt>II.3 POR SERVICIOS PROFESIONALES, CONSEJOS, CONSULTORÍAS Y/O ASESORÍAS</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionServProf|default_if_none:""  }}</dd>
+        </dl>
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'tipoServProf' '0' %} text-uppercase">
+          <dt>TIPO DE SERVICIO PRESTADO</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.tipoServProf|default_if_none:""  }}</dd>
+        </dl>
+        {% if tipo == 'MODIFICACION' or tipo == 'CONCLUSION' %}
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.9' 'remuneracionEnajenacion' '0' %} text-uppercase">
+            <dt>  II.4 POR ENAJENACIÓN DE BIENES</dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionEnajenacion|default_if_none:"-" }}</dd>
+          </dl>
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.9' 'tipoEnajenacion' '0' %} text-uppercase">
+            <dt>  TIPO BIEN ENAJENADO</dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.tipoEnajenacion|default_if_none:"-" }}</dd>
+          </dl>
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'remuneracionOtrosIng' '0' %} text-uppercase">
+            <dt>II.5 OTROS INGRESOS NO CONSIDERADOS A LOS ANTERIORES </dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionOtrosIng|default_if_none:"" }}</dd>
+          </dl>
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'tipoServProf' '0' %} text-uppercase">
+            <dt>ESPECIFICAR TIPO DE INGRESO</dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.tipoServProf|default_if_none:""  }}</dd>
+          </dl>
+        {% else %}
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'remuneracionOtrosIng' '0' %} text-uppercase">
+            <dt>II.4 OTROS INGRESOS NO CONSIDERADOS A LOS ANTERIORES </dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.remuneracionOtrosIng|default_if_none:"" }}</dd>
+          </dl>
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'tipoServProf' '0' %} text-uppercase">
+            <dt>ESPECIFICAR TIPO DE INGRESO</dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.tipoServProf|default_if_none:""  }}</dd>
+          </dl>
+        {% endif %}
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'ingreso_neto_declarante' '0' %} text-uppercase">
+          <dt>
+            {% tipo_declaracion_code as tipo %}
+            {% if tipo == 'CONCLUSION' %}
+              A. INGRESO ANUAL NETO DEL DECLARANTE
+            {% elif tipo == 'MODIFICACION' %}
+              A. INGRESO ANUAL NETO DEL DECLARANTE
+            {% else %}
+              A. INGRESO MENSUAL NETO DEL DECLARANTE
+            {% endif %}
+          </dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.ingreso_neto_declarante  }}</dd>
+        </dl>
+        {% if es_completa %}
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'ingresoMensualDependientes' '0' %} text-uppercase">
+            <dt>
+              {% if tipo == 'CONCLUSION' %}
+                B. INGRESO ANUAL NETO DE LA PAREJA Y/O DEPENDIENTES ECONÓMICOS
+              {% elif tipo == 'MODIFICACION' %}
+                B. INGRESO ANUAL NETO DE LA PAREJA Y/O DEPENDIENTES ECONÓMICOS
+              {% else %}
+                B. INGRESO MENSUAL NETO DE LA PAREJA Y/O DEPENDIENTES ECONÓMICOS
+              {% endif %}
+            </dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.ingresoMensualDependientes|default_if_none:""  }}</dd>
+          </dl>
+          <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'ingreso_neto_declarante_dependientes' '0' %} text-uppercase">
+            <dt>
+              {% if tipo == 'CONCLUSION' %}
+                C. TOTAL DE INGRESOS ANUALES NETOS PERCIBIDOS POR EL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS
+              {% elif tipo == 'MODIFICACION' %}
+                C. TOTAL DE INGRESOS ANUALES NETOS PERCIBIDOS POR EL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS
+              {% else %}
+                C. TOTAL DE INGRESOS MENSUALES NETOS PERCIBIDOS POR EL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS
+              {% endif %}
+            </dt>
+            <dd class="text-black_opciones">{{ sueldos_publicos.ingreso_neto_declarante_dependientes  }}</dd>
+          </dl>
+        {% endif %}
+        <dl class="p_opciones{% obligatorio_faltante sueldos_publicos '1.8' 'observaciones' '0' %} text-uppercase">
+          <dt>ACLARACIONES/OBSERVACIONES</dt>
+          <dd class="text-black_opciones">{{ sueldos_publicos.observaciones }}</dd>
+        </dl>
+      {% endif %}
+    </div>
+  </div>
+  <!-- 8.- (COPLETA) 6.- (CORTA) - INGRESOS NETOS DEL DECLARANTE -->
+
+  <!-- 9.- (COPLETA) 7.- (CORTA) - INGRESOS NETOS DEL DECLARANTE -->
+  {% tipo_declaracion_code as tipo %}
+  {% if tipo != 'MODIFICACION' %}
+    <div class="row mb-2">
+      <div class="col-12">
+        <hr class="linea" />
+        <h4 class="text-base text-uppercase text-success-lighter mb-25" style="color: #31b700;">
+          {% if es_completa %}
+            9. ¿TE DESEMPEÑASTE  COMO SERVIDOR PÚBLICO EL AÑO INMEDIATO ANTERIOR?
+          {% else %}
+            7. ¿TE DESEMPEÑASTE  COMO SERVIDOR PÚBLICO EL AÑO INMEDIATO ANTERIOR?
+          {% endif %}
+        </h4>
+      </div>
+    </div>
+    <div class="row mb-2">
+      {% no_aplica declaracion.folio 'servidor-publico' as checked %}
+      {% if checked %}
+        {% include 'declaracion/admin/frm_no_aplica_ask.html' %}
+      {% else %}
+        {% if servidor_publico %}
+          <div class="col-12">
+            <p class="h6 text-uppercase">SUELDO O SALARIO POR OTRO EMPLEO {{ forloop.counter }}</p>
+          </div>
+          <div class="col-6 mb-2">
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'fecha_ingreso' '0' %} text-uppercase">
+              <dt>FECHA DE INICIO</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.fecha_ingreso|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'fecha_salida' '0' %} text-uppercase">
+              <dt>FECHA DE CONCLUSIÓN</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.fecha_salida|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'ingresosNeto' '0' %} text-uppercase">
+              <dt>I. REMUNERACIÓN NETA DEL DECLARANTE, RECIBIDA DURANTE EL TIEMPO EN EL QUE SE DESEMPEÑO COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR(CANTIDADES NETAS DESPUÉS DE IMPUESTOS)</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.ingresosNeto|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'otros_ingresos_declarante' '0' %} text-uppercase">
+              <dt>II. OTROS INGRESOS DEL DECLARANTE, RECIBIDOS DURANTE EL TIEMPO EN EL QUE SE DESEMPEÑÓ COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.otros_ingresos_declarante|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'remuneracionActividadIndus' '0' %} text-uppercase">
+              <dt>II.1 POR ACTIVIDAD INDUSTRIAL, COMERCIAL Y/O EMPRESARIAL</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.remuneracionActividadIndus|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'razonSocial' '0' %} text-uppercase">
+              <dt>NOMBRE O RAZÓN SOCIAL</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.razonSocial|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'tipoNegocio' '0' %} text-uppercase">
+              <dt> TIPO DE NEGOCIO</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.tipoNegocio|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'remuneracionActFinan' '0' %} text-uppercase">
+              <dt>  II.2 POR ACTIVIDAD FINANCIERA</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.remuneracionActFinan|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'tipoActFinan' '0' %} text-uppercase">
+              <dt>  TIPO DE INSTRUMENTO QUE GENERÓ EL RENDIMIENTO O GANANCIA</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.tipoActFinan|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'remuneracionServProf' '0' %} text-uppercase">
+              <dt>  II.3 POR SERVICIOS PROFESIONALES, CONSEJOS, CONSULTORÍAS Y/O ASESORÍAS</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.remuneracionServProf|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'tipoServProf' '0' %} text-uppercase">
+              <dt>  TIPO DE SERVICIO PRESTADO</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.tipoServProf|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'remuneracionEnajenacion' '0' %} text-uppercase">
+              <dt>  II.4 POR ENAJENACIÓN DE BIENES</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.remuneracionEnajenacion|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'tipoEnajenacion' '0' %} text-uppercase">
+              <dt>  TIPO BIEN ENAJENADO</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.tipoEnajenacion|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'remuneracionOtrosIng' '0' %} text-uppercase">
+              <dt>  II.5 OTROS INGRESOS NO CONSIDERADOS A LOS ANTERIORES</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.remuneracionOtrosIng|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'tipoServProf' '0' %} text-uppercase">
+              <dt>  ESPECIFICAR TIPO DE INGRESO</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.tipoOtrosIng|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'ingreso_neto_declarante' '0' %} text-uppercase">
+              <dt>  A. INGRESO NETO DEL DECLARANTE RECIBIDO EN EL AÑO INMEDIATO ANTERIOR</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.ingreso_neto_declarante|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'ingresoMensualDependientes' '0' %} text-uppercase">
+              <dt>  B. INGRESO NETO DE LA PAREJA Y/O DEPENDIENTES ECONÓMICOS RECIBIDO EN EL AÑO INMEDIATO ANTERIOR </dt>
+              <dd class="text-black_opciones">{{ servidor_publico.ingresoMensualDependientes|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'ingreso_neto_declarante_dependientes' '0' %} text-uppercase">
+              <dt>  C. TOTAL DE INGRESOS MENSUALES NETOS PERCIBIDOS POR EL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS EN EL AÑO INMEDIATO ANTERIOR</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.ingreso_neto_declarante_dependientes|default_if_none:"-" }}</dd>
+            </dl>
+            <dl class="p_opciones{% obligatorio_faltante servidor_publico '1.9' 'observaciones' '0' %} text-uppercase">
+              <dt>ACLARACIONES Y OBSERVACIONES</dt>
+              <dd class="text-black_opciones">{{ servidor_publico.observaciones|default_if_none:"-" }}</dd>
+            </dl>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+  {% if not es_completa %}
+    <hr class="linea" />
+  {% endif %}
+  <!-- 9.- (COPLETA) 7.- (CORTA) - INGRESOS NETOS DEL DECLARANTE -->
+

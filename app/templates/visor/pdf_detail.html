@@ -1,0 +1,192 @@
+{% extends "easy_pdf/base.html" %}
+{% include './header.html' %}
+{% load humanize %}
+{% load visor %}
+{% block extra_style %}
+    <style type="text/css">
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        h5 {
+            font-size: 18px;
+            margin-bottom: 2px;
+            padding-top: 10px;
+            padding-bottom: 0;
+            color: white;
+            background-color: #1bb600;
+            text-align: center;
+        }
+
+        p {
+            font-size: 15px;
+            margin: 5px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <nav>
+        {% load static %}
+        <a href="{% url 'declaracion:visor' %}">
+            <img src="{% static 'src/img/logo-contraloria.png' %}" alt="logotipo-gobierno-cdmx-2" srcset="">
+        </a>
+    </nav>
+    <p>
+        Declaracion pública <strong>{{ decla.idtipodeclaracion.descripcion }}</strong> de <strong>{{ decla.nombre_declarante }}</strong> en el <br>
+        puesto <strong>{{ decla.puesto }}</strong> en <strong>{{ decla.dependencia }}</strong> en <strong>{{ decla.fiel_fecha_firma|date:'Y' }}</strong>
+    </p>
+    <hr>
+    <div>
+        <div>
+            <h5>INFORMACIÓN PERSONAL</h5>
+            <p>
+                <strong>Nombre del declarante: </strong>
+                {{ decla.nombre_declarante }}
+            </p>
+            <p>
+                <strong>Cargo: </strong>
+                {{ decla.puesto }}
+            </p>
+        </div>
+        <div>
+            <h5>INFORMACIÓN PATRIMONIAL</h5>
+            <p>
+                <strong>Ingreso neto del declarante por el empleo, cargo o comisión: </strong>
+                $MXN {{ decla.ingreso_monto|intcomma }}
+            </p>
+            <p>
+                <strong>Otros Ingresos del Declarante:</strong>
+                {% if decla.otros_ingresos %}
+                    $MXN {{ decla.otros_ingresos|intcomma }}
+                {% else %}
+                    Declaró no contar con otro tipo de ingresos
+                {% endif %}
+            </p>
+
+            <p>
+                <strong>Valor neto de bienes muebles, inmuebles y vehículos:</strong>
+                {% if decla.bienes_monto %}
+                    $MXN {{ decla.bienes_monto|intcomma }}
+                {% else %}
+                    Declaró no adquirir bienes muebles, inmuebles y vehículos durante el año
+                {% endif %}
+            </p>
+
+            <p>
+                {% if decla.inversiones_monto %}
+                    <strong>Inversiones o valores netos: </strong>$MXN {{ decla.inversiones_monto|intcomma }}
+                {% else %}
+                    <strong>Declaró no adquirir inversiones durante el año</strong>
+                {% endif %}
+            </p>
+
+            <p><strong>Gravamenes</strong>(Saldos al 31 de Diciembre {{ decla.fiel_fecha_firma|date:'Y' }})</p>
+            <p>
+                {% if decla.gravamenes_monto %}
+                    <strong>Gravamentes netos: </strong>$MXN {{ decla.gravamenes_monto|intcomma }}
+                {% else %}
+                    <strong>Declaró no adquirir gravamenes durante el año</strong>
+                {% endif %}
+            </p>
+        </div>
+        <div>
+            <h5>INFORMACIÓN DE INTERES</h5>
+            <p>
+                {% if decla.familiares_count > 0 %}
+                    <strong>Número de relaciones familiares declaradas: </strong>
+                    {{ decla.familiares_count }}
+                {% else %}
+                    <strong>Declaró no contar con este tipo de relaciones</strong>
+                {% endif %}
+            </p>
+
+            <p><strong>Relaciones personales</strong></p>
+            <p>
+                {% if decla.personales_count > 0 %}
+                    <strong>Número de relaciones personales declaradas: </strong>{{ decla.personales_count }}
+                {% else %}
+                    <strong>Declaró no contar con este tipo de relaciones</strong>
+                {% endif %}
+            </p>
+
+            <p><strong>Relaciones profesionales</strong></p>
+            <p>
+                {% if decla.profesionales_count > 0 %}
+                    <strong>Número de relaciones personales declaradas: </strong>{{ decla.profesionales_count }}
+                {% else %}
+                    <strong>Declaró no contar con este tipo de relaciones</strong>
+                {% endif %}
+            </p>
+
+            <p><strong>Relaciones laborales</strong></p>
+            <p>
+                {% if decla.laborales_count > 0 %}
+                    <strong>Número de relaciones personales declaradas: </strong>{{ decla.laborales_count }}
+                {% else %}
+                    <strong>Declaró no contar con este tipo de relaciones</strong>
+                {% endif %}
+            </p>
+
+            <p><strong>Relaciones de negocios</strong></p>
+            <p>
+                {% if decla.negocios_count > 0 %}
+                    <strong>Número de relaciones personales declaradas: </strong>{{ decla.negocios_count }}
+                {% else %}
+                    <strong>Declaró no contar con este tipo de relaciones</strong>
+                {% endif %}
+            </p>
+        </div>
+        <br><br><br><br>
+        {% if fiscal %}
+            <div>
+                <h5>INFORMACIÓN FISCAL</h5>
+                <p>
+                    <strong>Total de ingresos señalados en la declaracion de impuestos sobre la renta: </strong>
+                    {{ fiscal.ingresos|lower|capfirst }}
+                </p>
+                <p>
+                    <strong>Impuesto saldo a favor del declarante: </strong>
+                    <strong>{{ fiscal.impuesto|lower|capfirst }}</strong>
+                </p>
+                <p>
+                    Fecha de declaración: <strong>{{ fiscal.fecha_declaracion|date:"D/M/Y" }}</strong>
+                </p>
+                <p>
+                    <strong>Total del sueldo, salarios y conceptos asimilados (constancia emitida por Oficialia Mayor):</strong>
+                    {{ fiscal.sueldo|lower|capfirst }}
+                </p>
+                <p>
+                    <strong>Impuesto retenido al declarante por el Gobierno de la Cuidad de México:</strong>
+                    {{ fiscal.impuesto_retenido|lower|capfirst }}
+                </p>
+            </div>
+        {% endif %}
+        {% if academica %}
+            <div>
+                <h5>DATOS ACADÉMICOS</h5>
+                <p>
+                    <strong>Institución:</strong>
+                    {{ academica.institucion_educativa }}
+                </p>
+                <p>
+                    <strong>Carrera:</strong>
+                    {{ academica.carrera_o_area }}
+                </p>
+                <p>
+                    <strong>Nivel de escolaridad:</strong>
+                    {{ academica.nivel_escolaridad }}
+                </p>
+                <p>
+                    <strong>Número de cédula:</strong>
+                    {{ academica.cedula }}
+                </p>
+                <p>
+                    <strong>Documento probatorio:</strong>
+                    {{ academica.documento }}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

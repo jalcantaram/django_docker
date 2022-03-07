@@ -1,0 +1,14 @@
+<!-- breadcrumb -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb text-sm text-uppercase font-weight-extralight {{class}}">
+    {% for link in breadcrumb.urls %}
+    <li class="breadcrumb-item">
+      <a class="breadcrumb__link" href="{{link.url}}" title="{{link.title}}" target="_self">{{link.title}} | </a>
+    </li>
+    {% endfor %}
+    <li class="breadcrumb-item active">
+     {{breadcrumb.actual}}
+    </li>
+  </ol>
+</nav>
+<!-- /breadcrumb -->

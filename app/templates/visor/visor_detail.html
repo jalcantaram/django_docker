@@ -1,0 +1,59 @@
+{% extends 'visor/general/base.html' %}
+{% load humanize %}
+{% load visor %}
+{% load static %}
+
+{% block content %}
+<div class="mb-2 container-fluid">
+    <div class="row">
+            <div class="col-2 d-flex align-items-center">
+                <a href="{{ request.META.HTTP_REFERER|escape }}" class="c-success-main font-weight-bold"><i class="fas fa-arrow-left"></i> Regresar</a>
+            </div>
+            <div class="col-6 text-right py-3">
+                <br>
+                Declaracion pública <strong>{{ data.decla.tipo_declaracion }}</strong> de <strong>{{ data.decla.nombre_completo }}</strong> en el <br>
+                puesto <strong>{{ data.decla.puesto }}</strong> en <strong>{{ data.decla.dependencia }}</strong> en <strong>{{ data.decla.fecha|date:'Y' }}</strong>
+            </div>
+            <strong class="c-success-main mx-2 col-1 d-flex align-items-center">Descargar</strong>
+            <div class="descargas col-2 text-right py-3 d-flex align-items-center">
+                <br>
+                {% with query_string=request.META.QUERY_STRING %}
+                    <ul>
+                        <li><a target="_blank" href="{% url 'declaracion:visor-pdf' data.decla.pk %}">PDF</a></li>
+                        {# <li><button onclick="savePdf(this)">PDF</button></li> #}
+                        {# <li><a href="#" role="button" onclick="savePdf(this)">PDF</a></li> #}
+                        {# <li><a target="_blank" href="{% url 'declaracion:visor-detail-api' decla.pk %}?format=json&{{ query_string }}" download="visor_detail.json">JSON</a></li> #}
+                        {# <li><a target="_blank" href="{% url 'declaracion:visor-detail-api' decla.pk %}?format=xml&{{ query_string }}" download="visor_detail.xml">XML</a></li> #}
+                        {# <li><a href="{% url 'declaracion:visor-detail-api' decla.pk %}?format=csv&{{ query_string }}" download="visor_detail.csv">CSV</a></li> #}
+                    </ul>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="visor-detail-content">
+        {% include "visor/data_detail/data_detail.html" with data=data %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <!-- <script src="{% static 'jspdf.min.js' %}"></script>
+    <script src="{% static 'html2canvas.js' %}"></script> -->
+
+    <!-- <script>
+        function savePdf(button) {
+            button.setAttribute('disabled', true);
+
+            let element = document.querySelector('.visor-detail-content')
+            html2canvas(element).then(function (canvas) {
+                var img = canvas.toDataURL("image/png");
+                var doc = new jsPDF({
+                    format: [230, 400]
+                });
+                doc.addImage(img, 'JPEG', 10, 10, 220, 300);
+                doc.save('test.pdf');
+                doc.removeAttribute('disabled');
+            });
+        }
+    </script> -->
+{% endblock %}

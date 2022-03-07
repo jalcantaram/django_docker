@@ -1,0 +1,106 @@
+{% extends "easy_pdf/base.html" %}
+{% include './header.html' %}
+{% load humanize %}
+{% load visor %}
+{% block extra_style %}
+    <style type="text/css">
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        h5 {
+            font-size: 18px;
+            margin-bottom: 2px;
+            padding-top: 10px;
+            padding-bottom: 0;
+            color: white;
+            background-color: #1bb600;
+            text-align: center;
+        }
+
+        p {
+            font-size: 15px;
+            margin: 5px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <nav>
+        {% load static %}
+        <a href="{% url 'declaracion:visor' %}">
+            <img src="{% static 'src/img/logo-contraloria.png' %}" alt="logotipo-gobierno-cdmx-2" srcset="">
+        </a>
+    </nav>
+    <hr>
+    <p>
+        <strong>{{ decla.cat_tipos_declaracion.nombre }}</strong> de <strong>{{ decla.nombre_declarante }}</strong> en el
+        puesto <strong>{{ decla.puesto }}</strong> en <strong>{{ decla.dependencia }}</strong> en <strong>{{ decla.fiel_fecha_firma|date:'Y' }}</strong>
+    </p>
+    <hr>
+    <div>
+        <div>
+            <h5>INFORMACIÓN GENERAL</h5>
+            <p><strong>Nombre del declarante: </strong>{{ decla.nombre_declarante }}</p>
+            <p> <strong>Cargo: </strong>{{ decla.puesto }}</p>
+        </div>
+        <div>
+            <h5>INFORMACIÓN PATRIMONIAL</h5>
+            <p><strong>Ingreso neto del declarante por el empleo, cargo o comisión: </strong> $MXN {{ decla.sueldospublicos_set.first.remuneracionMensualNeta|intcomma }}</p>
+            <p>
+                <strong>Otros Ingresos del Declarante:</strong>
+                {% if decla.sueldospublicos_set.first.otros_ingresos_declarante %}
+                    $MXN {{ decla.sueldospublicos_set.first.otros_ingresos_declarante|intcomma }}
+                {% else %}
+                    Declaró no contar con otro tipo de ingresos
+                {% endif %}
+            </p>
+            <p>
+                <strong>Valor neto de bienes muebles, inmuebles y vehículos:</strong>
+                {% if monto_bmv %}
+                    $MXN {{ monto_bmv|intcomma }}
+                {% else %}
+                    Declaró no adquirir bienes muebles, inmuebles y vehículos durante el año
+                {% endif %}
+            </p>
+            <p>
+                {% if monto_inversiones %}
+                    <strong>Inversiones o valores netos: </strong> $MXN {{ monto_inversiones|intcomma }}
+                    
+                {% else %}
+                    Declaró no adquirir inversiones durante el año
+                {% endif %}
+            </p>
+        </div>
+        <div>
+            <h5>INFORMACIÓN DE INTERES</h5>
+            <p>
+                {% if decla.conyugedependientes_set.count > 0 %}
+                    <strong>Número de relaciones familiares declaradas:</strong> {{ decla.conyugedependientes_set.count }}
+                {% else %}
+                    <strong>Declaró no contar con este tipo de relaciones</strong>
+                {% endif %}
+            </p>
+        </div>
+        <div>
+            <h5>DATOS ACADÉMICOS</h5>
+            <p>
+                <strong>Institución:</strong>
+                {{ decla.datoscurriculares_set.last.institucion_educativa }}
+            </p>
+            <p>
+                <strong>Carrera: </strong>
+                {{ decla.datoscurriculares_set.last.carrera_o_area }}
+            </p>
+            <p>
+                <strong>Nivel de escolaridad:</strong>
+                {{ decla.datoscurriculares_set.last.cat_grados_academicos.nombre }}
+            </p>
+            <p>
+                <strong>Documento probatorio:</strong>
+                {{ decla.datoscurriculares_set.last.cat_documentos_obtenidos.nombre }}
+            </p>
+        </div>
+    </div>
+{% endblock %}

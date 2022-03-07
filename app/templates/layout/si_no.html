@@ -1,0 +1,20 @@
+{% load no_aplica %}
+{% no_aplica as checked %}
+<div class="col-12">
+    <div class="bg-gray px-3 py-2 mb-3">
+         <div class="row">
+            <div class="col-4">
+                <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="si_aplica" value="False" name="no_aplica" class="custom-control-input pais-rmx" onchange="dui.radioSiNo(this.value,'id_{{ field.html_name }}')" {% if not checked %} checked{% endif %}>
+                    <label class="custom-control-label" for="si_aplica">SI</label>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                    <input type="radio" id="no_aplica" value="True" name="no_aplica" class="custom-control-input"  onchange="dui.radioSiNo(this.value,'id_{{ field.html_name }}')" {% if checked %} checked{% endif %}>
+                    <label class="custom-control-label" for="no_aplica">NO</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

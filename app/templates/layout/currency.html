@@ -1,0 +1,6 @@
+<div class="row">
+    <div class="col-12">
+        <input type="hidden" name="{{base}}-{{name}}" id ="id_{{base}}-{{name}}" value="{{value}}">
+        <input type="text" class="form-control {% if base and name and value %}number-separator{% endif %}" name="{{base}}-{{name}}-face" id="id_{{base}}-{{name}}-face" value="{{value}}" {% if place %}placeholder="{{place}}"{% endif %} {% if required %}required{% endif %} autofocus>
+    </div>
+</div>

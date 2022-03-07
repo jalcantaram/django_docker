@@ -1,0 +1,161 @@
+{% extends 'visor/general/base.html' %}
+{% load humanize %}
+{% load visor %}
+{% load static %}
+
+{% block content %}
+<div class="mb-2 container-fluid">
+    <div class="row">
+            <div class="col-2 d-flex align-items-center">
+                <a href="{{ request.META.HTTP_REFERER|escape }}" class="c-success-main font-weight-bold"><i class="fas fa-arrow-left"></i> Regresar</a>
+            </div>
+            <div class="col-6 text-right py-3">
+                <br>
+                Declaracion pública <strong>{{ decla.tipo_declaracion|upper }}</strong> de <strong>{{ decla.nombre_completo }}</strong> en el <br>
+                puesto <strong>{{ decla.puesto }}</strong> en <strong>{{ decla.dependencia }}</strong> en <strong>{{ decla.fecha|date:'Y' }}</strong>
+            </div>
+            <strong class="c-success-main mx-2 col-1 d-flex align-items-center">Descargar</strong>
+            <div class="descargas col-2 text-right py-3 d-flex align-items-center">
+                <br>
+                {% with query_string=request.META.QUERY_STRING %}
+                    <ul>
+                        {# <li><a target="_blank" href="{% url 'declaracion:visor-pdf' decla.pk %}">PDF</a></li> #}
+                        {# <li><button onclick="savePdf(this)">PDF</button></li> #}
+                        {# <li><a href="#" role="button" onclick="savePdf(this)">PDF</a></li> #}
+                        {# <li><a target="_blank" href="{% url 'declaracion:visor-detail-api' decla.pk %}?format=json&{{ query_string }}" download="visor_detail.json">JSON</a></li> #}
+                        {# <li><a target="_blank" href="{% url 'declaracion:visor-detail-api' decla.pk %}?format=xml&{{ query_string }}" download="visor_detail.xml">XML</a></li> #}
+                        {# <li><a href="{% url 'declaracion:visor-detail-api' decla.pk %}?format=csv&{{ query_string }}" download="visor_detail.csv">CSV</a></li> #}
+                    </ul>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    <div class="visor-detail-content">
+        <div class="mt-4 mb-3">
+            <h4>I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL</h4>
+        </div>
+        <hr>
+
+        <!-- Datos generales del declarante -->
+        <table width="100%" cellspacing="0" class="mb-4">
+            <tbody>
+                <h5><i class="far fa-user"></i>&nbsp;Datos generales</h5> 
+                <tr valign="top">
+                    <td width="50%">
+                        <p class="ml-5 mb-2">Nombre(s): <strong>{{ decla.nombre_completo|upper|default:"(Ninguno)" }}</strong></p>
+                        <!-- <p class="ml-5 mb-2">Correo electrónico institucional: <strong>{{ decla.email|default:"(Ninguno)" }}</strong></p> -->
+                    </td>
+                    <!-- <td width="50%">
+                        <p class="ml-5 mb-2">RFC: <strong>{{ decla.rfc|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">CURP: <strong>{{ decla.curp|default:"(Ninguno)" }}</strong></p>
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+
+        <!-- Datos del empleo, cargo o comisión -->
+        <table width="100%" cellspacing="0" class="mb-4">
+            <tbody>
+                <h5><i class="far fa-user"></i>&nbsp;Datos del encardo</h5>
+                <tr valign="top">
+                    <td width="100%">
+                        <p class="ml-5 mb-2">Empleo, cargo o comisión: <strong>{{ datos_empleo.encargo|upper|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Área de adscripción: <strong>{{ datos_empleo.area_adscripcion|upper|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Nombre del ente público: <strong>{{ datos_empleo.dependencia|upper|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Domicilio del empleo, cargo o comisión: <strong>{{ datos_empleo.domicilio_puesto|upper|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Fecha de toma de posesión del empleo, cargo o comisión: <strong>{{ datos_empleo.fecha_inicio|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Teléfono: <strong>{{ datos_empleo.telefono|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Tipo de contratación: <strong>{{ datos_empleo.tipo_contratacion|upper|default:"(Ninguno)" }}</strong></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Datos del empleo, cargo o comisión -->
+
+
+        <!-- INGRESO -->
+        {% if ingresos_netos %}
+        <table width="100%" cellspacing="0" cellpadding="4" style="border-bottom: 3px solid #9bba58;" class="mb-4">
+            {% if ingresos_netos.tipo == 1 %}
+                <h5 class="mb-3"><i class="far fa-user"></i>&nbsp;INGRESO ANUAL NETO DEL DECLARANTE, CONYUGE Y DEPENDIENTES ECONÓMICOS</h5>
+            {% else %}
+                <h5 class="mb-3"><i class="far fa-user"></i>&nbsp;INGRESO MENSUAL NETO DEL DECLARANTE, CONYUGE Y DEPENDIENTES</h5>
+            {% endif %}
+            <tbody>
+                <tr style="border-top: 3px solid #9bba58;border-bottom: 3px solid #9bba58;">
+                    <td width="43%">
+                        <h4 class="mb-2 mt-2" style="margin-bottom: 0px;" align="center"><strong>CONCEPTO</strong></h4>
+                    </td>
+                    <td width="43%">
+                        <h4 class="mb-2 mt-2" style="margin-bottom: 0px;" align="center"><strong>DESCRIPCIÓN</strong></h4>
+                    </td>
+                    <td width="14%">
+                        <h4 class="mb-2 mt-2" style="margin-bottom: 0px;" align="center"><strong>MONTO</strong></h4>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr valign="top">
+                    <td style="background: #dde8cb;" bgcolor="#dde8cb" width="43%">
+                        <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                            <strong>{{ ingresos_netos.concepto|upper|default:"(NINGUNO)" }}</strong>
+                        </p>
+                    </td>
+                    <td style="background: #dde8cb;" bgcolor="#dde8cb" width="43%">
+                        <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                            <strong>{{ ingresos_netos.descripcion|upper|default:"(NINGUNO)" }}</strong>
+                        </p>
+                    </td>
+                    <td style="background: #dde8cb;" bgcolor="#dde8cb" width="14%">
+                        <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                            <strong>${{ ingresos_netos.monto|floatformat|intcomma|default:"(NINGUNO)" }}</strong>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+        <!-- INGRESO -->
+
+
+        <!-- Datos del empleo, cargo o comisión -->
+        {% if funcion_desempenia %}
+        <table width="100%" cellspacing="0" class="mb-4">
+            <tbody>
+                <tr valign="top">
+                    <h5><i class="far fa-user"></i>&nbsp;Función que desempeña</h5>
+                    <td width="100%">
+                        <p class="ml-5 mb-2 text-justify">{{ funcion_desempenia.funcion_desempenia|upper }}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+        <!-- Datos del empleo, cargo o comisión -->
+
+        <br><br>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <!-- <script src="{% static 'jspdf.min.js' %}"></script>
+    <script src="{% static 'html2canvas.js' %}"></script> -->
+
+    <!-- <script>
+        function savePdf(button) {
+            button.setAttribute('disabled', true);
+
+            let element = document.querySelector('.visor-detail-content')
+            html2canvas(element).then(function (canvas) {
+                var img = canvas.toDataURL("image/png");
+                var doc = new jsPDF({
+                    format: [230, 400]
+                });
+                doc.addImage(img, 'JPEG', 10, 10, 220, 300);
+                doc.save('test.pdf');
+                doc.removeAttribute('disabled');
+            });
+        }
+    </script> -->
+{% endblock %}

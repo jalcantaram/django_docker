@@ -1,0 +1,107 @@
+{% load static %}
+{% load bootstrap4 %}
+<div class="row">
+  <div class="col-md-12">
+    {% include 'layout/nacionalidad.html' with field=form.cat_pais otro_field=form.ubicacion label="PAÍS" pais=True vacio=vacio %}
+  </div>
+</div>
+<div class="row" id="entidad-federativa" style="display:none;">
+  <div class="col-md-12">
+    <label for="cargo-entidad" class="label-secondary">ENTIDAD FEDERATIVA{% if entidad %}<span class="text-danger text-lg font-weight-bold">*</span>{% endif %}</label>
+    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Lugar donde se encuentra actualmente.">
+      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+    </button>
+    {% bootstrap_field form.cat_entidades_federativas field_class='entidad' show_label=False%}
+  </div>
+</div>
+<div id="id_{{ form.cat_pais.html_name }}_container_direccion" >
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="cargo-via" class="label-secondary">CALLE{% if nombre_via %}<span class="text-danger text-lg font-weight-bold">*</span>{% endif %}</label>
+        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Nombre de la vía donde se ubica.">
+          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg" />
+        </button>
+        {% bootstrap_field form.nombre_via show_label=False placeholder="Nombre de la Calle" field_class='valida_domicilio' %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <label for="cargo-no-ext" class="label-secondary">NÚMERO EXTERIOR{% if exterior %}<span class="text-danger text-lg font-weight-bold">*</span>{% endif %}</label>
+      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Número exterior donde se ubica.">
+        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+      </button>
+      {% bootstrap_field form.num_exterior show_label=False placeholder="Número exterior" field_class='valida_domicilio' %}
+    </div>
+    <div class="col-md-4">
+      <label for="cargo-no-int" class="label-secondary">NÚMERO INTERIOR{% if interior %}<span class="text-danger text-lg font-weight-bold">*</span>{% endif %} {% if interior_apply %} <small class="text-help text-primary">(si aplica)</small>{% endif %}</label>
+      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Número interior donde se ubica.">
+        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+      </button>
+      {% bootstrap_field form.num_interior show_label=False placeholder="Número interior" field_class='valida_domicilio' %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8" id="id_{{ form.cat_pais.html_name }}_container_codigo_postal">
+      <label for="cargo-entidad" class="label-secondary">CODIGO POSTAL, COLONIA, ALCALDÍA-MUNICIPIO<span class="text-danger text-lg font-weight-bold">*</span></label>
+      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Lugar donde se encuentra actualmente.">
+        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+      </button>
+      {% bootstrap_field form.codigo_postal show_label=False %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4" id="id_{{ form.cat_pais.html_name }}_container_municipio">
+      <div class="form-group">
+        <label for="cargo-colonia" class="label-secondary id_{{ form.cat_pais.html_name }}_nacional">COLONIA/LOCALIDAD{% if colonia %}<span class="text-danger text-lg font-weight-bold">*</span>{% endif %}</label>
+        <button type="button" class="btn btn-link p-0 btn-information id_{{ form.cat_pais.html_name }}_nacional" data-toggle="tooltip" tabindex="9999" title="Colonia donde se ubica.">
+          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+        </button>
+        <label for="cargo-colonia" class="label-secondary id_{{ form.cat_pais.html_name }}_extranjero extranjero-w">CIUDAD/LOCALIDAD<span class="text-danger text-lg font-weight-bold">*</span></label>
+        <button type="button" class="btn btn-link p-0 btn-information id_{{ form.cat_pais.html_name }}_extranjero extranjero-w" data-toggle="tooltip" tabindex="9999"  title="Ciuddad o localidad donde se ubica.">
+          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+        </button>
+        {% bootstrap_field form.colonia show_label=False placeholder="Colonia" field_class='valida_domicilio' %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <div class="id_{{ form.cat_pais.html_name }}_extranjero">
+          <label for="cargo-municipio" class="label-secondary id_{{ form.cat_pais.html_name }}_extranjero extranjero-w ">ESTADO/PROVINCIA <span class="text-danger text-lg font-weight-bold">*</span></label>
+          <button type="button" class="btn btn-link p-0 btn-information id_{{ form.cat_pais.html_name }}_extranjero extranjero-w" data-toggle="tooltip" tabindex="9999" title="Estado o provincia donde se ubica actualmente.">
+            <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+          </button>
+          {% bootstrap_field form.municipio show_label=False placeholder="Municipio" %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" id="id_{{ form.cat_pais.html_name }}_container_cp">
+    <div class="col-md-4">
+      <div class="w-50">
+        <div class="form-group">
+          <label for="cargo-cp" class="label-secondary">CÓDIGO POSTAL<span class="text-danger text-lg font-weight-bold">*</span></label>
+          <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Código postal donde se ubica.">
+            <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+          </button>
+          {% bootstrap_field form.cp show_label=False placeholder="Código postal"  field_class='valida_cp' %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %} {% block js %}
+<script type="text/javascript">
+  const $pais = document.getElementById('id_domicilio-ubicacion_2');
+  const $entidad = document.getElementById('id_domicilio-ubicacion_1');
+  if($entidad.checked){
+    document.getElementById("entidad-federativa").style.display = "block";
+  }
+  $pais.addEventListener('click', () => {
+    document.getElementById("entidad-federativa").style.display = "none";
+  });
+  $entidad.addEventListener('click', () => {
+    document.getElementById("entidad-federativa").style.display = "block";
+  });
+</script>
+{% endblock %} {% endcomment %}

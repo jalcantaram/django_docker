@@ -1,0 +1,206 @@
+{% extends 'layout/base.html' %}
+
+{% load static %}
+
+{% load bootstrap4 %}
+
+
+{% block content %}
+  <section class="container-fluid container-offset-x my-md-7">
+    <div class="row my-5">
+      <div class="col-lg-8 col-md-8 col-sm-12" style="margin: auto;">
+        <h1 class="text-gray text-xl font-weight-medium text-uppercase line-height-md">Por favor completa la <br> información para <br> <span class="text-primary-light font-weight-semibold">que puedas usar tu cuenta</span></h1>
+        <p class="text-gray-darker font-weight-light">Todos lo campos son obligatorios</p>
+        <hr />
+      </div>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == "success" %}
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 m-auto">
+              <div class="alert alert-success alert-dismissable fade show text-justify">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message | safe }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if message.tags == "error" %}
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 m-auto">
+              <div class="alert alert-danger alert-dismissable fade show text-justify">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message | safe }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12" style="margin: auto;">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="rfc" class="label-secondary">RFC con homoclave<span class="text-danger text-lg font-weight-bold">*</span></label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="RFC">
+              </button>
+              {% bootstrap_field form.rfc show_label=False placeholder="RFC con homoclave" field_class='valida_rfc_fisica' %}
+            </div>
+            <div class="col-md-6">
+              <label for="dependencia" class="label-secondary">Ente público<span class="text-danger text-lg font-weight-bold">*</span></label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Ente público.">
+              </button>
+              {% bootstrap_field form.cat_ente_publico show_label=False placeholder="Ente público" %}
+            </div>
+            <div class="col-md-6">
+              <label for="puesto" class="label-secondary">Empleo, Cargo o comisión<span class="text-danger text-lg font-weight-bold">*</span></label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="EMPLEO, CARGO O COMISIÓN.">
+              </button>
+              {% bootstrap_field form.puesto show_label=False placeholder="Empleo, Cargo o comisión" %}
+            </div>
+            <div class="col-md-6">
+              <label for="archivo" class="label-secondary">INE, nombramiento o recibo de nómina<span class="text-danger text-lg font-weight-bold">*</span></label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="INE, nombramiento o recibo de nómina.">
+              </button>
+              {% bootstrap_field form.archivo show_label=False %}
+            </div>
+            <table class="table table-sm"> 
+              <thead style="font-size:14px;">
+                <th scope="col">
+                    Un documento que acredite su ingreso a la Administración Pública de la Ciudad de México, como:
+                </th>
+                <th scope="col">
+                  En caso de no contar con alguno de los anteriores por ser personal de nuevo ingreso, deberá adjuntar
+                    copia (por ambos lados) de uno de los siguientes documentos:
+                </th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    a) Gafete de servidor público (Credencial de la Institución donde laboras)
+                  </td>
+                    <td>
+                    a) INE
+                  </td>
+                <tr>
+                <tr>
+                  <td>
+                    b) Nombramiento
+                  </td>
+                    <td>
+                    b) Licencia de conducir
+                  </td>
+                <tr>
+                <tr>
+                  <td>
+                    c) Comprobante de nómina
+                  </td>
+                    <td>
+                    c) Cédula Profesional
+                  </td>
+                <tr>
+                <tr>
+                  <td>
+                    d) Contrato de prestación de servicios profesionales
+                  </td>
+                    <td>
+                    d) Cartilla de Servicio Militar
+                  </td>
+                <tr>
+               </tbody>
+            </table>
+            <div class="col-12 text-right">
+              <button type="submit" class="btn btn-success-lighter text-uppercase my-5">Crear cuenta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+  
+  <!-- MODAL completar PREFIL-->
+  {% if request.method == "GET" %}
+    <div class="modal fade" id="complit-profile-Modal" tabindex="-1" role="dialog" aria-labelledby="complit-profile-ModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="complit-profile-ModalLabel">AVISO </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div>
+                <p>
+                  <strong>
+                    A LAS PERSONAS SERVIDORAS PÚBLICAS DECLARANTES USUARIAS DEL SISTEMA  “Declara CDMX”
+                  </strong>
+                </p>
+                A partir del año 2021 presentarán la
+                <strong>
+                  “Declaración Simplificada”,
+                </strong>
+                cuando su nivel jerárquico sea menor al de 
+                <strong>
+                  Enlace
+                </strong>
+                    o su 
+                <strong>
+                  ingreso neto mensual 
+                </strong>
+                (libre de impuestos) sea menor a los
+                  <strong>
+                  $12,402.00 (doce mil cuatrocientos dos pesos 00/100 M.N).  
+                </strong>
+              </div>
+              <p>
+                Deberán presentar la 
+                <strong>
+                  “Declaración Amplificada”, 
+                </strong>
+                </strong>
+                cuando su nivel jerárquico sea 
+                <strong>
+                  igual o mayor al de Enlace, 
+                </strong>
+                    o bien su 
+                <strong>
+                  ingreso neto mensual 
+                </strong>
+
+                (libre de impuestos) sea igual o mayor a los  
+                <strong>
+                  $12,402.00 (doce mil cuatrocientos dos pesos 00/100 M.N).  
+                </strong>
+              </p>
+              <p>
+                  En caso de duda respecto al cargo o percepción pueden dirigirse al área de Capital Humano del ente público al cual se encuentran adscritos. 
+              </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            {% comment %} <button type="button" class="btn btn-success-lighter font-weight-semibold text-uppercase" data-toggle="modal" href="#acept-modal">Aceptar</button> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(window).on('load',function(){
+        $('#complit-profile-Modal').modal('show');
+    });
+</script>
+{% endblock %}
+

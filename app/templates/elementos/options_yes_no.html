@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="custom-control custom-radio custom-control-inline radio-secondary">
+      <input type="radio" id="{{ id_si }}" name="{{ name_si }}" value="true" class="custom-control-input" {% if not conyuge_dependiente_form.habita_domicilio.initial %}checked{% endif %}  {% if conyuge_dependiente_form.habita_domicilio.initial == True %}checked{% endif %} >
+      <label class="custom-control-label text-rg" for="mismo-domicilio-si">Sí</label>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="custom-control custom-radio custom-control-inline radio-secondary">
+      <input type="radio" id="{{ id_no }}" name="{{ name_no }}" value="false" class="custom-control-input" {% if conyuge_dependiente_form.habita_domicilio.initial == False %}checked{% endif %}>
+      <label class="custom-control-label text-rg" for="mismo-domicilio-no">No</label>
+    </div>
+  </div>
+</div>

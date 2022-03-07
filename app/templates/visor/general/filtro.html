@@ -1,0 +1,34 @@
+<div class="container-fluid">
+    <p class="filtro-title">Búsqueda de declaraciones públicas:</p>
+    <div class="row">
+        <form action="{% url 'declaracion:visor-list' %}" class="filtro-form w-100" method="get">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="select-group filtro-group col-10 col-sm-2 py-3">
+                        <label for="{{ form.year.id_for_label }}">
+                            {{ form.year.label }}
+                        </label>
+                        {{ form.year }}
+                    </div>
+                    <div class="select-group filtro-group col-10 col-sm-4 py-3">
+                        <label for="{{ form.dependency.id_for_label }}">
+                            {{ form.dependency.label }}
+                        </label>
+                        <select name="dependency" id="id_dependency">
+                            {% for x,y in form.fields.dependency.choices %}
+                                <option value="{{x}}" {% if form.dependency.data|slugify == x|slugify %} selected="" {% endif %}>{{y|upper}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="{{ form.name.id_for_label }}_content" class="filtro-group col-8 col-sm-4 py-3">
+                        <label for="{{ form.name.id_for_label }}">
+                            {{ form.name.label }}
+                        </label>
+                        {{ form.name }}
+                    </div>
+                    <button type="submit" class="filtro-button d-inline mt-3">Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

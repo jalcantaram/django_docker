@@ -1,0 +1,78 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load humanize %}
+{% load visor %}
+{% load static %}
+
+{% block extra_style %}
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin-left: 1.4cm;
+            margin-right: 1.4cm;
+            margin-top: .9cm;
+            margin-bottom: 1.4cm;
+
+            @frame footer {
+                -pdf-frame-content: page-footer;
+                bottom: 0cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 1cm;
+            }
+        }
+        .navbar-brand {
+            width: 200px
+        }
+        dl dt{
+            text-transform: uppercase !important;
+        }
+        .p_opciones dd, .p_opciones dt {
+            display: inline !important;
+        }
+        .text-black_opciones {
+            font-weight: 700;
+            color: #000;
+        }
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+    </style>
+{% endblock %}
+
+{% block page_header %}
+    <table>
+        <tr>
+            <td width="50%">
+                <div class="logo">
+                    <a class="navbar-brand text-align:">
+                    <img src="{% static 'src/img/logo-cdmx.png' %}" width="300px" alt="Gobierno de la Ciudad de México">
+                    </a>
+                </div>
+            </td>
+            <td width="50%" style="height:60px;text-align:right;">
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
+{% block content %}
+    <div class="mb-2 container-fluid">
+        <div class="row">
+            <div class="col-6 text-right py-3">
+                <br>
+                Declaracion pública <strong>{{ data.decla.tipo_declaracion }}</strong> de <strong>{{ data.decla.nombre_completo }}</strong> en el <br>
+                puesto <strong>{{ data.decla.puesto }}</strong> en <strong>{{ data.decla.dependencia }}</strong> en <strong>{{ data.decla.fecha|date:'Y' }}</strong>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="visor-detail-content">
+        {% include "visor/data_detail/data_detail.html" with data=data %}
+    </div>
+{% endblock %}
+
+{% block page_foot %}
+<h1> &nbsp;&nbsp;&nbsp; Pag. <pdf:pagenumber >&nbsp;&nbsp; {% if is_qr == False %} <strong style="color: rgba(52, 166, 214, 0.4);text-align:right;float:right;">Nota importante: Este documento no tienen ninguna validez oficial.</strong> {% endif %} </h1>
+{% endblock %}

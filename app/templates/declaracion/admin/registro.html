@@ -1,0 +1,93 @@
+{% extends 'layout/base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% load llave %}
+{% block content %}
+  <section class="container-fluid container-offset-x my-md-7 py-7">
+    <div class="row row-md ">
+      <div class="col-sm-12 col-md-8">
+        {% if editar %}
+          <h1 class="text-gray text-xl font-weight-medium text-uppercase mt-5 line-height-md title-mobile text-mobile"><span class="text-primary-light font-weight-semibold">Editar usuario</span> </h1>
+        {% else %}
+          <h1 class="text-gray text-xl font-weight-medium text-uppercase mt-5 line-height-md title-mobile text-mobile"><span class="text-primary-light font-weight-semibold">Crear usuario</span></h1>
+        {% endif %}
+      </div>
+      <div class="col-sm-12 col-md-4 mt-4">
+        <a href="{% url 'declaracion:busqueda-usuarios' %}" class="btn btn-warning btn-block btn-lg font-weight-semibold text-light"> Regresar <img src="{% static 'src/img/regresar.png' %}"></a>
+      </div>
+    </div>
+    <p class="text-gray-darker font-weight-light">Todos lo campos son obligatorios</p>
+    {% if editar %}
+      <form action="{% url 'declaracion:editar-usuario' form.id.value %}" method="post" novalidate>
+    {% else %}
+      <form action="{% url 'declaracion:nuevo-usuario' %}" method="post" novalidate>
+    {% endif %}
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-12 align-bottom">
+              <div class="d-inline-flex mr-3 mt-3">
+                {% bootstrap_field form.is_superuser %}
+              </div>
+              <div class="d-inline-flex mr-3 mt-3">
+                {% bootstrap_field form.is_staff %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.nombres placeholder="Nombre(s)" field_class="solo_letras"  %}
+        </div>
+      </div>
+      {% is_auth_llave as is_auth_llave%}
+      {% if not is_auth_llave %}
+      <div class="row">
+        <div class="col-md-6 superuserField">
+          {% bootstrap_field form.password placeholder="*****"  %}
+        </div>
+        <div class="col-md-6 superuserField">
+          {% bootstrap_field form.password_confirmation placeholder="*****"  %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="row">
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.apellido1 placeholder="Primer Apellido" field_class="solo_letras"  %}
+        </div>
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.apellido2 placeholder="Segundo apellido" field_class="solo_letras" required=False  %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 superuserField">
+          {% bootstrap_field form.username placeholder="RFC CON HOMOCLAVE" field_class="valida_rfc" %}
+        </div>
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.dependencia placeholder="Ente público"  %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.puesto placeholder="Empleo, cargo o comisión" field_class="solo_letras" %}
+        </div>
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.telefono placeholder="Teléfono" field_class="valida_telefono"  %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 userField">
+          {% bootstrap_field form.estatus placeholder="Estatus"  %}
+        </div>
+      </div>
+      {% if editar %}
+        {{ form.id }}
+      {% endif %}
+      <div class="row">
+        <div class="col-12 text-right">
+          <button type="submit" class="btn btn-success-lighter text-uppercase mt-5">{% if editar %}Guardar cambios {% else %}Crear usuario{% endif %}</button>
+        </div>
+      </div>
+    </form>
+  </section>
+{% endblock %}

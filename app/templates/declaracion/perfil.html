@@ -1,0 +1,307 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load secciones %}
+
+{% block content %}
+  <section class="container">
+    <div class="row row-md my-7 py-7">
+      <div class="col-8 mb-5" id="welcome">
+        <h1 class="text-gray text-xl font-weight-medium text-uppercase line-height-md title-mobile text-mobile">Bienvenido(a) a tu cuenta<br> <span class="text-primary-light font-weight-semibold hyphen-auto">{{ user.first_name|upper}} {{ user.last_name|upper}}</span></h1>
+        {% if messages %}
+          {% for message in messages %}
+            {% if message.tags == "success" %}
+              <div class="alert alert-success alert-dismissable alert-link">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>{{ message }}</strong>
+              </div>
+            {% endif %}
+            {% if message.tags == "error" %}
+              <div class="alert alert-danger alert-dismissable alert-link">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>{{ message }}</strong>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        <p class="txt-Servidor mb-5 text-mobile">Si requieres modificar alguno de tus datos por favor ponte <br>en contacto con el enlace de tu ente público.</p>
+        <div class="pl-3 border-left text-dark mb-5">
+          <p>Trabajas como <strong class="text-black text-dynamic">{{ infopersonalfija.puesto }}</strong> 
+          {% comment %} en <strong class="text-black text-dynamic"> 
+            {{infopersonalfija.cat_ente_publico}}</strong> desde el
+            <strong class="text-black text-dynamic">
+              {{infopersonalfija.fecha_inicio|date:"j"}} de {{infopersonalfija.fecha_inicio|date:"F"}} de {{infopersonalfija.fecha_inicio|date:"Y"}}
+            </strong> {% endcomment %}
+          </p>
+          <p>Tu RFC con homoclave es <strong class="text-black text-dynamic">{{user.username|upper}}</strong></p>
+          {% comment %} <p>Tu teléfono es <strong class="text-black text-dynamic">{{infopersonalfija.telefono}}</strong> y  {% endcomment %}
+          Tu correo electrónico es <strong class="text-black text-dynamic">{{user.email}}</strong></p>
+        </div>
+        <button class="btn btn-success-lighter text-uppercase font-weight-semibold mt-3 mb-3" data-toggle="modal" data-target="#aviso-cambioente-modal">Notificar cambio de ente público</button>
+        <button class="btn btn-success-lighter text-uppercase font-weight-semibold mt-3 mb-3" data-toggle="modal" data-target="#aviso-cambiopuesto-modal">Notificar cambio de puesto</button>
+      </div>
+      <div class="col-4 mb-5"  id="img-dec">
+        <div class="d-flex justify-content-center align-items-center flex-column flex-sm-row my-sm-7">
+          {% if declaracion %}
+            <a href="{% url 'declaracion:informacion-general' declaracion.folio %}" class="btn btn-success-lighter btn-index">
+              <span class="texto-chico-boton">CONCLUYE LA {{ declaracion.cat_tipos_declaracion|upper }} QUE TIENES EN CURSO</span>
+              <img src="{% static 'src/img/declarations_2.svg' %}" alt="Termina tu declaración" class="svg">
+            </a>
+          {% else %}
+            <a href="{% url 'declaracion:declaracion' %}" class="btn btn-success-lighter btn-index">
+              Realiza tu declaración
+              <img src="{% static 'src/img/declarations.svg' %}" alt="Realiza tu declaración" class="svg">
+            </a>
+          {% endif %}
+        </div>
+        {% if declaracion %}
+          <div  class="d-flex justify-content-center align-items-center flex-column flex-sm-row ">
+            <div>
+              <h6 id="progress_title" class="text-uppercase text-md">Avance de tu declaración</h6>
+              <div class="progress">
+                {% current_time request as secciones %}
+                {% get_avance secciones declaracion.folio request as avance %}
+                <div class="progress-bar bg-warning progress_card" role="progressbar" style="width: {{ avance }}%;" aria-valuenow="{{ avance }}" aria-valuemin="0" aria-valuemax="100">{{ avance }}%
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <!-- MODAL CAMBION DE ENTE PÚBLICO-->
+  <div class="modal fade" id="cambioente-modal" tabindex="-1" role="dialog" aria-labelledby="lost-password-label" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close text-base" data-dismiss="modal" aria-label="Close">CERRAR
+            <img src="{% static 'src/img/close.svg' %}" alt="Cerrar" class="svg">
+          </button>
+          <form action="{% url 'declaracion:perfil' %}" method="post" id="cambioente_form" class="mb-2">
+            {% csrf_token %}
+            <input type="hidden" name="tipo_modal" value="cambioente">
+            <div class="w-100">
+              <label for="dependency" class="h3 modal-title mt-4 mb-3 text-lg text-uppercase font-weight-normal text-center" id="lost-password-label">Selecciona tu ente público actual por favor</label>
+              {% bootstrap_field cambioente_form.dependencia show_label=False %}
+            </div>
+            <div class="w-100">
+              <label for="dependency" class="h3 modal-title mb-2 text-lg text-uppercase font-weight-normal text-center d-block" id="lost-password-label">Fecha de inicio</label>
+              {% bootstrap_field cambioente_form.fecha_inicio show_label=False %}
+            </div>
+          </form>
+          <div class="w-100 mb-4 mt-5 text-center" id="loading_s">
+            <div class="spinner-border text-success" role="status" style="display:none;">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <div class="text-right mt-3">
+            <button type="button" class="btn btn-success-lighter font-weight-semibold text-uppercase" id="cambiar-ente">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL CAMBION DE ENTE PÚBLICO AVISO-->
+  <div class="modal fade" id="aviso-cambioente-modal" tabindex="-1" role="dialog" aria-labelledby="aviso-cambioente-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="aviso-cambioente-modalLabel">AVISO DE CAMBIO DE PUESTO O ENTE PÚBLICO </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            DE CONFORMIDAD CON LO ESTABLECIDO POR  EL ARTÍCULO 33 DE LA LEY DE RESPONSABILIDADES ADMINISTRATIVAS DE LA CIUDAD DE MÉXICO, FRACCION III SEGUNDO PÁRRAFO, QUE SEÑALA QUE <strong>EN EL CASO DE CAMBIO DE DEPENDENCIA, ÓRGANO DESCONCENTRADO, DEMARCACIONES TERRITORIALES, ENTIDAD, UNIDAD ADMINISTRATIVA EN EL MISMO PODER DE GOBIERNO, ÚNICAMENTE SE DARÁ AVISO DE DICHA SITUACIÓN Y NO SERÁ NECESARIO PRESENTAR LA DECLARACIÓN DE CONCLUSIÓN.</strong>
+          </div>
+          <p><strong>PASOS A SEGUIR PARA REALIZAR EL AVISO DE CAMBIO DE PUESTO O ENTE PÚBLICO </strong></p>
+          <p>
+            <ol>
+              <li>
+                  DESCARGAR E IMPRIMIR <a href="{% static 'src/doc/formato_avisocambiopuesto_o_ente.pdf' %}" target="_blank" class="text-primary-light text-lg font-weight-semibold d-inline-block">“FORMATO DE AVISO DE CAMBIO DE PUESTO O ENTE PÚBLICO”.</a>
+              </li>
+              <li>
+                  LLENAR DE MANERA CORRECTA Y FIRMAR DICHO AVISO
+              </li>
+              <li>ESCANEAR EL AVISO Y LA IDENTIFICACIÓN OFICIAL VIGENTE (INE, CEDULA PROFESIONAL, PASAPORTE), ENVIAR ESTA DOCUMENTACIÓN EN FORMATO PDF AL CORREO ELECTRONICO declaraciones@contraloriadf.gob.mx o declara@contraloriadf.gob.mx CON EL ASUNTO <strong>“ AVISO/NOMBRE COMPLETO”</strong>
+                <p>
+                  <strong>EJEMPLO: AVISO_PEDRO_ESCAMILLA_VARGAS</strong>
+                </p>
+              </li>
+            </ol> 
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#cambioente-modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL CAMBION DE PUESTO AVISO-->
+  <div class="modal fade" id="aviso-cambiopuesto-modal" tabindex="-1" role="dialog" aria-labelledby="aviso-cambiopuesto-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="aviso-cambiopuesto-modalLabel">AVISO DE CAMBIO DE PUESTO O ENTE PÚBLICO </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            DE CONFORMIDAD CON LO ESTABLECIDO POR 
+            EL ARTÍCULO 33 DE LA LEY DE RESPONSABILIDADES ADMINISTRATIVAS DE LA CIUDAD DE MÉXICO, 
+            FRACCION III SEGUNDO PÁRRAFO, QUE SEÑALA QUE 
+            <strong>
+              EN EL CASO DE CAMBIO DE DEPENDENCIA, ÓRGANO DESCONCENTRADO, DEMARCACIONES TERRITORIALES, ENTIDAD, 
+              UNIDAD ADMINISTRATIVA EN EL MISMO PODER DE GOBIERNO,
+              ÚNICAMENTE SE DARÁ AVISO DE DICHA SITUACIÓN Y NO SERÁ NECESARIO PRESENTAR LA DECLARACIÓN DE CONCLUSIÓN.
+            </strong>
+          </div>
+          <p>
+            <strong>
+              PASOS A SEGUIR PARA REALIZAR EL AVISO DE CAMBIO DE PUESTO O ENTE PÚBLICO 
+            </strong>
+          </p>
+          <p>
+            <ol>
+              <li>
+                  DESCARGAR E IMPRIMIR 
+                  <a href="{% static 'src/doc/formato_avisocambiopuesto_o_ente.pdf' %}" target="_blank" class="text-primary-light text-lg font-weight-semibold d-inline-block">
+                    “FORMATO DE AVISO DE CAMBIO DE PUESTO O ENTE PÚBLICO”. 
+                  </a>
+              </li>
+              <li>
+                  LLENAR DE MANERA CORRECTA Y FIRMAR DICHO AVISO
+              </li>
+              <li>
+                ESCANEAR EL AVISO Y LA IDENTIFICACIÓN OFICIAL VIGENTE (INE, CEDULA PROFESIONAL, PASAPORTE), 
+                ENVIAR ESTA DOCUMETACIÓN EN FORMATO PDF AL CORREO ELECTRONICO declaraciones@contraloriadf.gob.mx o 
+                declara@contraloriadf.gob.mx CON EL ASUNTO <strong>“ AVISO/NOMBRE COMPLETO”</strong>
+
+                <p>
+                  <strong>
+                    EJEMPLO: AVISO_PEDRO_ESCAMILLA_VARGAS
+                  </strong>  
+                </p>
+
+              </li>
+          </ol> 
+              
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#cambiopuesto-modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL CAMBION DE PUESTO-->
+  <div class="modal fade" id="cambiopuesto-modal" tabindex="-1" role="dialog" aria-labelledby="lost-password-label" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close text-base" data-dismiss="modal" aria-label="Close">CERRAR
+            <img src="{% static 'src/img/close.svg' %}" alt="Cerrar" class="svg">
+          </button>
+          <form action="{% url 'declaracion:perfil' %}" method="post" id="cambiopuesto_form" class="mb-2">
+            {% csrf_token %}
+            <input type="hidden" name="tipo_modal" value="cambiopuesto">
+            <div class="w-100">
+              <label for="dependency" class="h3 modal-title mt-4 mb-3 text-lg text-uppercase font-weight-normal text-center" id="lost-password-label">Selecciona tu puesto a actualizar.</label>
+              {% bootstrap_field cambiopuesto_form.puesto show_label=False %}
+            </div>
+          </form>
+          <div class="w-100 mb-4 mt-5 text-center" id="loading_s">
+            <div class="spinner-border text-success" role="status" style="display:none;">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <div class="text-right mt-3">
+            <button type="button" class="btn btn-success-lighter font-weight-semibold text-uppercase" id="cambiar-puesto">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Ventana modal despues de que el usuario ya escribio el RFC como homoclave  -->
+  <div class="modal fade" id="modal-cambia-ente" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <button type="button" class="close text-base" data-dismiss="modal" aria-label="Close">CERRAR
+            <img src="{% static 'src/img/close.svg' %}" alt="Cerrar" class="svg">
+          </button>
+          <h3 class="text-primary text-lg text-uppercase mt-7 mb-3">¡Muchas gracias!</h3>
+          <p class="text-lg w-75 mb-7 mx-auto">Hemos registrado tu cambio.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  var datepickerDict = {};
+
+  $("[dp_config]:not([disabled])").each(function(i, element) {
+    var $element = $(element),
+      data = {};
+    try {
+      data = JSON.parse($element.attr('dp_config'));
+    } catch (x) {}
+    if (data.id && data.options) {
+      data.$element = $element.datetimepicker(data.options);
+      data.datepickerdata = $element.data("DateTimePicker");
+      datepickerDict[data.id] = data;
+      data.$element.next('.input-group-addon').on('click', function() {
+        data.datepickerdata.show();
+      });
+    }
+  });
+ $(document).ready(function() {
+   
+   if (window.matchMedia("(min-width: 579px)").matches) {
+  /* La pantalla tiene al menos 400 píxeles de ancho */
+    if(document.getElementById("img-dec")){
+      document.getElementById("img-dec").style.boxSizing = "border-box"
+      document.getElementById("welcome").classList.remove("col-12");
+      document.getElementById("welcome").classList.add("col-8");
+    }
+  } else {
+    /* La pantalla tiene menos de 400 píxeles de ancho */
+    if(document.getElementById("img-dec")){
+     document.getElementById("img-dec").style.boxSizing = "initial"
+     document.getElementById("img-dec").style.marginLeft = "100px"
+     document.getElementById("welcome").classList.remove("col-8");
+     document.getElementById("welcome").classList.add("col-12");
+     document.getElementById("welcome").style.padding = "26px";
+   }
+  }
+   
+   function getDate(date_str){
+     let arr_date = date_str.split("-")
+     if(arr_date.length==3){
+        return arr_date[1]+"/"+arr_date[2]+"/"+arr_date[0]
+     }else{
+        return false
+     }
+   }
+   let date_inicio = '{{infopersonalfija.fecha_inicio|date:"c"}}';
+   let date_start = getDate(date_inicio)
+  if(date_start){
+    $.each(datepickerDict, function(id, to_picker) {
+          if (to_picker) {
+            console.log(to_picker)
+            let date = new Date();
+            date.setDate(date.getDate() + parseInt(730, 10))
+            to_picker.datepickerdata.minDate(new Date(date_start) || false);
+            to_picker.datepickerdata.maxDate(new Date(date) || false);
+        }
+    });
+  }
+});
+</script>
+{% endblock %}

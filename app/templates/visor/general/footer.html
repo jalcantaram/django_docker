@@ -1,0 +1,16 @@
+{% load static %}
+<footer class="footer w-100 visor-footer">
+    <div class="container-fluid py-3">
+        <div class="row">
+            <div class="col-md-3 mb-3 mb-md-0">
+                <a class="navbar-brand" href="{% url 'declaracion:visor-list' %}?dependency=431">
+                    <img src="{% static 'src/img/logo.png' %}" alt="Gobierno de la Ciudad de México" class="footer__logo">
+                </a>
+            </div>
+            <div class="col-md mb-2 mb-md-0">
+                <p class="m-0">Declaraciones Abiertas</p>
+                <p class="footer__heading text-uppercase"><strong>Diseñado y operado por la Agencia Digital de Innovación Pública</strong></p>
+            </div>
+        </div>
+    </div>
+</footer>

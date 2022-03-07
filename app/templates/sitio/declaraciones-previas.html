@@ -1,0 +1,106 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block content %}
+  <section>
+    <div class="container">
+      <div class="row row-md pt-7">
+        <div class="col-12">
+          <p class="text-gray text-xl"><span class="text-primary-light font-weight-semibold">DECLARACIONES PREVIAS</span></p>
+        </div>
+      </div>
+      {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == "success" %}
+          <div class="alert alert-success alert-dismissable alert-link">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{ message }}</strong>
+          </div>
+        {% endif %}
+        {% if message.tags == "error" %}
+          <div class="alert alert-danger alert-dismissable alert-link">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{ message }}</strong>
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+      <p class="mb-2 text-black font-weight-bold">DECLARACIONES REALIZADAS A PARTIR DE MAYO 2021</p>
+      <p class="text-black font-weight-medium">Descarga las declaraciones que has realizado con anterioridad en formato PDF</p>
+      <table class="table table-hover mb-5">
+        <thead>
+          <tr>
+            <th scope="col" class="text-center">Tipo de declaración</th>
+            <th scope="col" class="text-center">Encargo</th>
+            <th scope="col" class="text-center">Dependencia</th>
+            <th scope="col" class="text-center">Fecha de realización</th>
+            <th scope="col" class="text-center">Año</th>
+            <th scope="col" class="text-center">Acuse</th>
+            <th scope="col" class="text-center">Formato</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% comment %}{% for declaracion in declaraciones_contraloria %}
+              <tr>
+              <td class="text-center text-black">{{ declaracion.tipo_declaracion }}</td>
+              <td class="text-center text-black">{% if declaracion.encargo %}{{ declaracion.encargo }} {% else %} - {%endif%}</td>
+              <td class="text-center text-black">{% if declaracion.dependencia %}{{ declaracion.dependencia|lower|capfirst }}{% else %} - {%endif%}</td>
+              <td class="text-center text-black">{{ declaracion.fecha_transmision|date:"d/m/Y" }}</td>
+              <td class="text-center text-black">{{ declaracion.fecha_transmision|date:"Y" }}</td>
+              <td class="text-center text-black">
+                  N/A
+              </td>
+            </tr>
+          {% endfor %}{% endcomment %}
+          {% for declaracion in declaraciones %}
+            <tr>
+              <td class="text-center text-black">{{ declaracion.tipo_declaracion }}</td>
+              <td class="text-center text-black">{% if declaracion.cargo %}{{ declaracion.cargo }} {% else %} - {%endif%}</td>
+              <td class="text-center text-black">{% if declaracion.dependencia %}{{ declaracion.dependencia|lower|capfirst }}{% else %} - {%endif%}</td>
+              <td class="text-center text-black">{{ declaracion.fecha_transmision|date:"d/m/Y" }}</td>
+              <td class="text-center text-black">{{ declaracion.fecha_transmision|date:"Y" }}</td>
+              <td class="text-center text-black">
+                <a href="{% url 'declaraciones-previas-descargar-acuse' declaracion.folio %}" target="_blank">
+                  <img src="{% static 'src/img/descargar.svg' %}" alt="Descargar" class="svg">
+                </a> 
+              </td>
+              <td class="text-center text-black">
+                <a href="{% url 'declaraciones-previas-descargar-firmado' declaracion.folio 1 %}" target="_blank">
+                  <img src="{% static 'src/img/descargar.svg' %}" alt="Descargar" class="svg">
+                </a> 
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if has_auth %}
+        <p class="mb-2 text-black font-weight-bold">DECLARACIONES REALIZADAS ANTES DE MAYO 2021</p>
+        <p class="text-black font-weight-medium">Para acceder a tus declaraciones realizadas antes de mayo 2021 y descargarlas, entra al siguiente link <a href="{% url 'auth_contraloria' %}" target="_blank" rel="noopener noreferrer">https://declaraciones.cdmx.gob.mx/</a>
+        <!-- <p class="text-black font-weight-medium">Para acceder a tus declaraciones realizadas antes de mayo 2021 y descargarlas, entra a <a target="_blank" href="https://declaraciones.cdmx.gob.mx/">https://declaraciones.cdmx.gob.mx/</a> con tu usuario y contraseña.</p> -->
+        {% comment %}<table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">Declaración</th>
+              <th scope="col" class="text-center">Tipo de declaración</th>
+              <th scope="col" class="text-center">Encargo</th>
+              <th scope="col" class="text-center">Dependencia</th>
+              <th scope="col" class="text-center">Fecha de realización</th>
+              <th scope="col" class="text-center">Año</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for declaracion in declaraciones_contraloria %}
+            <tr>
+              <td class="text-center text-black">{{ declaracion.declaracion }}</td>
+              <td class="text-center text-black">{{ declaracion.tipo_declaracion }}</td>
+              <td class="text-center text-black">{{ declaracion.encargo|lower|capfirst }}</td>
+              <td class="text-center text-black">{{ declaracion.dependencia }}</td>
+              <td class="text-center text-black">{{ declaracion.fecha_transmision|date:"d/m/Y" }}</td>
+              <td class="text-center text-black">{{ declaracion.fecha_transmision|date:"Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>{% endcomment %}
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

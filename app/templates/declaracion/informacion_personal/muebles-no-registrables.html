@@ -1,0 +1,317 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Bienes muebles </li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 text-uppercase mb-3">
+          {% tipo_declaracion_code as tipo %}
+          {% if tipo == 'MODIFICACION' %}
+            11. BIENES MUEBLES
+            <span class="text-primary">(ENTRE EL 1 DE ENERO Y EL 31 DE DICIEMBRE DEL AÑO INMEDIATO ANTERIOR)</span>
+          {% else %}
+            12. BIENES MUEBLES
+          {% endif %}
+        </h2>
+        {% tipo_declaracion_code as tipo %}
+        {% if tipo == 'INICIAL' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos bienes muebles a la fecha de ingreso al empleo, cargo o comisión.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'CONCLUSION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos bienes muebles a la fecha de conclusión del empleo, cargo o comisión.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'MODIFICACION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos bienes muebles del año inmediato anterior.</li>
+            </ul>
+          </div>
+        {% endif %}
+        <p class="text-primary mb-3 mt-3">
+          {% help_text_inicial 'Reportar la situación de los bienes muebles a la fecha de ingreso al empleo, cargo o comisión.' %}
+          {% help_text_modificacion 'Reportar la situación de los bienes muebles del año inmediato anterior.' %}
+          {% help_text_conclusion 'Reportar la situación de los bienes muebles a la fecha de conclusión del empleo, cargo o comisión.' %}
+        </p>
+        <p class="text-muted mb-3 mt-3 font-weight-bold">BIENES DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS</p>
+        <p class="text-md text-muted font-weight-normal">TODOS LOS DATOS DE BIENES DECLARADOS A NOMBRE DE LA PAREJA, DEPENDIENTES ECONÓMICOS Y/O TERCEROS O QUE SEAN EN COPROPIEDAD CON EL DECLARANTE NO SERÁN PÚBLICOS</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:muebles-noregistrables-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:muebles-noregistrables-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+            {% comment %} href="{% url 'declaracion:muebles-noregistrables-agregar' folio_declaracion %}" {% endcomment %}
+              <a href="javascript:alta('declaracion:muebles-noregistrables-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+                Agregar bien mueble
+                <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+              </a>
+              <form action="{% url 'declaracion:muebles-noregistrables' folio_declaracion %}" method="post" novalidate>
+              {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DEL BIEN" titulo_dos="FORMA DE ADQUISICIÓN" titulo_tres="TITULAR / DESCRIPCIÓN" agregar=agregar editar_id=editar_id %}
+                {% csrf_token %}
+                {% if informacion_registrada %}
+                  <div class="w-100" id="buttonDeleteAllDataList">
+                    <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+                  </div>
+                {% endif %}
+                <input type="hidden" name="no_aplica" value="on">
+                {% aplica as not_submit %}
+                {% include 'layout/guardar.html' with not_submit=not_submit %}
+              </form>
+              <form style="display: none;" action="{% url 'declaracion:muebles-noregistrables' folio_declaracion %}" method="post" novalidate>
+            {% endif %}
+              {% csrf_token %}
+              <div class="row">
+                {% include 'layout/no_aplica.html' %}
+              </div>
+              {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DEL BIEN" titulo_dos="FORMA DE ADQUISICIÓN" titulo_tres="TITULAR" agregar=agregar editar_id=editar_id %}
+              {% if informacion_registrada %}
+                <div class="w-100" id="buttonDeleteAllDataList">
+                  <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+                </div>
+              {% endif %}
+              <div class="row-form" style="{% if checked %}display: none;{% endif %}">
+                  <div class="my-2" style="{% if baja %}display: block; {% else %} display: none; {% endif %}">
+                    <label class="label-secondary">EN CASO DE BAJA DEL MUEBLE INCLUIR MOTIVO</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar el motivo de la baja.">
+                      <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+                    </button>
+                    <div class="row">
+                      <div class="col-md-6">
+                        {% bootstrap_field muebles_no_registrables_form.tipoMotivoBaja show_label=False %}
+                      </div>
+                      <div class="col-md-3">
+                        {% bootstrap_field muebles_no_registrables_form.otro_motivoBaja show_label=False placeholder="Otro motivo baja"%}
+                      </div>
+                    </div>
+                  </div>
+                  <div style="{% if baja %}display: none; {% else %} display: block; {% endif %}">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label class="label-secondary">TIPO DEL BIEN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Tipo del bien mueble que se declara.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field muebles_no_registrables_form.cat_tipos_muebles show_label=False %}
+                      </div>
+                      <div class="col-md-3" id="otro-{{ muebles_no_registrables_form.cat_tipos_muebles.html_name }}">
+                        <label class="label-secondary">OTRO TIPO DEL BIEN</label>
+                        {% bootstrap_field muebles_no_registrables_form.otro_bien_mueble show_label=False %}
+                      </div>
+                    </div>
+                    <div id="formset_propietarios">
+                      {{ propietarios_formset.management_form }}
+                      {% for propietario_form in propietarios_formset %}
+                        <div id="copropietario{{ forloop.counter }}">
+                          <div class="row">
+                            {{ propietario_form.id }}
+                            <div class="col-md-6">
+                              <label for="{{ propietario_form.id_for_label }}" class="label-secondary mb-2">
+                                {% cycle 'TITULAR DEL MUEBLE' 'COPROPIETARIO' 'COPROPIETARIO' %}
+                                <span class="text-danger text-lg font-weight-bold">*</span>
+                              </label>
+                              {% bootstrap_field propietario_form.cat_titular_bienes show_label=False field_class="titular_bien" %}
+                            </div>
+                            <div class="col-md-3" id="dependientes-list" style="display:none;">
+                              <label class="label-secondary mb-2">DEPENDIENTES
+                                <span class="text-danger text-lg font-weight-bold">*</span>
+                                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccione algún dependiente que agregó en la sección 7. Datos del dependiente económico">
+                                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                                </button>
+                              </label>
+                              {% bootstrap_field propietario_form.dependiente_economico show_label=False %}
+                            </div>
+                            <div class="col-md-3">
+                              <label class="label-secondary mb-2">PORCENTAJE
+                                <span class="text-danger text-lg font-weight-bold">*</span>
+                                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indique el porcentaje de propiedad">
+                                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                                </button>
+                              </label>
+                              {% bootstrap_field propietario_form.porcentaje show_label=False placeholder="Porcentaje de propiedad" field_class="porcentaje" %}
+                              <div class="invalid-feedback porcentaje-lbl" style="display:none;">La suma del porcentaje tiene que ser igual a 100</div>
+                            </div>
+                          </div>
+                          <!-- identificación con terceros -->
+                          <div id="third-co" style="display:none;">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <h6>Identificación de Terceros</h6>
+                              </div>
+                            </div>
+                            {% include 'layout/persona.html' with form=propietario_form curp_disable=True title="Tipo de persona del copropietario" label="del copropietario" tipo=True %}
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label for="rfc-dueño" class="label-secondary mb-2 ">RFC del Tercero</label>
+                                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                                  </button>
+                                  <small class="text-help text-primary">(Si aplica)</small>
+                                  {% bootstrap_field propietario_form.rfc show_label=False field_class='valida_rfc' placeholder="RFC CON HOMOCLAVE" %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- end identificación con terceros -->
+                        </div>
+                      {% endfor %}
+                      <input type="hidden" id="is_conyuge" value="{{is_conyugue}}">
+                      <input type="hidden" id="is_concubina" value="{{is_concubina}}">
+                      {{ propietarios_formset.non_form_errors.0 }}
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label class="label-secondary">DESCRIPCION GENERAL DEL BIEN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Especifique.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field muebles_no_registrables_form.descripcion_bien show_label=False%}
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <hr>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h6>Identificación del Transmisor</h6>
+                      </div>
+                    </div>
+                    {% include 'layout/persona.html' with form=propietario_anterior_form curp_disable=True title="Tipo de persona del propietario anterior" label="del propietario anterior" tipo=True nombre=True razon_social=True %}
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="rfc-dueño" class="label-secondary mb-2 ">RFC del propietario anterior</label>
+                          {% comment %} <span class="text-danger text-lg font-weight-bold">*</span> {% endcomment %}
+                          {% comment %} <small class="text-help text-primary">(Si aplica)</small> {% endcomment %}
+                          <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                            <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                          </button>
+                          {% bootstrap_field propietario_anterior_form.rfc show_label=False placeholder="RFC CON HOMOCLAVE" %}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12" id="titular">
+                        <label class="label-secondary">RELACIÓN DEL TRANSMISOR DEL MUEBLE CON EL TITULAR<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar el tipo de relación. ">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        {% bootstrap_field bienes_personas_form.tipo_relacion show_label=False %}
+                      </div>
+                      <div class="col-md-3">
+                        {% bootstrap_field bienes_personas_form.otra_relacion show_label=False %}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label class="label-secondary mb-2">FORMA DE ADQUISICIÓN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar la forma de adquisición del bien mueble.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field muebles_no_registrables_form.cat_formas_adquisiciones show_label=False %}
+                      </div>
+                      <div class="col-md-6">
+                        <label class="label-secondary mb-2">FORMA DE PAGO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar tipo de operación del bien mueble.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field muebles_no_registrables_form.tipoFormaPago show_label=False %}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label class="label-secondary mb-2">VALOR DE ADQUISICIÓN DEL MUEBLE<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Monto según la factura.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field muebles_no_registrables_form.precio_adquisicion show_label=False%}
+                      </div>
+                      <div class="col-md-4">
+                        <label class="label-secondary mb-2">TIPO DE MONEDA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        {% bootstrap_field muebles_no_registrables_form.cat_monedas field_class="moneda" show_label=False %}
+                      </div>
+                      <div class="col-md-4">
+                        <label class="label-secondary mb-2">FECHA DE ADQUISICIÓN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="dd/mm/aaaa">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field muebles_no_registrables_form.fecha_adquisicion show_label=False%}
+                      </div>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="label-secondary" for="textForm">ACLARACIONES Y OBSERVACIONES</label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Detallar información respecto al bien mueble.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field observaciones_form.observacion placeholder="Aclaraciones y Observaciones" show_label=False%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right row-form" style="{% if checked %}display: none;{% endif %}">
+                <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-primary font-weight-semibold text-uppercase">
+                  Guardar y agregar otro bien mueble <img src="{% static 'src/img/plus.svg'%}" alt="agregar" class="svg">
+                </button>
+              </div>
+              {% include 'layout/guardar.html' %}
+              <div class="row">
+                <div class="col-12"><br /></div>
+              </div>
+        </form>
+      </div>
+    </div>
+    {% include 'layout/modal_conyuge.html' %}
+  </div>
+{% endblock %}

@@ -1,0 +1,283 @@
+{% extends "easy_pdf/base.html" %}
+{% load humanize %}
+{% load visor %}
+
+{% block extra_style %}
+    <style type="text/css">
+        html {
+            color: #666;
+            font-family: sans;
+            font-size: 10pt;
+            line-height: 1.4;
+          }
+        table {
+            width:100%;
+          }
+          table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+          }
+          th, td {
+            padding: 15px;
+            text-align: left;
+          }
+          #t01 tr:nth-child(even) {
+            background-color: #eee;
+          }
+          #t01 tr:nth-child(odd) {
+           background-color: #fff;
+          }
+          #t01 th {
+            background-color: #4CAF50;
+            color: white;
+          }
+
+        #card {
+            margin-bottom: 50px;
+        }
+
+          #card-header p {
+            margin: 0;
+        }
+        
+        #card-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: 1px solid black;
+          }
+
+          .row {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          #margin-left {
+              margin-left: 100px;
+          }
+
+          .card-body {
+              border: 1px solid black;
+              padding: 20px;
+          }
+
+          .card-body p, .card-body h3 {
+              margin: 0;
+          }
+
+          .text-center {
+              text-align: center;
+          }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="content">
+        <h1>Consulta del visor de datos.</h1>
+        {% for decla in declaraciones %}
+            <div id="card">
+                <div id="card-header">
+                    <p>Nombre del declarante: <strong>{{ decla.nombre_completo|titlecase }}</strong></p>
+                    <p>Cargo: <strong>{{ decla.puesto|titlecase }}</strong></p>
+                    <p>dependencia: <strong>{{ decla.dependencia|titlecase }}</strong></p>
+                    <p>Año de declaración consultada: <strong>{{ decla.fecha|date:'Y' }}</strong></p>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-center">Datos académicos</h3>
+                    <p>
+                        Institución:
+                        <strong>{{ decla.institucion|titlecase|default:"-" }}</strong>
+                    </p>
+                    <p>
+                        Carrera:
+                        <strong>{{ decla.carrera|titlecase|default:"-" }}</strong>
+                    </p>
+                    <p>
+                        Nivel de escolaridad:
+                        <strong>{{ decla.escolaridad|titlecase|default:"-" }}</strong>
+                    </p>
+                    <p>
+                        Número de cédula:
+                        <strong>{{ decla.cedula|titlecase|default:"-" }}</strong>
+                    </p>
+                    <p>Documento probatorio:
+                        <strong>{{ decla.documento_probatorio|default:"-" }}</strong>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-center">DECLARACIÓN PATRIMONIAL</h3>
+                    <h3><i class="fas fa-caret-right"></i> Ingresos</h3>
+                    <p class="c-success-main my-3"><strong>Ingreso total neto</strong> (Adquiridos al 31 de Diciembre del {{ decla.fecha|date:'Y' }})</p>
+                    <p class="ml-5 mb-2">Ingreso neto del declarante por el empleo, cargo o comisión: <strong>$MXN {{ decla.ingreso_neto|intcomma }}</strong></p>
+                    <p class="ml-5 mb-2">
+                        Otros Ingresos del Declarante:
+                        <strong>
+                            {% if decla.otro_ingresos %}
+                                $MXN {{ decla.otro_ingresos|intcomma }}
+                            {% else %}
+                                Declaró no contar con otro tipo de ingresos
+                            {% endif %}
+                        </strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Por actividad industrial, comercial y/o empresarial (después de impuestos) </strong>(Bienes adquiridos del 1 de Enero al 31 de Diciembre del {{ decla.fecha|date:'Y' }})</p>
+                    <p class="ml-5 mb-2">
+                        Valor neto:
+                        <strong>
+                            {% if decla.ingresos_actividad_ind %}
+                                $MXN {{ decla.ingresos_actividad_ind|intcomma }}
+                            {% else %}
+                                Declaró no tener ingresos por actividad industrial, comercial y/o empresarial
+                            {% endif %}
+                        </strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong> Por servicios profesionales, consejos, consultorías y/o asesorias (después de impuestos) </strong>(Adquiridos del 1 de Enero al 31 de Diciembre del {{ decla.fecha|date:'Y' }})</p>
+                    <p class="ml-5 mb-2">
+                        Valor neto:
+                        <strong>
+                            {% if decla.ingresos_profesionales %}
+                                $MXN {{ decla.ingresos_profesionales|intcomma }}
+                            {% else %}
+                                Declaró no tener ingresos por servicios profesionales, consejos, consultorías y/o asesorias
+                            {% endif %}
+                        </strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Gravamenes</strong>(Saldos al 31 de Diciembre {{ decla.fecha|date:'Y' }})</p>
+                    <p class="ml-5 mb-2">
+                        Gravamentes netos: 
+                        <strong>
+                            {% if decla.gravamenes_neto %}
+                                $MXN {{ decla.gravamenes_neto|intcomma }}
+                            {% else %}
+                                Declaró no adquirir gravamenes durante el año
+                            {% endif %}
+                        </strong>
+                    </p>
+                    
+                    <h3><i class="fas fa-caret-right"></i> Bienes</h3>
+                    <p class="c-success-main my-3"><strong>Por enajenación de bienes</strong> </p>
+                    <p class="ml-5 mb-2">
+                        Valor neto:
+                        <strong>
+                            {% if decla.ingresos_enajenacion %}
+                                $MXN {{ decla.ingresos_enajenacion|intcomma }}
+                            {% else %}
+                                Declaró no tener ingresos por enajenación de bienes
+                            {% endif %}
+                        </strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Bienes muebles, inmuebles y vehículos</strong>(Bienes adquiridos del 1 de Enero al 31 de Diciembre del {{ decla.fecha|date:'Y' }})</p>
+                    <p class="ml-5 mb-2">
+                        Valor neto de bienes muebles, inmuebles y vehículos:
+                        <strong>
+                            {% if decla.bienes_neto %}
+                                $MXN {{ decla.bienes_neto|intcomma }}
+                            {% else %}
+                                Declaró no adquirir bienes muebles, inmuebles y vehículos durante el año
+                            {% endif %}
+                        </strong>
+                    </p>
+        
+                    <h3><i class="fas fa-caret-right"></i> Inversiones</h3>
+                    <p class="c-success-main my-3"><strong>Inversiones o valores</strong>(Saldos al 31 de Diciembre {{ decla.fecha|date:'Y' }})</p>
+                    <p class="ml-5 mb-2">
+                        Inversiones o valores netos: 
+                        <strong>
+                            {% if decla.inversiones_neto %}
+                                $MXN {{ decla.inversiones_neto|intcomma }}
+                            {% else %}
+                                Declaró no adquirir inversiones durante el año
+                            {% endif %}
+                        </strong>
+                    </p>
+        
+                    <h3><i class="fas fa-caret-right"></i> Adeudos o pasivos</h3>
+                    <p class="c-success-main my-3"><strong>Adeudos o pasivos del declarante</strong></p>
+                    <p class="ml-5 mb-2">
+                    Lista: 
+                    <strong>
+                        {% if decla.adeudos_pasivo %}
+                            {{ decla.adeudos_pasivo }}
+                        {% else %}
+                            Declaró no tener adeudos o pasivos
+                        {% endif %}
+                    </strong>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-center">DECLARACIÓN DE INTERESES</h3>
+                    <h3><i class="fas fa-caret-right"></i> Relaciones</h3>
+                    <p class="c-success-main my-3"><strong>Relaciones familiares</strong></p>
+                    <p class="ml-5 mb-2">
+                        Número de relaciones familiares declaradas: <strong>{{ decla.relaciones_familiares }}</strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Relaciones personales</strong></p>
+                    <p class="ml-5 mb-2">
+                        Número de relaciones personales declaradas: <strong>{{ decla.relaciones_personales }}</strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Relaciones profesionales</strong></p>
+                    <p class="ml-5 mb-2">
+                        Número de relaciones personales declaradas: <strong>{{ decla.relaciones_profesionales }}</strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Relaciones laborales</strong></p>
+                    <p class="ml-5 mb-2">
+                        Número de relaciones personales declaradas: <strong>{{ decla.relaciones_laborales }}</strong>
+                    </p>
+        
+                    <p class="c-success-main my-3"><strong>Relaciones de negocios</strong></p>
+                    <p class="ml-5 mb-2">
+                        Número de relaciones personales declaradas: <strong>{{ decla.relaciones_negocios }}</strong>
+                    </p>
+        
+                    <h3><i class="fas fa-caret-right"></i> Información fiscal</h3>
+                    <p class="ml-5 mb-2">
+                        Total de ingresos señalados en la declaracion de impuestos sobre la renta:
+                        <strong>{{ decla.ingresos_impuestos|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Impuesto saldo a favor del declarante:
+                        <strong>{{ decla.impuestos_a_favor|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Fecha de declaración: <strong>{{ decla.fecha_declaracion_fiscal|date:"d/M/Y"|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Total del sueldo, salarios y conceptos asimilados (constancia emitida por Oficialia Mayor):
+                        <strong>{{ decla.total_oficialia_mayor|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Impuesto retenido al declarante por el Gobierno de la Cuidad de México:
+                        <strong>{{ decla.impuesto_retenido|default:"-" }}</strong>
+                    </p>
+        
+                    <h3><i class="fas fa-caret-right"></i> Fideicomisos</h3>
+                    <p class="ml-5 mb-2">
+                        Participa en fideicomisos:
+                        <strong>{{ decla.participacion_fideicomisos|yesno:"Sí,No" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Tipos de fideicomisos:
+                        <strong>{{ decla.tipos_fideicomisos|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Tipos de participaciónes de fideicomisos:
+                        <strong>{{ decla.tipos_participacion|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">
+                        Sector productivo al que pertenece:
+                        <strong>{{ decla.sector_productivo|default:"-" }}</strong>
+                    </p>
+                    <p class="ml-5 mb-2">Dónde se localiza el fideicomiso:
+                        <strong>{{ decla.localizacion_fideicomiso|default:"-" }}</strong>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

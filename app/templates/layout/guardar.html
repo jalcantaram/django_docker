@@ -1,0 +1,33 @@
+{% load static %}
+{% load anterior_siguiente %}
+{% anterior_siguiente as urls %}
+{% load flujo_declaracion %}
+
+<!-- Buttons tablet and desktop -->
+<div class="row my-6">
+    <div class="col-sm-12 col-md-3 text-center mb-3">
+      {% if urls.anterior %}
+        <a href="{{ urls.anterior }}" class="btn btn-link btn-link-gray text-uppercase font-weight-bold">
+          <img src="{% static 'src/img/arrow.svg'%}" class="svg turned"> Anterior
+        </a>
+      {% endif %}
+    </div>
+    <div class="col-sm-12 col-md-3 text-center mb-3">
+      <input type="submit" value="Guardar y continuar" class="btn btn-primary mr-3 text-uppercase font-weight-bold">
+    </div>
+    <div class="col-sm-12 col-md-3 text-center mb-3">
+      <button name="accion" value="guardar_salir" class="btn btn-outline-primary text-uppercase font-weight-bold">Guardar y salir</button>
+    </div>
+    <div class="col-sm-12 col-md-3 text-center mb-3">
+      {% if urls.siguiente %}
+        {% tipo_declaracion_code as tipo %}
+        {% if tipo == "INICIAL" and "intereses/declaracion-fiscal" in urls.siguiente %}
+        {% elif tipo == "CONCLUSION" and "intereses/declaracion-fiscal" in urls.siguiente %}
+        {% else %}
+          <a href="{{ urls.siguiente }}" class="btn btn-link btn-link-gray text-uppercase font-weight-bold">
+            Siguiente <img src="{% static 'src/img/arrow.svg'%}" class="svg">
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+</div>

@@ -1,0 +1,149 @@
+{% load mptt_tags %}
+{% load secciones %}
+{% load static %}
+{% load no_aplica %}
+{% no_aplica as checked %}
+{% if registros %}
+  <div class="row row-form registros text-sm font-weight-bold" style="">{% comment %}{% if checked %}display: none;{% endif %} {% endcomment %}
+    <div class="col-md-12">
+      <h3 class="h6 text-uppercase tu-informacion">TU INFORMACIÓN REGISTRADA</h3>
+    </div>
+    <div class="w-100">
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Importante: </strong>Si tienes datos duplicados eliminalos.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="registros">
+        <thead>
+          <tr>
+            <th style="width: 5%">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="selectAllDataList">
+                <label class="custom-control-label" for="selectAllDataList"></label>
+              </div>
+            </th>
+            <th style="width: 30%" class="text-center">{{ titulo_uno }}</th>
+            <th style="width: 30%" class="text-center">{{ titulo_tres }}</th>
+            {% if multi_objects %}
+              <th style="width: 5%" class="text-center">ESTATUS</th>
+            {% endif %}
+            <th style="width: 5%" class="text-center">MODIFICAR/EDITAR</th>
+            {% if is_baja%}
+              {% if tipo != "INICIAL" %}
+                <th style="width: 5%" class="text-center">BAJA</th>
+                <th style="width: 5%" class="text-center registrada_eliminar">ELIMINAR</th>
+              {% else %}
+                <th style="width: 5%" class="text-center registrada_eliminar">ELIMINAR</th>
+              {% endif %}
+            {% else %}
+              <th style="width: 5%" class="text-center registrada_eliminar">ELIMINAR</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in registros %}
+            {% if agregar %}
+              <tr id="borrar-registro-{{data.pk}}">
+            {% elif editar_id and editar_id|slugify == data.pk|slugify %}
+              <tr id="borrar-registro-{{data.pk}}" class="table-active registro-editar">
+            {% elif not editar_id and forloop.last %}
+              <tr id="borrar-registro-{{data.pk}}" class="table-active registro-editar">
+            {% else %}
+              <tr id="borrar-registro-{{data.pk}}">
+            {% endif %}
+              <td scope="row">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="delete_field_{{ data.pk }}" name="delete_field" value="{{ data.pk }}">
+                  <label class="custom-control-label" for="delete_field_{{data.pk}}"></label>
+                </div>
+              </td>
+              <td class="text-center">{{ data.columna_uno }} </td>
+              <td class="text-center">{{ data.columna_tres }}</td>
+              {% if multi_objects %}
+                {% for key, value in multi_objects.items %}
+                    {% if key == data.pk%}
+                      <td class="text-center">
+                        <a class="btn btn-link btn-link-plus" href="{{ data.url_editar }}" >
+                          {% if value %}
+                            <img src="{% static 'src/img/status-progress.svg'%}" class="svg" title="En progreso" alt="Incompleto">
+                          {% else %}
+                            <img src="{% static 'src/img/palomita.svg'%}" class="svg" title="completado" alt="Completo">
+                          {% endif %} 
+                        </a>
+                      </td>
+                    {% endif %}
+                {% endfor %}
+              {% endif %}
+              {% if data.has_baja %}
+                  <td class="text-center">
+                    Dado de Baja
+                  </td>
+              {% else %}
+                  <td class="text-center">
+                    <a class="btn btn-link btn-link-plus" href="{{ data.url_editar }}">
+                      <img src="{% static 'src/img/editar.svg'%}" class="svg">
+                    </a>
+                  </td>
+              {% endif %}
+              {% if is_baja%}
+                  {% if tipo != "INICIAL" %}
+                      <td class="text-center">
+                        <a class="btn btn-link btn-link-plus" href="{{ data.url_baja }}">
+                          <img src="{% static 'src/img/close.svg'%}" class="svg">
+                        </a>
+                      </td>
+                      <td class="text-center registrada_eliminar">
+                        <a href="javascript:void(0);" class="btn btn-link" id="delete_{{data.pk}}" data-urlborrar="{{ data.url_borrar }}" data-urltodos="{{ data.url_todos }}" data-info="{{ data.columna_uno }}|{{ data.columna_dos }}|{{ data.columna_tres }}" data-thead="{{ titulo_uno }}, {{ titulo_dos }}, {{ titulo_tres }}" data-toggle="modal" data-target="#confirmModal" data-message="Esta es la información que estas eliminando" data-buttontext="Eliminar">
+                            <img src="{% static 'src/img/eliminar.svg'%}" class="svg">
+                        </a>
+                      </td>
+                    {% else %}
+                      <td class="text-center registrada_eliminar">
+                        <a href="javascript:void(0);" class="btn btn-link" id="delete_{{data.pk}}" data-urlborrar="{{ data.url_borrar }}" data-urltodos="{{ data.url_todos }}" data-info="{{ data.columna_uno }}|{{ data.columna_dos }}|{{ data.columna_tres }}" data-thead="{{ titulo_uno }}, {{ titulo_dos }}, {{ titulo_tres }}" data-toggle="modal" data-target="#confirmModal" data-message="Esta es la información que estas eliminando" data-buttontext="Eliminar">
+                          <img src="{% static 'src/img/eliminar.svg'%}" class="svg">
+                        </a>
+                      </td>
+                  {% endif %}
+              {% else %}
+                  <td class="text-center registrada_eliminar">
+                    <a href="javascript:void(0);" class="btn btn-link" id="delete_{{data.pk}}" data-urlborrar="{{ data.url_borrar }}" data-urltodos="{{ data.url_todos }}" data-info="{{ data.columna_uno }}|{{ data.columna_dos }}|{{ data.columna_tres }}" data-thead="{{ titulo_uno }}, {{ titulo_dos }}, {{ titulo_tres }}" data-toggle="modal" data-target="#confirmModal" data-message="Esta es la información que estas eliminando" data-buttontext="Eliminar">
+                      <img src="{% static 'src/img/eliminar.svg'%}" class="svg">
+                    </a>
+                  </td>
+            {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% if is_seccion %}
+    {% get_status seccion_id folio_declaracion as status %}
+    <input type="hidden" id="status-one" value="{{status.1}}"></input>
+    <input type="hidden" id="seccion" value="{{seccion}}"></input>
+{% endif %}
+{% block js %}
+  <script typeText="javascript">
+    var $status = document.getElementById("status-one").value;
+    var $seccion = document.getElementById("seccion").value;
+    function alta(seccion, folio){
+      if($status=='' || $status=='100%'){
+          var url = seccion.split(":");
+          var url_split = url[1].replace("-agregar","");
+          window.open('/declaracion/'+$seccion+'/'+url_split+'/'+folio+'/agregar/',"_self");
+      }else{
+        var r = confirm("Recuerda que tienes un registro incompleto, ¿Quires seguir?");
+        if (r == true) {
+            var url = seccion.split(":");
+            var url_split = url[1].replace("-agregar","");
+            window.open('/declaracion/'+$seccion+'/'+url_split+'/'+folio+'/agregar/',"_self");
+        }
+      }
+    }
+  </script>
+{% endblock %}

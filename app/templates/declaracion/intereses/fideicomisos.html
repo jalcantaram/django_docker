@@ -1,0 +1,347 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  {% tipo_declaracion_code as tipo %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Fideicomisos</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">II. DECLARACIÓN DE INTERESES <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 text-uppercase">7. PARTICIPACIÓN EN FIDEICOMISOS  <span class="text-primary">(HASTA LOS 2 ÚLTIMOS AÑOS)</span></h2>
+        {% if tipo == 'INICIAL' %}
+          <p class="text-primary">Este apartado solo lo llenaran las personas servidoras públicas que tengan participación en un fideicomiso, ya sea en el carácter de fideicomitente, fiduciario, fideicomisario o dentro del consejo técnico.</p>
+        {% elif tipo == 'MODIFICACION' %}
+          <p class="text-primary">Este apartado solo lo llenaran las personas servidoras públicas que tengan participación en un fideicomiso, ya sea en el carácter de fideicomitente, fiduciario, fideicomisario o dentro del consejo técnico.</p>
+        {% endif %}
+        <div class="text-blue">
+            En caso de que hayas autorizado cargar tu información, es muy IMPORTANTE ingresar a cada uno de los apartados de la declaración patrimonial para verificar que tus datos estén completos y correctos de lo contrario es necesario que los actualices
+        </div>
+        {% if messages %}
+          {% for message in messages %}
+            <br>
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:fideicomisos-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:fideicomisos-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+          {% comment %} href="{% url 'declaracion:fideicomisos-agregar' folio_declaracion %}" {% endcomment %}
+          <a href="javascript:alta('declaracion:fideicomisos-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+            Agregar fideicomiso
+            <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+          </a>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE FIDEICOMISO" titulo_dos="TIPO DE PARTICIPACIÓN" titulo_tres="RFC DEL FIDEICOMISO" agregar=agregar editar_id=editar_id %}
+          <form action="{% url 'declaracion:fideicomisos' folio_declaracion %}" method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="no_aplica" value="on">
+            {% aplica as not_submit %}
+            {% include 'layout/guardar.html' with not_submit=not_submit %}
+          </form>
+          <form style="display: none;" action="{% url 'declaracion:fideicomisos' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+          {% csrf_token %}
+            <br>
+            <div class="row">
+              {% include 'layout/no_aplica.html' %}
+            </div>
+            {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE FIDEICOMISO" titulo_dos="TIPO DE PARTICIPACIÓN" titulo_tres="RFC DEL FIDEICOMISO" agregar=agregar editar_id=editar_id %}
+            <div class="row-form" style="{% if checked %}display: none;{% endif %}">
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <label class="label-secondary">TIPO DE FIDEICOMISO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Tipo de fideicomiso con marco normativo.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% include 'layout/radiobuttons.html' with field_select=fideicomisos_form.fields.cat_tipos_fideicomisos  field_name=fideicomisos_form.cat_tipos_fideicomisos col=2 col_o=6%}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4" id="tipo_persona_content">
+                  <div class="form-group">
+                    <label for="" class="label-secondary">TIPO DE PERSONA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Tipo de persona.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field fideicomisos_form.tipo_persona show_label=False %}
+                  </div>
+                </div>
+                <div class="col-4" id="dependientes">
+                  <div class="form-group">
+                    <label for="" class="label-secondary">DEPENDIENTE ECONÓMICO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Dependiente económico.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field fideicomisos_form.dependiente_economico_choice show_label=False %}
+                  </div>
+                </div>
+                <div class="col-4" id="pareja">
+                  <div class="form-group">
+                    <label for="" class="label-secondary">PAREJA<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Pareja.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field fideicomisos_form.pareja_choice show_label=False %}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <label class="label-secondary">TIPO DE PARTICIPACIÓN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Indicar tipo de operación del fideicomiso.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% include 'layout/radiobuttons.html' with field_select=fideicomisos_form.fields.cat_tipo_participacion  field_name=fideicomisos_form.cat_tipo_participacion col=3 col_o=6 %}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="fedeicomiso-nombre" class="label-secondary">RFC DEL FIDEICOMISO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Dato que identifique el fideicomiso">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field fideicomisos_form.rfc show_label=False placeholder="RFC del Fideicomiso" field_class='valida_rfc_moral' %}
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="fideicomitente_content">
+                <div class="col-12">
+                  {% include 'layout/persona_fideicomisa.html' with form=fideicomitente_form  title="IDENTIFICACIÓN DEL FIDEICOMITENTE" label=" del fideicomitente" rfc=True tipo=True nombre=True razon_social=True curp=False %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="fideicomitente-rfc" class="label-secondary">RFC de fideicomitente <span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <small class="text-help text-primary">(Si aplica)</small>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="En caso de personas físicas proporcionar los trece dígitos. En caso de personas morales establecer los doce dígitos del fideicomiso.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field fideicomitente_form.rfc   field_class='valida_rfc' show_label=False placeholder="RFC de fideicomitente" %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="fiduciario_content">
+                <div class="col-12">
+                  {% include 'layout/persona_fideicomisa.html' with form=fiduciario_form  title="IDENTIFICACIÓN DEL FIDUCIARIO" label=" del fiduciario" rfc=True  tipo=True nombre=True razon_social=True curp=False %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="fiduciario-rfc" class="label-secondary">RFC de fiduciario<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <small class="text-help text-primary">(Si aplica)</small>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="En caso de personas físicas proporcionar los trece dígitos. En caso de personas morales establecer los doce dígitos del fideicomiso.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field fiduciario_form.rfc  field_class='valida_rfc' show_label=False placeholder="RFC de fiduciario" %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="fideicomisario_content">
+                <div class="col-12">
+                  {% include 'layout/persona_fideicomisa.html' with form=fideicomisario_form  title="IDENTIFICACIÓN DEL FIDEICOMISARIO" label=" del fideicomisario" rfc=True  tipo=True nombre=True razon_social=True curp=False %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="fideicomisario-rfc" class="label-secondary">RFC de fideicomisario<span class="text-danger text-lg font-weight-bold">*</span></label>
+                        <small class="text-help text-primary">(Si aplica)</small>
+                        <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="En caso de personas físicas proporcionar los trece dígitos. En caso de personas morales establecer los doce dígitos del fideicomiso.">
+                          <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                        </button>
+                        {% bootstrap_field fideicomisario_form.rfc  field_class='valida_rfc' show_label=False placeholder="RFC de fideicomisario" %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <label class="label-secondary mb-2">SECTOR PRODUCTIVO AL QUE PERTENECE<span class="text-danger text-lg font-weight-bold">*</span></label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Sector o Área laboral al que pertenece el encargo.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% bootstrap_field fideicomisos_form.cat_sectores_industria show_label=False %}
+                    </div>
+                    <div class="col-md-4" id="sector-fide-otro">
+                      <label class="label-secondary mb-2">OTRO SECTOR <span class="text-danger text-lg font-weight-bold">*</span></label>
+                      {% bootstrap_field fideicomisos_form.otro_sector show_label=False %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="fideicomiso-residencia" class="label-secondary">¿ DÓNDE SE LOCALIZA EL FIDEICOMISO ?<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Indicar el territorio en el que se encuentra el fideicomiso.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% include 'layout/nacionalidad.html' with field=fideicomisos_form.cat_paises otro_field=fideicomisos_form.ubicacion pais_desabled=True %}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group mr-4">
+                    <label for="fideicomiso-comentarios" class="label-secondary">ACLARACIONES/OBSERVACIONES</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Detallar información respecto al fideicomiso.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-right row-form" style="{% if checked %}display: none;{% endif %}">
+              <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-primary font-weight-semibold text-uppercase">
+                Guardar y agregar otro fideicomiso <img src="{% static 'src/img/plus.svg'%}" alt="agregar" class="svg">
+              </button>
+            </div>
+            {% include 'layout/guardar.html' %}
+          </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+  // Checkbox
+  const fideicomitenteCheck = document.getElementById('id_fideicomisos-cat_tipo_participacion-1');
+  const fiduciarioCheck = document.getElementById('id_fideicomisos-cat_tipo_participacion-2');
+  const fideicomisarioCheck = document.getElementById('id_fideicomisos-cat_tipo_participacion-3');
+  const comiteTecnicoCheck = document.getElementById('id_fideicomisos-cat_tipo_participacion-4');
+
+  // Contents
+  const fideicomitenteContent = document.getElementById('fideicomitente_content');
+  const fiduciarioContent = document.getElementById('fiduciario_content');
+  const fideicomisarioContent = document.getElementById('fideicomisario_content');
+
+
+  if(fideicomitenteCheck.checked){
+     // Si eligen fideicomitente
+      fideicomitenteContent.style.display = 'none';
+      fiduciarioContent.style.display = 'inherit';
+      fideicomisarioContent.style.display = 'inherit';
+  }else if(fiduciarioCheck.checked){
+     // Si eligen fideicomitente
+    fideicomitenteContent.style.display = 'none';
+    fiduciarioContent.style.display = 'inherit';
+    fideicomisarioContent.style.display = 'inherit';
+
+  }else if(fideicomisarioCheck.checked){
+    // Si eligen fideicomitente
+    fideicomitenteContent.style.display = 'inherit';
+    fiduciarioContent.style.display = 'inherit';
+    fideicomisarioContent.style.display = 'none';
+  }else{
+    // Si eligen comite
+    fideicomitenteContent.style.display = 'inherit';
+    fiduciarioContent.style.display = 'inherit';
+    fideicomisarioContent.style.display = 'inherit';
+  }
+
+  fideicomitenteCheck.addEventListener('change', () => {
+    // Si eligen fideicomitente
+    fideicomitenteContent.style.display = 'none';
+    fiduciarioContent.style.display = 'inherit';
+    fideicomisarioContent.style.display = 'inherit';
+  });
+
+  fiduciarioCheck.addEventListener('change', () => {
+    // Si eligen fideicomitente
+    fideicomitenteContent.style.display = 'inherit';
+    fiduciarioContent.style.display = 'none';
+    fideicomisarioContent.style.display = 'inherit';
+  });
+
+  fideicomisarioCheck.addEventListener('change', () => {
+    // Si eligen fideicomitente
+    fideicomitenteContent.style.display = 'inherit';
+    fiduciarioContent.style.display = 'inherit';
+    fideicomisarioContent.style.display = 'none';
+  });
+
+  comiteTecnicoCheck.addEventListener('change', () => {
+    // Si eligen fideicomitente
+    fideicomitenteContent.style.display = 'inherit';
+    fiduciarioContent.style.display = 'inherit';
+    fideicomisarioContent.style.display = 'inherit';
+  });
+
+
+  // Flujo de la sección "Fideicomisos" pareja, dependiente
+  const tipoPersona = document.querySelector('#tipo_persona_content select');
+  const dependientes = document.getElementById('dependientes');
+  const pareja = document.getElementById('pareja');
+
+  function tipoPersonaHandle(ev) {
+      const target = ev.target || ev;
+      const value = target.value;
+
+      switch (value) {
+          case 'DECO': // Dependiente económico
+              pareja.style.display = 'none';
+              dependientes.style.display = 'inherit';
+              break;
+          case 'PA': // Pareja
+              dependientes.style.display = 'none';
+              pareja.style.display = 'inherit';
+              break;
+          case 'DE':
+              pareja.style.display = 'none';
+              dependientes.style.display = 'none';
+              break;
+          default:
+              break;
+      }
+  }
+
+  tipoPersonaHandle(tipoPersona);
+  tipoPersona.addEventListener('change', tipoPersonaHandle);
+
+
+
+  if( document.getElementById("id_fideicomisos-otro_sector")){
+    document.getElementById("sector-fide-otro").style.display = "none"
+  }
+ $('#id_fideicomisos-cat_sectores_industria').on('select2:select', function (e) {
+        var data = e.params.data;
+        if (data.text == 'OTRO') {
+            document.getElementById("id_fideicomisos-otro_sector").value = ""
+            document.getElementById("sector-fide-otro").style.display = "block"
+        }else{
+            document.getElementById("id_fideicomisos-otro_sector").value = "NA"
+            document.getElementById("sector-fide-otro").style.display = "none"
+        }
+      
+    });
+});
+</script>
+{% endblock %}

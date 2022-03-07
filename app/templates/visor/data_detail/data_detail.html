@@ -1,0 +1,1484 @@
+{% load humanize %}
+{% load visor %}
+{% load static %}
+{% load no_aplica %}
+{% load flujo_declaracion %}
+
+<div class="mt-4 mb-3">
+    <h4>I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL</h4>
+</div>
+
+<!-- Datos generales del declarante -->
+<table width="100%" cellspacing="0" class="mb-4">
+    <tbody>
+        <h5><i class="far fa-user"></i>&nbsp;Datos generales del declarante</h5> 
+        <tr valign="top">
+            <td width="50%">
+                <p class="ml-5 mb-2">Nombre(s): <strong>{{ data.decla.nombre_completo|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Correo electrónico institucional: <strong>{{ data.decla.email|default:"(Ninguno)" }}</strong></p>
+            </td>
+            <td width="50%">
+                <!-- <p class="ml-5 mb-2">RFC: <strong>{{ decla.rfc|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">CURP: <strong>{{ decla.curp|default:"(Ninguno)" }}</strong></p> -->
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- Datos generales del declarante -->
+
+<!-- Datos curriculares del declarante -->
+<table width="100%" cellspacing="0" class="mb-4">
+    <tbody>
+        <tr valign="top">
+            <h5><i class="far fa-user"></i>&nbsp;Datos curriculares del declarante</h5> 
+            <td width="100%">
+                {% no_aplica data.decla.folio 'datos-curriculares' as checked %}
+                {% if checked %}
+                    {% include 'declaracion/admin/frm_no_aplica.html' %}
+                {% else %}
+                    {% for data in data.curriculares %}
+                        <table width="100%" cellspacing="0" class="">
+                            <tbody>
+                                <tr valign="top">
+                                    <td width="50%">
+                                        <div>
+                                            <p class="ml-5 mb-2">
+                                                Nivel:
+                                                <strong>{{ data.nivel|titlecase|default:"(NINGUNO)" }}</strong>
+                                            </p>
+                                            <p class="ml-5 mb-2">
+                                                Carrera:
+                                                <strong>{{ data.carrera|titlecase|default:"(NINGUNO)" }}</strong>
+                                            </p>
+                                            <p class="ml-5 mb-2">
+                                                Institución educativa:
+                                                <strong>{{ data.institucion_educativa|titlecase|default:"(NINGUNO)" }}</strong>
+                                            </p>
+                                            <p class="ml-5 mb-2">
+                                                Ubicación:
+                                                <strong>{{ data.ubicacion|titlecase|default:"(NINGUNO)" }}</strong>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td width="50%">
+                                        <div>
+                                            <p class="ml-5 mb-2">
+                                                Estatus:
+                                                <strong>{{ data.estatus|titlecase|default:"(NINGUNO)" }}</strong>
+                                            </p>
+                                            {% if data.estatus.nombre == "FINALIZADO" %}
+                                                <p class="ml-5 mb-2">
+                                                    Documento obtenido:
+                                                    <strong>{{ data.documento_obtenido|titlecase|default:"(NINGUNO)" }}</strong>
+                                                </p>
+                                                <p class="ml-5 mb-2">
+                                                    Fecha:
+                                                    <strong>{{ data.fecha|date:"j \d\e F \d\e Y"|default:"(NINGUNO)" }}</strong>
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                    {% empty %}
+                        <strong>(NINGUNO)</strong>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- Datos curriculares del declarante -->
+
+<!-- Datos del empleo, cargo o comisión -->
+<table width="100%" cellspacing="0" class="mb-4">
+    <tbody>
+        <h5><i class="far fa-user"></i>&nbsp;Datos del empleo, cargo o comisión</h5>
+        <tr valign="top">
+            <td width="50%">
+                <p class="ml-5 mb-2">Nivel / Orden de gobierno: <strong>{{ data.datos_empleo.ordenes_gobierno|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Ambito público: <strong>{{ data.datos_empleo.ambito_publico|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Nombre del ente público: <strong>{{ data.datos_empleo.nombre_ente|titlecase|default:"(Ninguno)" }}</strong></p>
+                {% comment %}<p class="ml-5 mb-2">Nivel jerarquico: <strong>{{ data.datos_empleo.nivel_jerarquia|titlecase|default:"(Ninguno)" }}</strong></p>{% endcomment %}
+                <p class="ml-5 mb-2">Área de adscripción: <strong>{{ data.datos_empleo.area_adscripcion|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Empleo, cargo o comisión: <strong>{{ data.datos_empleo.empleo_cargo_comision|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">¿Es contrato(a) por honorarios?: <strong>{{ data.datos_empleo.is_honorarios|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Nivel del empleo, cargo o comisión: <strong>{{ data.datos_empleo.nivel_empleo|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Especifique función principal: <strong>{{ data.datos_empleo.funcion_principal|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Fecha de toma de posesión del empleo, cargo o comisión: <strong>{{ data.datos_empleo.fecha_posesion|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+            </td>
+            <td width="50%">
+                <p class="ml-5 mb-2">Domicilio del empleo, cargo o comisión: <strong>{{ data.datos_empleo.domicilio|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Calle: <strong>{{ data.datos_empleo.calle|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Número interior: <strong>{{ data.datos_empleo.numero_interior|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Número exterior: <strong>{{ data.datos_empleo.numero_exterior|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Municipio/Alcaldía: <strong>{{ data.datos_empleo.municipio_alcaldia|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Colonia/Localidad: <strong>{{ data.datos_empleo.colonia_localidad|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Código postal: <strong>{{ data.datos_empleo.codigo_postal|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Entidad federativa: <strong>{{ data.datos_empleo.entidad_federativa|titlecase|default:"(Ninguno)" }}</strong></p>
+                <p class="ml-5 mb-2">Teléfono de oficina y extensión: <strong>{{ data.datos_empleo.telefono|titlecase|default:"(Ninguno)" }}</strong></p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- Datos del empleo, cargo o comisión -->
+
+<!-- Experiencia laboral (Últimos cinco empleos) -->
+<table width="100%" cellspacing="0" class="mb-4">
+    <tbody>
+        <tr valign="top">
+            <h5><i class="far fa-user"></i>&nbsp;Experiencia laboral (Últimos cinco empleos)</h5>
+            <td width="100%">
+                {% no_aplica data.decla.folio 'experiencia-laboral' as checked %}
+                {% if checked %}
+                    {% include 'declaracion/admin/frm_no_aplica.html' %}
+                {% else %}
+                    {% for laboral in data.experiencia_laboral %}
+                        <table width="100%" cellspacing="0">
+                            <tbody>
+                                <tr valign="top">
+                                    <td width="50%">
+                                        <p class="ml-5 mb-2">Ámbito / Sector en el que laboraste: <strong>{{ laboral.ambitos_laborales|titlecase|default:"(Ninguno)" }}</strong></p>
+                                        {% if laboral.ambitos_laborales.nombre == 'PÚBLICO' %}
+                                            <p class="ml-5 mb-2">Nivel / Orden de gobierno: <strong>{{ laboral.nivel_orden_gobierno|titlecase|default:"(Ninguno)" }}</strong></p>
+                                        {% endif %}
+                                            <p class="ml-5 mb-2">Nombre del ente público / Nombre de la empresa, sociedad o asociación: <strong>{{ laboral.nombre_institucion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Área de adscripción / Área: <strong>{{ laboral.unidad_area_administrativa|titlecase|default:"(Ninguno)" }}</strong></p>
+                                        {% if laboral.ambitos_laborales.nombre == 'PRIVADO' %}
+                                            <p class="ml-5 mb-2">R.F.C. (Si es sector privado): <strong>{{ laboral.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                        {% endif %}
+                                    </td>
+                                    <td width="50%">
+                                        <p class="ml-5 mb-2">Empleo cargo o comisión / Puesto: <strong>{{ laboral.cargo_puesto|titlecase|default:"(Ninguno)" }}</strong></p>
+                                        {% if laboral.ambitos_laborales.nombre == 'PÚBLICO' %}
+                                            <!-- <p class="ml-5 mb-2">Especifique función principal: <strong>{{ laboral.cat_funciones_principales|default:"(Ninguno)" }} - {{ laboral.otra_funcion|default:"(Ninguno)" }}</strong></p> -->
+                                            <p class="ml-5 mb-2">Especifique función principal: <strong>{{ laboral.cat_funciones_principales|titlecase|default:"(Ninguno)" }}</strong>{% if laboral.cat_funciones_principales.nombre == 'OTRO' %} <strong> - {{ laboral.otra_funcion|titlecase|default:"(Ninguno)" }}</strong> {% endif %}</p>
+                                        {% endif %}
+                                        <p class="ml-5 mb-2">Fecha de ingreso: <strong>{{ laboral.fecha_ingreso|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                        <p class="ml-5 mb-2">Fecha de egreso: <strong>{{ laboral.fecha_salida|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                        {% if laboral.ambitos_laborales.nombre == 'PRIVADO' %}
+                                            <p class="ml-5 mb-2">Sector al que pertenece: <strong>{{ laboral.cat_sectores_industria|titlecase|default:"(Ninguno)" }}</strong>{% if laboral.cat_sectores_industria.nombre == 'OTRO' %} <strong> - {{ laboral.otro_sector|titlecase|default:"(Ninguno)" }}</strong> {% endif %}
+                                            </p>
+                                        {% endif %}
+                                        <p class="ml-5 mb-2">Lugar donde se ubica: <strong>{{ laboral.ubicacion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- Experiencia laboral (Últimos cinco empleos) -->
+
+<!-- Ingresos netos del declarante -->
+<table width="100%" cellspacing="0" class="mb-4">
+    <tbody>
+        {% if data.decla.tipo_declaracion.codigo == 'INICIAL' %}
+            {% if data.datos_empleo.empleo_cargo_comision.completa %}
+                <h5><i class="far fa-user"></i>&nbsp;Ingresos netos del declarante, pareja y/o dependientes económicos</h5>
+            {% else %}
+                <h5><i class="far fa-user"></i>&nbsp;Ingresos netos del declarante</h5>
+            {% endif %}
+        {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+            {% if data.datos_empleo.empleo_cargo_comision.completa %}
+                <h5><i class="far fa-user"></i>&nbsp;Ingresos netos del declarante, pareja y/o dependientes económicos</h5>
+            {% else %}
+                <h5><i class="far fa-user"></i>&nbsp;Ingresos netos del declarante</h5>
+            {% endif %}
+        {% elif data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+            {% if data.datos_empleo.empleo_cargo_comision.completa %}
+                <h5><i class="far fa-user"></i>&nbsp;Ingresos netos del año en curso a la fecha de conclusión del empleo, cargo o comisión del declarante, pareja y/o dependientes económicos</h5> 
+            {% else %}
+                <h5><i class="far fa-user"></i>&nbsp;Ingresos netos del año en curso a la fecha de conclusión del empleo, cargo o comisión del declarante, pareja y/o dependientes económicos</h5> 
+            {% endif %}
+        {% endif %}
+        <tr valign="top">
+            <td width="100%">
+                {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                    <p class="ml-5 mb-2">I - Remuneración neta del año en curso a la fecha de conclusión del empleo, cargo o comisión del declarante por su cargo público (Por concepto de sueldos, honorarios, compensaciones, bonos y otras prestaciones) (Cantidades netas después de impuestos): <strong>{{ data.ingresos_netos.remuneracionMensualNeta|intcomma|titlecase|default:"(Ninguno)" }}</strong></p>
+                    {% comment %}I. REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO{% endcomment%}
+                {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                    <p class="ml-5 mb-2">I - Remuneración anual neta del declarante por su cargo público (Por concepto de sueldos, honorarios, compensaciones, bonos y otras prestaciones) (Cantidades netas después de impuestos): <strong>{{ data.ingresos_netos.remuneracionMensualNeta|intcomma|titlecase|default:"(Ninguno)" }}</strong></p>
+                    {% comment %}I. REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO{% endcomment%}
+                {% elif data.decla.tipo_declaracion.codigo == 'INICIAL' %}
+                    <p class="ml-5 mb-2">I - Remuneración mensual neta del declarante por su cargo público (Por concepto de sueldos, honorarios, compensaciones, bonos y otras prestaciones) (Cantidades netas después de impuestos): <strong>{{ data.ingresos_netos.remuneracionMensualNeta|intcomma|titlecase|default:"(Ninguno)" }}</strong></p>
+                    {% comment %}I. REMUNERACIÓN MENSUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO{% endcomment%}
+                {% endif %}
+
+                {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                    <p class="ml-5 mb-2">II - Otros ingresos del declarante (Suma del II.1 al II.5): <strong>{{ data.ingresos_netos.otros_ingresos_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                    {% comment %}II. OTROS INGRESOS ANUALES DEL DECLARANTE{% endcomment %}
+                {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                    <p class="ml-5 mb-2">II - Otros ingresos anuales del declarante (Suma del II.1 al II.5): <strong>{{ data.ingresos_netos.otros_ingresos_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                    {% comment %}II. OTROS INGRESOS ANUALES DEL DECLARANTE{% endcomment %}
+                {% else %}
+                    <p class="ml-5 mb-2">II - Otros ingresos mensuales del declarante (Suma del II.1 al II.4): <strong>{{ data.ingresos_netos.otros_ingresos_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                    {% comment %}II. OTROS INGRESOS MENSUALES DEL DECLARANTE{% endcomment %}
+                {% endif %}
+                
+                {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                    <p class="ml-5 mb-2">II.1 - Por actividad industrial, comercial y/o empresarial (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionActividadIndus|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                    <p class="ml-5 mb-2">II.1 - Por actividad industrial, comercial y/o empresarial (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionActividadIndus|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% else %}
+                    <p class="ml-5 mb-2">II.1 - Por actividad industrial, comercial y/o empresarial (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionActividadIndus|  intcomma|default:"(Ninguno)" }}</strong></p>
+                {% endif %}
+
+
+                {% if data.ingresos_netos.remuneracionActividadIndus > 0 %}
+                    <dl class="p_opciones text-uppercase ml-5">
+                        <dt>NOMBRE O RAZÓN SOCIAL</dt>
+                        <dd class="text-black_opciones">{{ data.ingresos_netos.razonSocial }}</dd>
+                    </dl>
+                    <dl class="p_opciones text-uppercase ml-5">
+                        <dt>TIPO DE NEGOCIO</dt>
+                        <dd class="text-black_opciones">{{ data.ingresos_netos.tipoNegocio }}</dd>
+                    </dl>
+                {% endif %}
+
+                {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                    <p class="ml-5 mb-2">II.2 - Por actividad financiera (Después de impuestos): <strong>{{ data.ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                    <p class="ml-5 mb-2">II.2 - Por actividad financiera (después de impuestos): <strong>{{ data.ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% else %}
+                    <p class="ml-5 mb-2">II.2 - Por actividad financiera (Rendimientos o ganancias) (Después de impuestos): <strong>{{ data.ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% endif %}
+
+
+                {% if data.ingresos_netos.actividad_financiera.remuneracionActFinan > 0 %}
+                    <dl class="p_opciones text-uppercase ml-5">
+                        <dt>TIPO DE INSTRUMENTO QUE GENERÓ EL RENDIMIENTO O GANANCIA</dt>
+                        <dd class="text-black_opciones">{{ data.ingresos_netos.actividad_financiera.tipoActFinan }}</dd>
+                    </dl>
+                    {% if data.ingresos_netos.actividad_financiera.tipoActFinan.codigo == 'OTRO' %}
+                        <dl class="p_opciones text-uppercase ml-5">
+                            <dt>OTRO</dt>
+                            <dd class="text-black_opciones">{{ data.ingresos_netos.actividad_financiera.otroTipoInstrumentoGanancia }}</dd>
+                        </dl>
+                    {% endif %}
+                {% endif %}
+
+                <p class="ml-5 mb-2">II.3 - Por servicios profesionales, consejos, consultorías y / o asesorías (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionServProf|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% if data.ingresos_netos.remuneracionServProf > 0 %}
+                    <dl class="p_opciones text-uppercase ml-5">
+                        <dt>TIPO DE SERVICIO PRESTADO</dt>
+                        <dd class="text-black_opciones">{{ data.ingresos_netos.tipoServProf }}</dd>
+                    </dl>
+                {% endif %}
+
+
+                {% if data.decla.tipo_declaracion.codigo == 'MODIFICACION' or data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                    <p class="ml-5 mb-2">II.4 - Por enajenación de bienes (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionEnajenacion|intcomma|default:"(Ninguno)" }}</strong></p>
+                    {% if data.ingresos_netos.remuneracionEnajenacion > 0 %}
+                        <dl class="p_opciones text-uppercase">
+                            <dt>TIPO BIEN ENAJENADO</dt>
+                            <dd class="text-black_opciones">{{ data.ingresos_netos.tipoEnajenacion|default_if_none:"-" }}</dd>
+                        </dl>
+                    {% endif %}
+                    <p class="ml-5 mb-2">II.5 - Otros ingresos no considerados a los anteriores (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionOtrosIng|intcomma|default:"(Ninguno)" }}</strong></p>
+                    {% if data.ingresos_netos.remuneracionOtrosIng > 0 %}
+                        <dl class="p_opciones text-uppercase">
+                            <dt>ESPECIFICAR TIPO DE INGRESO</dt>
+                            <dd class="text-black_opciones">{{ data.ingresos_netos.tipoOtrosIng|default_if_none:"-" }}</dd>
+                        </dl>
+                    {% endif %}
+                {% else %}
+                    <p class="ml-5 mb-2">II.4 - Otros ingresos no considerados a los anteriores (Después de impuestos): <strong>{{ data.ingresos_netos.remuneracionOtrosIng|intcomma|default:"(Ninguno)" }}</strong></p>
+                    {% if data.ingresos_netos.remuneracionOtrosIng > 0 %}
+                        <dl class="p_opciones text-uppercase ml-5">
+                            <dt>ESPECIFICAR TIPO DE INGRESO</dt>
+                            <dd class="text-black_opciones">{{ data.ingresos_netos.tipoOtrosIng|default_if_none:"-" }}</dd>
+                        </dl>
+                    {% endif %}
+                {% endif %}
+
+                {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                    <p class="ml-5 mb-2">A. Ingreso del declarante del año en curso a la fecha de conclusión del empleo, cargo o comisión (suma del numeral I y II): <strong>{{ data.ingresos_netos.ingreso_neto_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                    <p class="ml-5 mb-2">A. Ingreso anual neto del declarante (suma del numeral I y II): <strong>{{ data.ingresos_netos.ingreso_neto_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% elif data.decla.tipo_declaracion.codigo == 'INICIAL' %}
+                    <p class="ml-5 mb-2">A. Ingreso mensual neto del declarante (suma del numeral I y II): <strong>{{ data.ingresos_netos.ingreso_neto_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                {% endif %}
+
+                
+                {% comment %}<p class="ml-5 mb-2">C. Total de ingresos anuales netos percibidos por el declarante, pareja y/o dependientes económicos (Suma de los apartados A y B): <strong>{{ data.ingresos_netos.ingreso_neto_declarante_dependientes|intcomma|default:"(Ninguno)" }}</strong></p>{% endcomment %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- Ingresos netos del declarante -->
+
+{% if data.decla.tipo_declaracion.codigo != 'MODIFICACION' %}
+    <!-- Te desempeñaste como servidor público en el añi inmediato anterior -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            {% if data.datos_empleo.empleo_cargo_comision.completa %}
+                <h5><i class="far fa-user"></i>&nbsp;¿Te desempeñaste como Servidor Público el año inmediato anterior?</h5> 
+            {% else %}
+                <h5><i class="far fa-user"></i>&nbsp;¿Te desempeñaste como Servidor Público el año inmediato anterior?</h5> 
+            {% endif %}
+            <tr valign="top">
+                {% aplica data.decla.folio 'servidor-publico' as si_no %}
+                <td width="100%">
+                    {% if si_no %}
+                        <p class="ml-5 mb-2">¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? <strong>{{ si_no|yesno:"Si,No"|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Fecha de inicio: <strong>{{ data.servidor_publico.fecha_ingreso|default:"(Ninguno)" }}</strong></p>
+                        <p class="ml-5 mb-2">Fecha de salida: <strong>{{ data.servidor_publico.fecha_salida|default:"(Ninguno)" }}</strong></p>
+                        {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                            <p class="ml-5 mb-2">I - Remuneración anual neta del declarante por su cargo público (Por concepto de sueldos, honorarios, compensaciones, bonos y otras prestaciones) (cantidades netas después de impuestos): <strong>{{ data.servidor_publico.ingresosNeto|intcomma|titlecase|default:"(Ninguno)" }}</strong></p>
+                            {% comment %}I. REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO{% endcomment%}
+                        {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                            <p class="ml-5 mb-2">I - Remuneración anual neta del declarante por su cargo público (Por concepto de sueldos, honorarios, compensaciones, bonos y otras prestaciones) (Cantidades netas después de impuestos): <strong>{{ data.servidor_publico.ingresosNeto|intcomma|titlecase|default:"(Ninguno)" }}</strong></p>
+                            {% comment %}I. REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO{% endcomment%}
+                        {% elif data.decla.tipo_declaracion.codigo == 'INICIAL' %}
+                            <p class="ml-5 mb-2">I - REMUNERACIÓN ANUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO (POR CONCEPTO DE SUELDOS,
+                                HONORARIOS, COMPENSACIONES, BONOS, AGUINALDOS Y OTRAS PRESTACIONES) (CANTIDADES NETAS
+                                DESPUÉS DE IMPUESTOS): <strong>{{ data.servidor_publico.ingresosNeto|intcomma|titlecase|default:"(Ninguno)" }}</strong></p>
+                            {% comment %}I. REMUNERACIÓN MENSUAL NETA DEL DECLARANTE POR SU CARGO PÚBLICO{% endcomment%}
+                        {% endif %}
+
+                        {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                            <p class="ml-5 mb-2">II - Otros ingresos del declarante (Suma del II.1 al II.5): <strong>{{ data.servidor_publico.otros_ingresos_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                            {% comment %}II. OTROS INGRESOS ANUALES DEL DECLARANTE{% endcomment %}
+                        {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                            <p class="ml-5 mb-2">II - Otros ingresos anuales del declarante (Suma del II.1 al II.5): <strong>{{ data.servidor_publico.otros_ingresos_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                            {% comment %}II. OTROS INGRESOS ANUALES DEL DECLARANTE{% endcomment %}
+                        {% else %}
+                            <p class="ml-5 mb-2">II - OTROS INGRESOS DEL DECLARANTE, RECIBIDOS DURANTE EL TIEMPO EN EL QUE SE DESEMPEÑÓ COMO
+                                SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR (SUMA DEL II.1 AL II.5): <strong>{{ data.servidor_publico.otros_ingresos_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                            {% comment %}II. OTROS INGRESOS MENSUALES DEL DECLARANTE{% endcomment %}
+                        {% endif %}
+                        
+                        {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                            <p class="ml-5 mb-2">II.1 - Por actividad industrial, comercial y/o empresarial (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionActividadIndus|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                            <p class="ml-5 mb-2">II.1 - Por actividad industrial, comercial y/o empresarial (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionActividadIndus|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% else %}
+                            <p class="ml-5 mb-2">II.1 - Por actividad industrial, comercial y/o empresarial (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionActividadIndus|  intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% endif %}
+
+
+                        {% if data.servidor_publico.remuneracionActividadIndus > 0 %}
+                            <dl class="p_opciones text-uppercase ml-5">
+                                <dt>NOMBRE O RAZÓN SOCIAL</dt>
+                                <dd class="text-black_opciones">{{ data.servidor_publico.razonSocial }}</dd>
+                            </dl>
+                            <dl class="p_opciones text-uppercase ml-5">
+                                <dt>TIPO DE NEGOCIO</dt>
+                                <dd class="text-black_opciones">{{ data.servidor_publico.tipoNegocio }}</dd>
+                            </dl>
+                        {% endif %}
+
+                        {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                            <p class="ml-5 mb-2">II.2 - Por actividad financiera (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionActFinan|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                            <p class="ml-5 mb-2">II.2 - Por actividad financiera (después de impuestos): <strong>{{ data.servidor_publico.remuneracionActFinan|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% else %}
+                            <p class="ml-5 mb-2">II.2 - Por actividad financiera (Rendimientos o ganancias) (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionActFinan|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% endif %}
+
+
+                        {% if data.servidor_publico.remuneracionActFinan > 0 %}
+                            <dl class="p_opciones text-uppercase ml-5">
+                                <dt>TIPO DE INSTRUMENTO QUE GENERÓ EL RENDIMIENTO O GANANCIA</dt>
+                                <dd class="text-black_opciones">{{ data.servidor_publico.tipoActFinan }}</dd>
+                            </dl>
+                            {% if data.servidor_publico.tipoActFinan.codigo == 'OTRO' %}
+                                <dl class="p_opciones text-uppercase ml-5">
+                                    <dt>OTRO</dt>
+                                    <dd class="text-black_opciones">{{ data.servidor_publico.otroTipoInstrumentoGanancia }}</dd>
+                                </dl>
+                            {% endif %}
+                        {% endif %}
+
+                        <p class="ml-5 mb-2">II.3 - Por servicios profesionales, consejos, consultorías y / o asesorías (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionServProf|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% if data.servidor_publico.remuneracionServProf > 0 %}
+                            <dl class="p_opciones text-uppercase ml-5">
+                                <dt>TIPO DE SERVICIO PRESTADO</dt>
+                                <dd class="text-black_opciones">{{ data.servidor_publico.tipoServProf }}</dd>
+                            </dl>
+                        {% endif %}
+
+                        <p class="ml-5 mb-2">II.4 - Por enajenación de bienes (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionEnajenacion|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% if data.servidor_publico.remuneracionEnajenacion > 0 %}
+                            <dl class="p_opciones text-uppercase ml-5">
+                                <dt>TIPO BIEN ENAJENADO</dt>
+                                <dd class="text-black_opciones">{{ data.servidor_publico.tipoEnajenacion|default_if_none:"-" }}</dd>
+                            </dl>
+                        {% endif %}
+                        <p class="ml-5 mb-2">II.5 - Otros ingresos no considerados a los anteriores (Después de impuestos): <strong>{{ data.servidor_publico.remuneracionOtrosIng|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% if data.servidor_publico.remuneracionOtrosIng > 0 %}
+                            <dl class="p_opciones text-uppercase ml-5">
+                                <dt>ESPECIFICAR TIPO DE INGRESO</dt>
+                                <dd class="text-black_opciones">{{ data.servidor_publico.tipoOtrosIng|default_if_none:"-" }}</dd>
+                            </dl>
+                        {% endif %}
+
+                        {% if data.decla.tipo_declaracion.codigo == 'CONCLUSION' %}
+                            <p class="ml-5 mb-2">A. Ingreso anual neto del declarante (suma del numeral I y II): <strong>{{ data.servidor_publico.ingreso_neto_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% elif data.decla.tipo_declaracion.codigo == 'MODIFICACION' %}
+                            <p class="ml-5 mb-2">A. Ingreso anual neto del declarante (suma del numeral I y II): <strong>{{ data.servidor_publico.ingreso_neto_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% else %}
+                            <p class="ml-5 mb-2">A. Ingreso neto del declarante recibido en el año inmediato anterior (suma del numeral I y II): <strong>{{ data.servidor_publico.ingreso_neto_declarante|intcomma|default:"(Ninguno)" }}</strong></p>
+                        {% endif %}
+
+                        {% comment %}<p class="ml-5 mb-2">C. Total de ingresos anuales netos percibidos por el declarante, pareja y/o dependientes económicos (Suma de los apartados A y B): <strong>{{ data.servidor_publico.ingreso_neto_declarante_dependientes|intcomma|default:"(Ninguno)" }}</strong></p>{% endcomment %}
+                    {% else %}
+                        <p class="ml-5 mb-2">¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? <strong>{{ si_no|yesno:"Si,No"|default:"(Ninguno)" }}</strong></p>
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Te desempeñaste como servidor público en el añi inmediato anterior -->
+{% endif %}
+
+
+<!-- Por actividad financiera (Rendimientos o ganancias, después de impuestos) -->
+<!-- <table width="100%" cellspacing="0" cellpadding="4" style="border-bottom: 3px solid #9bba58;" class="mb-4">
+    <h5 class="mb-3"><i class="far fa-user"></i>&nbsp;Por actividad financiera (Rendimientos o ganancias, después de impuestos)</h5> 
+    <tbody>
+        <tr style="border-top: 3px solid #9bba58;border-bottom: 3px solid #9bba58;">
+            <td width="85%">
+                <h4 class="mb-2 mt-2" style="margin-bottom: 0px;"><strong>Tipo de instrumento</strong></h4>
+            </td>
+            <td width="15%">
+                <h4 class="mb-2 mt-2" style="margin-bottom: 0px;" align="center"><strong>Monto</strong></h4>
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'CAPITAL' %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Capital</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Capital</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'FONDOS DE INVERSIÓN' %}
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Fondos de inversión</strong></p>
+                </td>
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Fondos de inversión</strong></p>
+                </td>
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'ORGANIZACIONES PRIVADAS' %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Organizaciones privadas</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Organizaciones privadas</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'SEGURO DE SEPARACIÓN' %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Seguro de separación individualizado</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Seguro de separación individualizado</strong></p>
+                </td>
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'VALORES BURSÁTILES' %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Valores bursátiles</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Valores bursátiles</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'BONOS' %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Bonos</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Bonos</strong></p>
+                </td>
+                <td style="background: #ffffff;" bgcolor="#ffffff" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+        <tr valign="top">
+            {% if ingresos_netos.actividad_financiera.tipo in 'OTRO' %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Otros (Especifique)</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ ingresos_netos.actividad_financiera.remuneracionActFinan|intcomma|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% else %}
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                    <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Otros (Especifique)</strong></p>
+                </td>
+                <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                    <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center">
+                        <strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong>
+                    </p>
+                </td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table> -->
+<!-- Por actividad financiera (Rendimientos o ganancias, después de impuestos) -->
+
+<!-- Por servicios profesionales, consejos, consultorías y/o asesorías (Después de impuestos) -->
+<!-- <table width="100%" cellspacing="0" cellpadding="4" style="border-bottom: 3px solid #9bba58;" class="mb-4">
+    <h5 class="mb-3"><i class="far fa-user"></i>&nbsp;Por servicios profesionales, consejos, consultorías y/o asesorías (Después de impuestos)</h5> 
+    <tbody>
+        <tr style="border-top: 3px solid #9bba58;border-bottom: 3px solid #9bba58;">
+            <td width="85%">
+                <h4 class="mb-2 mt-2" style="margin-bottom: 0px;"><strong>Tipo de servicio</strong></h4>
+            </td>
+            <td width="15%">
+                <h4 class="mb-2 mt-2" style="margin-bottom: 0px;" align="center"><strong>Monto</strong></h4>
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr valign="top">
+            <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Capital</strong></p>
+            </td>
+            <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center"><strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong></p>
+            </td>
+        </tr>
+    </tbody>
+</table> -->
+<!-- Por servicios profesionales, consejos, consultorías y/o asesorías (Después de impuestos) -->
+
+<!-- Por enajenación de bienes (Después de impuestos) -->
+<!-- <table width="100%" cellspacing="0" cellpadding="4" style="border-bottom: 3px solid #9bba58;" class="mb-4">
+    <h5 class="mb-3"><i class="far fa-user"></i>&nbsp;Por enajenación de bienes (Después de impuestos)</h5> 
+    <tbody>
+        <tr style="border-top: 3px solid #9bba58;border-bottom: 3px solid #9bba58;">
+            <td width="85%">
+                <h4 class="mb-2 mt-2" style="margin-bottom: 0px;"><strong>Tipo de servicio</strong></h4>
+            </td>
+            <td width="15%">
+                <h4 class="mb-2 mt-2" style="margin-bottom: 0px;" align="center"><strong>Monto</strong></h4>
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr valign="top">
+            <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Mueble</strong></p>
+            </td>
+            <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center"><strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong></p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="background: #ffffff;" bgcolor="#ffffff" width="85%">
+                <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Inmueble</strong></p>
+            </td>
+            <td style="background: #ffffff;" bgcolor="#ffffff" width="15%">
+                <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center"><strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong></p>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td style="background: #dde8cb;" bgcolor="#dde8cb" width="85%">
+                <p class="ml-2 mb-1 mt-1" style="margin-bottom: 0px;"><strong>Vehículo</strong></p>
+            </td>
+            <td style="background: #dde8cb;" bgcolor="#dde8cb" width="15%">
+                <p class="mb-1 mt-1" style="margin-bottom: 0px;" align="center"><strong>{{ act_financiera.capital|titlecase|default:"(NINGUNO)" }}</strong></p>
+            </td>
+        </tr>
+    </tbody>
+</table> -->
+<!-- Por enajenación de bienes (Después de impuestos) -->
+
+{% if data.datos_empleo.empleo_cargo_comision.completa %}
+    <!-- Bienes inmuebles (Entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Bienes inmuebles</h5>
+                <p>Todos los datos de bienes declarados a nombre de la de la pareja, dependientes económicos y/o terceros o que sea en copropiedad con el declarante no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'bienes-inmuebles' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for inmueble in data.bienes_inmuebles %}
+                            {% if inmueble.titular.nombre == 'DECLARANTE' and inmueble.porcentaje == 100.00 %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de inmueble: <strong>{{ inmueble.cat_tipos_inmuebles|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Titular del inmueble: <strong>{{ inmueble.titular|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Porcentaje de propiedad del declarante conforme a escrituración o contrato: <strong>{{ inmueble.porcentaje|stringformat:"d%%"|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Superficie del terreno: <strong>{{ inmueble.superficie_terreno|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Superficie de construcción: <strong>{{ inmueble.superficie_construccion|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Forma de pago: <strong>{{ inmueble.tipoFormaPago|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Valor de adquisición: <strong>{{ inmueble.precio_adquisicion|intcomma|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Forma de adquisición: <strong>{{ inmueble.forma_adquisicion|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de moneda: <strong>{{ inmueble.cat_monedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Fecha de adquisición: <strong>{{ inmueble.fecha_contrato_compra|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">¿El valor de adquisición del inmueble es conforme a?: <strong>{{ inmueble.tipoValorAdquisicion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% if not inmueble.propietario_anterior.otra_persona.es_fisica %}
+                                                    <p class="ml-5 mb-2">Identificación del Transmisor (solamente si es persona moral): <strong>{{ inmueble.transmisor|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">Nombre, denominación o razón social de quien se adquirió el inmueble: <strong>{{ inmueble.propietario_anterior.otra_persona.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">RFC de quien adquirió el inmueble: <strong>{{ inmueble.propietario_anterior.otra_persona.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Bienes inmuebles (Entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+
+    <!-- Bienes muebles (Entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Bienes muebles</h5>
+                <p>Todos los datos de bienes declarados a nombre de la de la pareja, dependientes económicos y/o terceros o que sea en copropiedad con el declarante no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'muebles-noregistrables' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for mueble in data.bienes_muebles %}
+                            {% if mueble.titular.nombre == 'DECLARANTE' and mueble.porcentaje == 100.00 %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de bien mueble: <strong>{{ mueble.cat_tipos_muebles|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Porcentaje: <strong>{{ mueble.porcentaje|floatformat:0|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Titular: <strong>{{ mueble.titular.nombre|upper|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Identificación del Transmisor (solamente si es persona moral): <strong>{{ mueble.transmisor|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">R.F.C. (solamente si es persona moral): <strong>{{ mueble.rfc|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Razón social (solamente si es persona moral): <strong>{{ mueble.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Descripción general del bien: <strong>{{ mueble.descripcion_bien|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Forma de adquisición: <strong>{{ mueble.cat_formas_adquisiciones|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Forma de pago: <strong>{{ mueble.tipoFormaPago|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Valor de adquisición: <strong>{{ mueble.precio_adquisicion|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de moneda: <strong>{{ mueble.cat_monedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Fecha de adquisición: <strong>{{ mueble.fecha_adquisicion|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Bienes muebles (Entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+
+    <!-- Vehículos (Entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Vehículos</h5>
+                <p>Todos los datos de vehículos declarados a nombre de la pareja, dependientes económicos y/o terceros o que sea en copropiedad con el declarante no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'bienes-muebles' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for vehiculo in data.vehiculos %}
+                            {% if vehiculo.cat_titular_bienes == 'DECLARANTE' and vehiculo.porcentaje == 100.00 %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de vehículo: <strong>{{ vehiculo.cat_tipos_muebles|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Titular del vehículo: <strong>{{ vehiculo.cat_titular_bienes|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Porcentaje: <strong>{{ vehiculo.porcentaje|floatformat:0|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Transmisor (solamente si es persona moral): <strong>{{ vehiculo.transmisor|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Razón social (solamente si es persona moral): <strong>{{ vehiculo.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">R.F.C. (solamente si es persona moral): <strong>{{ vehiculo.rfc|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de moneda: <strong>{{ vehiculo.cat_monedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Marca: <strong>{{ vehiculo.marca|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Modelo: <strong>{{ vehiculo.submarca|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Año: <strong>{{ vehiculo.modelo|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Valor de adquisición: <strong>{{ vehiculo.precio_adquisicion|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Forma de adquisición: <strong>{{ vehiculo.cat_formas_adquisiciones|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Forma de pago: <strong>{{ vehiculo.tipoFormaPago|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Fecha de adquisición del vehículo: <strong>{{ vehiculo.fecha_adquisicion|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Vehículos (Entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+
+    <!-- Inversiones, cuentas bancarias y otro tipo de valores / activos (entre el 1 de enero y el 31 de diciembre del año) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Inversiones, cuentas bancarias y otro tipo de valores / activos</h5>
+                <p>Todos los datos de las inversiones, cuentas bancarias y otro tipo de valores / activos a nombre de la pareja, dependientes económicos y o terceros o que sean en copropiedad con el declarante no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'inversiones' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for inversion in data.inversiones %}
+                            {% if inversion.titular.nombre == 'DECLARANTE' and inversion.porcentaje == 100.00 %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Institución o razón social: <strong>{{ inversion.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">R.F.C. De la institución: <strong>{{ inversion.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Porcentaje: <strong>{{ inversion.porcentaje|floatformat:0|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de inversión/activo: <strong>{{ inversion.cat_tipos_operaciones|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% if inversion.cat_tipos_operaciones.codigo == 'INCP' %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.cat_tipos_inversiones|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% elif inversion.cat_tipos_operaciones.codigo == 'OBR' %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.invFondosInversion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% elif inversion.cat_tipos_operaciones.codigo == 'VNT' %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.invOrganizacionesPrivadas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% elif inversion.cat_tipos_operaciones.codigo == 'SCAMB' %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.invPosesionMonedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% elif inversion.cat_tipos_operaciones.codigo == 'XXX1' %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.invSeguros|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% elif inversion.cat_tipos_operaciones.codigo == 'XXX2' %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.invBursatiles|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% else %}
+                                                    <p class="ml-5 mb-2">Subtipo de inversión: <strong>{{ inversion.invAfores|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% endif %}
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de moneda: <strong>{{ inversion.cat_monedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Titular de la inversión, cuenta bancaria y otro tipo de valores: <strong>{{ inversion.titular|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% if data.decla.tipo_declaracion.codigo == 'INICIAL' %}
+                                                    <p class="ml-5 mb-2">Saldo a la fecha (situación actual): <strong>{{ inversion.saldo_actual|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                {% endif %}
+                                                {% if inversion.ubicacion.codigo == 'MX' %}
+                                                    <p class="ml-5 mb-2">¿Dónde se localiza la inversión, cuenta bancaria y otro tipo de valores/activos?: <strong>{{ inversion.ubicacion|titlecase|default:"(Ninguno)" }}{% if inversion.cat_entidades_federativas %}, {{ inversion.cat_entidades_federativas|titlecase|default:"(Ninguno)" }} {% endif %}</strong></p>
+                                                {% else %}
+                                                    <p class="ml-5 mb-2">¿Dónde se localiza la inversión, cuenta bancaria y otro tipo de valores/activos?: <strong>{{ inversion.ubicacion|titlecase|default:"(Ninguno)" }}{% if inversion.cat_paises %}, {{ inversion.cat_paises|titlecase|default:"(Ninguno)" }} {% endif %}</strong></p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Inversiones, cuentas bancarias y otro tipo de valores / activos (entre el 1 de enero y el 31 de diciembre del año) -->
+
+    <!-- Adeudos / Pasivos (entre el 1 de enero y el 31 de diciembre del año inmediato anterior solamente si el declarante no tiene copropiedad) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Adeudos / Pasivos</h5>
+                <p>Todos los datos de los adeudos / pasivos a nombre de la pareja, dependientes económicos y o terceros o que sean en copropiedad con el declarante no serán públicos</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'deudas-otros' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for adeudo in data.adeudos %}
+                            {% if adeudo.titular.nombre == 'DECLARANTE' and adeudo.porcentaje == 100.00 %}
+                                <table style="width:100%">
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Titular del adeudo / pasivo: <strong>{{ adeudo.titular|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Porcentaje: <strong>{{ adeudo.porcentaje|floatformat:0|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de adeudo: <strong>{{ adeudo.cat_tipos_adeudos|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Monto original del adeudo / pasivo: <strong>{{ adeudo.monto_original|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de moneda: <strong>{{ adeudo.cat_monedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Fecha de adquisición: <strong>{{ adeudo.fecha_generacion|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                                {% if data.decla.tipo_declaracion.codigo == 'INICIAL' %}
+                                                    <p class="ml-5 mb-2">Saldo insoluto a la fecha de inicio del empleo: <strong>{{ adeudo.saldo_pendiente|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                {% endif %}
+                                                <p class="ml-5 mb-2">R.F.C. Del otorgante (solamente si es persona moral): <strong>{{ adeudo.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Nombre, denominación o razón social del otorgante: <strong>{{ adeudo.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% if adeudo.ubicacion.codigo == 'MX' %}
+                                                    <p class="ml-5 mb-2">¿Dónde se localiza el adeudo?: <strong>{{ adeudo.ubicacion|titlecase|default:"(Ninguno)" }}{% if adeudo.cat_entidades_federativas %}, {{ adeudo.cat_entidades_federativas|titlecase|default:"(Ninguno)" }} {% endif %}</strong></p>
+                                                {% else %}
+                                                    <p class="ml-5 mb-2">¿Dónde se localiza el adeudo?: <strong>{{ adeudo.ubicacion|titlecase|default:"(Ninguno)" }}{% if adeudo.cat_paises %}, {{ adeudo.cat_paises|titlecase|default:"(Ninguno)" }} {% endif %}</strong></p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Adeudos / Pasivos (entre el 1 de enero y el 31 de diciembre del año inmediato anterior solamente si el declarante no tiene copropiedad) -->
+
+    <!-- Préstamo o comodato por terceros (entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Préstamo o comodato por terceros</h5>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'beneficios-especie' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for beneficio in data.beneficios %}
+                            <table>
+                                <tbody>
+                                    <tr valign="top">
+                                        <td width="50%">
+                                            <p class="ml-5 mb-2">Tipo de préstamo o comodato: <strong>{{ beneficio.tipo_especie|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Nombre, denominación o razón social del dueño o titular (solamente si es persona moral): <strong>{{ beneficio.razon_social|default:"(Ninguno)" }}</strong></p>
+                                        </td>
+                                        <td width="50%">
+                                            <p class="ml-5 mb-2">Tipo de bien: <strong>{{ beneficio.tipo_bien|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">R.F.C. (solamente si es persona moral): <strong>{{ beneficio.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Préstamo o comodato por terceros (entre el 1 de enero y el 31 de diciembre del año inmediato anterior) -->
+
+    <!-- DECLARACION DE INTERESES -->
+    <div class="mt-5 mb-3">
+        <h4>II. DECLARACIÓN DE INTERESES</h4>
+    </div>
+    <!-- DECLARACION DE INTERESES -->
+
+    <!-- Participación en empresas, sociedades o asociaciones (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Participación en empresas, sociedades o asociaciones (hasta los 2 últimos años)</h5>
+                <p>Todos los datos de la participación en empresas, sociedades o asociaciones de la pareja o dependientes económicos no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'empresas-sociedades-asociaciones' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for participacion in data.participaciones %}
+                            {% if participacion.declarante %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Nombre de la empresa, sociedades o asociación: <strong>{{ participacion.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">R.F.C.: <strong>{{ participacion.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Porcentaje de participación de acuerdo a escritura: <strong>{{ participacion.porcentaje|stringformat:"d%%"|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de participación: <strong>{{ participacion.tipo_participacion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                {% comment %}{% if participacion.actividad_economica %}
+                                                <dl class="p_opciones text-uppercase ml-5">
+                                                    <dt>Monto mensual neto</dt>
+                                                    <dd class="text-black_opciones">{{ participacion.monto }}</dd>
+                                                </dl>
+                                                {% endif %}{% endcomment %}
+                                                <p class="ml-5 mb-2">Lugar dónde se ubica: <strong>{{ participacion.ubicacion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Sector productivo al que pertenece: <strong>{{ participacion.cat_sectores_industria|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">¿Recibe remuneración por su participación?: <strong>{{ participacion.actividad_economica|yesno:"Si,No"|default:"(Ninguno)" }}</strong></p>
+                                                {% if participacion.actividad_economica %}
+                                                    <p class="ml-5 mb-2">Monto mensual neto: <strong>{{ participacion.monto|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else%}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Participación en empresas, sociedades o asociaciones (hasta los 2 últimos años) -->
+
+    <!-- ¿Participa en la toma de decisiones de alguna de estas instituciones? (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;¿Participa en la toma de decisiones de alguna de estas instituciones? (hasta los 2 últimos años)</h5>
+                <p>Todos los datos de la participación en alguna de estas instituciones de la pareja o dependientes económicos no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'membresias' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for membresia in data.membresias %}
+                            {% if membresia.declarante and not membresia.pareja and not membresia.dependiente %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de institución: <strong>{{ membresia.cat_tipos_instituciones|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Puesto: <strong>{{ membresia.puesto_rol|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Fecha de inicio de participación dentro de la institución: <strong>{{ membresia.fecha_inicio|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">¿Recibe remuneración por su participación?: <strong>{{ membresia.remuneracion|yesno:"Si,No"|default:"(Ninguno)" }}</strong></p>
+                                                {% if membresia.remuneracion %}
+                                                    <dl class="p_opciones text-uppercase ml-5">
+                                                        <dt>Monto mensual neto</dt>
+                                                        <dd class="text-black_opciones">{{ membresia.monto|intcomma|default:"(Ninguno)" }}</dd>
+                                                    </dl>
+                                                {% endif %}
+                                                {% if membresia.ubicacion.codigo == 'MX'%}
+                                                    <p class="ml-5 mb-2">Lugar donde se ubica: <strong>{{ membresia.ubicacion|titlecase|default:"(Ninguno)" }}{% if membresia.cat_entidades_federativas %}, {{ membresia.cat_entidades_federativas|titlecase|default:"(Ninguno)" }}{% endif %}</strong></p>
+                                                {% else %}
+                                                    <p class="ml-5 mb-2">Lugar donde se ubica: <strong>{{ membresia.ubicacion|titlecase|default:"(Ninguno)" }}{% if membresia.cat_paises %}, {{ membresia.cat_paises|titlecase|default:"(Ninguno)" }}{% endif %}</strong></p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- ¿Participa en la toma de decisiones de alguna de estas instituciones? (hasta los 2 últimos años) -->
+
+    <!-- Apoyos o beneficios públicos (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Apoyos o beneficios públicos (hasta los 2 últimos años)</h5>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'apoyos' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for apoyo in data.apoyos %}
+                            <table>
+                                <tbody>
+                                    <tr valign="top">
+                                        <td width="50%">
+                                            <p class="ml-5 mb-2">Nombre del programa: <strong>{{ apoyo.nombre_programa|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Institución que otorga el apoyo: <strong>{{ apoyo.institucion_otorgante|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Tipo de apoyo: <strong>{{ apoyo.cat_tipos_apoyos|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            {% if apoyo.cat_tipos_apoyos.codigo == 'OTRO' %}
+                                                <p class="ml-5 mb-2">Otro tipo de apoyo: <strong>{{ apoyo.otro_tipo_apoyo|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            {% endif %}
+                                        </td>
+                                        <td width="50%">
+                                            <p class="ml-5 mb-2">Nivel u orden de gobierno: <strong>{{ apoyo.cat_ordenes_gobierno|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Forma de recepción del apoyo: <strong>{{ apoyo.recepcion_beneficio|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            {% if apoyo.recepcion_beneficio.nombre == 'MONETARIO' %}
+                                                <p class="ml-5 mb-2">Monto aproximado del apoyo mensual: <strong>{{ apoyo.valor_anual|intcomma|default:"(Ninguno)" }}</strong></p>
+                                            {% elif apoyo.recepcion_beneficio.nombre == 'ESPECIE' %}
+                                                <p class="ml-5 mb-2">Especifique el apoyo: <strong>{{ apoyo.otro_apoyo|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Apoyos o beneficios públicos (hasta los 2 últimos años) -->
+
+    <!-- Representación (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Representación (hasta los 2 últimos años)</h5>
+                <p>Todos los datos de representación de la pareja o dependientes económicos no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'representacion-activa' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for representacion in data.representaciones %}
+                            {% if representacion.declarante and not representacion.pareja and not representacion.dependiente %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de representación: <strong>{{ representacion.cat_tipos_representaciones|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Fecha de inicio de la representación: <strong>{{ representacion.fecha_inicio|date:"j \d\e F \d\e Y"|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Nombre de la parte representada (solo si es persona moral): <strong>{{ representacion.es_fisica|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Razón social: <strong>{{ representacion.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">R.F.C. (solamente si es persona moral): <strong>{{ representacion.rfc|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Monto: <strong>{{ representacion.monto|intcomma|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">¿Recibe remuneración por su participación?: <strong>{{ representacion.pagado|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Lugar donde se ubica: <strong>{{ representacion.ubicacion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Sector productivo al que pertenece: <strong>{{ representacion.cat_sectores_industria|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Representación (hasta los 2 últimos años) -->
+
+    <!-- Clientes principales (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Clientes principales (hasta los 2 últimos años)</h5>
+                <p>Todos los datos de clientes principales de la pareja o dependientes económicos no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'clientes-principales' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for cliente in data.clientes %}
+                            {% if cliente.declarante and not cliente.pareja and not cliente.dependiente %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            {% if cliente.actividadIndependiente %}
+                                                <td width="50%">
+                                                    <p class="ml-5 mb-2">¿Realiza alguna actividad lucrativa independiente al empleo cargo o comisión?: <strong>{{ cliente.actividadIndependiente|yesno:"Si,No"|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">Nombre de la empresa o servicio que proporciona: <strong>{{ cliente.nombre_negocio|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">R.F.C. Moral: <strong>{{ cliente.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">Nombre del cliente principal del negocio o actividad lucrativa (solamente si es persona moral): <strong>{{ cliente.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">Monto aproximado del beneficio o ganancia mensual: <strong>{{ cliente.monto|default:"(Ninguno)" }}</strong></p>
+                                                </td>
+                                                <td width="50%">
+                                                    <p class="ml-5 mb-2">R.F.C. Del cliente principal (solamente si es persona moral): <strong>{{ cliente.rfc_cliente|upper|default:"(Ninguno)" }}</strong></p>
+                                                    <p class="ml-5 mb-2">Sector productivo al que pertenece: <strong>{{ cliente.cat_sectores_industria|default:"(Ninguno)" }}</strong></p>
+                                                    {% if cliente.ubicacion.codigo == 'MX' %}
+                                                        <p class="ml-5 mb-2">Lugar donde se ubica: <strong>{{ cliente.ubicacion|default:"(Ninguno)" }}{% if cliente.cat_entidades_federativas %}, {{ cliente.cat_entidades_federativas|default:"(Ninguno)" }}{% endif %}</strong></p>
+                                                    {% else %}
+                                                        <p class="ml-5 mb-2">Lugar donde se ubica: <strong>{{ cliente.ubicacion|default:"(Ninguno)" }}{% if cliente.cat_paises %}, {{ cliente.cat_paises|default:"(Ninguno)" }}{% endif %}</strong></p>
+                                                    {% endif %}
+                                                </td>
+                                            {% else %}
+                                                <td width="50%">
+                                                    <p class="ml-5 mb-2">¿Realiza alguna actividad lucrativa independiente al empleo cargo o comisión?: <strong>{{ cliente.actividadIndependiente|yesno:"Si,No"|default:"(Ninguno)" }}</strong></p>
+                                                </td>
+                                                <td width="50%"></td>
+                                            {% endif %}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Clientes principales (hasta los 2 últimos años) -->
+
+    <!-- Beneficios privados (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Beneficios privados (hasta los 2 últimos años)</h5>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'beneficios-privados' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for bprivado in data.beneficios_privados %}
+                            <table>
+                                <tbody>
+                                    <tr valign="top">
+                                        <td width="50%">
+                                            <p class="ml-5 mb-2">Tipo de beneficio: <strong>{{ bprivado.cat_tipos_beneficios|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Beneficiario (solamente si es persona moral): <strong>{% comment %}{{ bprivado.TipoBeneficiario|titlecase|default:"(Ninguno)" }}{% endcomment %}</strong></p>
+                                            <p class="ml-5 mb-2">Identificación del otorgante (solamente si es persona moral): <strong>{{ bprivado.razon_social|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">R.F.C. (solamente si es persona moral): <strong>{{ bprivado.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                        </td>
+                                        <td width="50%">
+                                            <p class="ml-5 mb-2">Forma de recepción del beneficio: <strong>{{ bprivado.recepcion_beneficio|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Monto mensual aproximado del beneficio: <strong>{{ bprivado.valor_beneficio|intcomma|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Tipo de moneda: <strong>{{ bprivado.cat_monedas|titlecase|default:"(Ninguno)" }}</strong></p>
+                                            <p class="ml-5 mb-2">Sector al que pertenece: <strong>{{ bprivado.cat_sectores_industria|titlecase|default:"(Ninguno)" }}</strong></p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Fideicomisos (hasta los 2 últimos años) -->
+    <table width="100%" cellspacing="0" class="mb-4">
+        <tbody>
+            <tr valign="top">
+                <h5><i class="far fa-user"></i>&nbsp;Participación en Fideicomisos (hasta los 2 últimos años)</h5>
+                <p>Todos los datos de participación en fideicomisos de pareja o dependiente economico no serán públicos.</p>
+                <td width="100%">
+                    {% no_aplica data.decla.folio 'fideicomisos' as checked %}
+                    {% if checked %}
+                        {% include 'declaracion/admin/frm_no_aplica.html' %}
+                    {% else %}
+                        {% for fideicomiso in data.fideicomisos %}
+                            {% if fideicomiso.declarante and not fideicomiso.pareja and not fideicomiso.dependiente %}
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <p class="ml-5 mb-2">Tipo de participación: <strong>{{ fideicomiso.cat_tipo_participacion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Tipo de fideicomiso: <strong>{{ fideicomiso.cat_tipos_fideicomisos|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Dónde se localiza: <strong>{{ fideicomiso.ubicacion|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                <p class="ml-5 mb-2">Sector productivo al que pertenece: <strong>{{ fideicomiso.cat_sectores_industria|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% if fideicomiso.cat_sectores_industria.codigo == 'OTRO' %}
+                                                    <p class="ml-5 mb-2">Otro sector: <strong>{{ fideicomiso.otro_sector|titlecase|default:"(Ninguno)" }}</strong></p>
+                                                {% endif %}
+                                                <p class="ml-5 mb-2">R.F.C. del fideicomiso: <strong>{{ fideicomiso.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                {% if fideicomiso.declarante and not fideicomiso.pareja and not fideicomiso.dependiente %}
+                                                    <p class="ml-5 mb-2">Participación en fideicomisos: <strong>Declarante</strong></p>
+                                                {% elif not fideicomiso.declarante and fideicomiso.pareja and not fideicomiso.dependiente %}
+                                                    <p class="ml-5 mb-2">Participación en fideicomisos: <strong>Pareja</strong></p>
+                                                {% elif fideicomiso.declarante and not fideicomiso.pareja and fideicomiso.dependiente %}
+                                                    <p class="ml-5 mb-2">Participación en fideicomisos: <strong>Dependiente económico</strong></p>
+                                                {% endif %}
+                                            </td>
+                                            <td width="50%">
+                                                {% if fideicomiso.rule == 1 %}
+                                                    <p class="ml-5 mb-2">Identificación del Fiduciario: <strong>{{ fideicomiso.fiduciario.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if fideicomiso.fiduciario.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fiduciario: <strong>{{ fideicomiso.fiduciario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fiduciario: <strong>{{ fideicomiso.fiduciario.full_name|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% else %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fiduciario: <strong>{{ fideicomiso.fiduciario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fiduciario: <strong>{{ fideicomiso.fiduciario.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                    <p class="ml-5 mb-2">Identificación del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if not fideicomiso.fideicomisario.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                {% elif fideicomiso.rule == 2 %}
+                                                    <p class="ml-5 mb-2">Identificación del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if not fideicomiso.fideicomitente.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                    <p class="ml-5 mb-2">Identificación del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if not fideicomiso.fideicomisario.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                {% elif fideicomiso.rule == 3 %}
+                                                    <p class="ml-5 mb-2">Identificación del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if not fideicomiso.fideicomitente.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                    <p class="ml-5 mb-2">Identificación del Fiduciario: <strong>{{ fideicomiso.fiduciario.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if fideicomiso.fiduciario.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fiduciario: <strong>{{ fideicomiso.fiduciario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fiduciario: <strong>{{ fideicomiso.fiduciario.full_name|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% else %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fiduciario: <strong>{{ fideicomiso.fiduciario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fiduciario: <strong>{{ fideicomiso.fiduciario.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                {% elif fideicomiso.rule == 4 %}
+                                                    <p class="ml-5 mb-2">Identificación del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if not fideicomiso.fideicomitente.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fideicomitente: <strong>{{ fideicomiso.fideicomitente.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                    <p class="ml-5 mb-2">Identificación del Fiduciario: <strong>{{ fideicomiso.fiduciario.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if fideicomiso.fiduciario.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fiduciario: <strong>{{ fideicomiso.fiduciario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fiduciario: <strong>{{ fideicomiso.fiduciario.full_name|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% else %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fiduciario: <strong>{{ fideicomiso.fiduciario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fiduciario: <strong>{{ fideicomiso.fiduciario.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                    <p class="ml-5 mb-2">Identificación del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.es_fisica|yesno:"Fisica,Moral"|default:"(Ninguno)" }}</strong></p>
+                                                    {% if not fideicomiso.fideicomisario.es_fisica %}
+                                                        <p class="ml-5 mb-2">R.F.C. del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.rfc|upper|default:"(Ninguno)" }}</strong></p>
+                                                        <p class="ml-5 mb-2">Nombre, denominación o razón social del Fideicomisario: <strong>{{ fideicomiso.fideicomisario.razon_social|upper|default:"(Ninguno)" }}</strong></p>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% else %}
+                                <table>
+                                    <tbody>
+                                        <tr valign="top">
+                                            <td width="50%">
+                                                <strong>(NINGUNO)</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
+                            {% endif %}
+                        {% empty %}
+                            <strong>(NINGUNO)</strong>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endif %}
+<br><br>

@@ -1,0 +1,296 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html' %}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">DATOS DEL DEPENDIENTE ECONÓMICO</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 text-uppercase mb-2">
+          7. DATOS DEL DEPENDIENTE ECONÓMICO
+        </h2>
+        {% tipo_declaracion_code as tipo %}
+        {% if tipo == 'INICIAL' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos dependientes económicos que hayas adquirido en el mes inmediato.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'CONCLUSION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos dependientes económicos que hayas adquirido entre el 01 de enero y 31 de diciembre 2020.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'MODIFICACION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos dependientes económicos que hayas adquirido entre el 01 de enero y 31 de diciembre 2020.</li>
+            </ul>
+          </div>
+        {% endif %}
+        <p class="text-muted text-sm mb-3 mt-3">TODOS LOS DATOS RELATIVOS A MENORES DE EDAD NO SERÁN PÚBLICOS</p>
+        <p class="text-muted text-sm mb-3 mt-3">Proporcionar los datos de los dependientes económicos, que son aquellas personas, familiares o no, cuya manutención depende principalmente de los ingresos del declarante</p>
+        <p class="text-muted text-sm mb-3 mt-3">En caso de contar con información previamente registrada, da clic en (Agregar) y podras visalizar asi como actualizar tu información, al finalizar da clic en (guardar y continuar) para segir con tu declaración</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:dependientes-economicos-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:dependientes-economicos-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+        {% comment %} href="{% url 'declaracion:dependientes-economicos-agregar' folio_declaracion %}" {% endcomment %}
+          <a href="javascript:alta('declaracion:dependientes-economicos-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+            Agregar dependiente económico
+            <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+          </a>
+          <form action="{% url 'declaracion:dependientes-economicos' folio_declaracion %}" method="post" novalidate>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="NOMBRE" titulo_dos="TIPO DE RELACIÓN" titulo_tres="FECHA DE NACIMIENTO" agregar=agregar editar_id=editar_id %}
+            {% csrf_token %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <input type="hidden" name="no_aplica" value="on">
+            {% aplica as not_submit %}
+            {% include 'layout/guardar.html' with not_submit=not_submit %}
+          </form>
+          <form class="areyousure" style="display: none;" action="{% url 'declaracion:dependientes-economicos' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+          {% csrf_token %}
+          <input type="hidden" name="var-es_fisica" value="True">
+            <div class="row">
+              {% include 'layout/no_aplica.html' %}
+            </div>
+            {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="NOMBRE" titulo_dos="TIPO DE RELACIÓN" titulo_tres="FECHA DE NACIMIENTO" agregar=agregar editar_id=editar_id %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <div class="row-form" style="{% if checked %}display: none;{% endif %}">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    {% include 'elementos/label.html' with for_label="relacion-nombre" text_label="NOMBRE(S)" title_button="Nombre(S) completos del cónyuge o dependiente económico, sin abreviaturas y preferentemente sin acentos ni signos  especiales." is_required=True %}
+                    {% bootstrap_field info_personal_var_form.nombres   show_label=False  field_class="solo_letras"  %}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    {% include 'elementos/label.html' with for_label="relacion-apellido1" text_label="PRIMER APELLIDO"  legend=False title_button="Sin abreviaturas, sin acentos, ni signos especiales." is_required=True %}
+                    {% bootstrap_field info_personal_var_form.apellido1 show_label=False placeholder="Primer apellido"  field_class="solo_letras" %}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    {% include 'elementos/label.html' with for_label="relacion-apellido2" text_label="SEGUNDO APELLIDO"  legend=True title_button="Sin abreviaturas, sin acentos, ni signos especiales y en caso de no tener poner X." is_required=True %}
+                    {% bootstrap_field info_personal_var_form.apellido2 show_label=False placeholder="Segundo apellido" field_class="solo_letras" %}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    {% include 'elementos/label.html' with text_label="FECHA DE NACIMIENTO" title_button="dd/mm/aaaa" is_required=True %}
+                      {% bootstrap_field info_personal_var_form.fecha_nacimiento  show_label=False placeholder="Fecha de nacimiento" %}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  {% include 'elementos/label.html' with for_label="relacion-rfc" text_label="RFC" apply=True title_button="R.F.C. con homoclave." is_required=False %}
+                  {% bootstrap_field info_personal_var_form.rfc show_label=False placeholder="RFC" %}
+                </div>
+              </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with text_label="¿ES CIUDADANO EXTRANJERO?" title_button="Indicar si es o no Extranjero" is_required=True %}
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                          <input type="radio" id="extranjero-si" name="conyuge_dependiente-ciudadanoExtranjero" value="true" class="custom-control-input" {% if conyuge_dependiente_form.ciudadanoExtranjero.initial == True %} checked {% endif %}>
+                          <label class="custom-control-label text-rg" for="extranjero-si">Sí</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                          <input type="radio" id="extranjero-no" name="conyuge_dependiente-ciudadanoExtranjero" value="false" class="custom-control-input" {% if conyuge_dependiente_form.ciudadanoExtranjero.initial == False %} checked {% endif %}>
+                          <label class="custom-control-label text-rg" for="extranjero-no">No</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with for_label="relacion-curp" text_label="CURP" apply=True title_button="Los 18 caracteres de la Clave Unica de Registro de Población." is_required=True %}
+                    {% bootstrap_field info_personal_var_form.curp  field_class='valida_curp' show_label=False placeholder="CURP" %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-5">
+                    {% include 'elementos/label.html' with text_label="PARENTESCO O RELACIÓN CON EL DECLARANTE" title_button="Indicar el tipo de relación con el cónyuge o dependiente económico." is_required=True %}
+                    {% bootstrap_field conyuge_dependiente_form.cat_tipos_relaciones_personales field_class='entidad' show_label=False %}
+                  </div>
+                  <div class="col-md-4" id="otro-{{ conyuge_dependiente_form.cat_tipos_relaciones_personales.html_name }}">
+                    {% include 'elementos/label.html' with text_label="OTRO" title_button="Indicar el tipo de relación con el cónyuge o dependiente económico." %}
+                    {% bootstrap_field conyuge_dependiente_form.otra_relacion show_label=False %}
+                    <!-- <input type="text" name="{{ conyuge_dependiente_form.otra_relacion.html_name }}" maxlength="128" class="form-control" placeholder="Especifique" title="Especifique" id="id_{{ conyuge_dependiente_form.otra_relacion.html_name }}" value="{% if conyuge_dependiente_form.otra_relacion.initial %}{{ conyuge_dependiente_form.otra_relacion.initial }}{% endif %}"> -->
+                  </div>
+                </div>
+                {# include 'layout/relaciones.html' with field_select=conyuge_dependiente_form.fields.cat_tipos_relaciones_personales field_name=conyuge_dependiente_form.cat_tipos_relaciones_personales otro_name=conyuge_dependiente_form.otra_relacion_familiar otrof_name=conyuge_dependiente_form.otra_relacion col=2 col_o=4  #}
+                <div class="row">
+                  <div class="col-12">
+                    {% include 'elementos/label.html' with text_label="¿HABITA EN EL DOMICILIO DEL DECLARANTE?" title_button="Si / No" is_required=True %}
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-3">
+                    <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                      <input type="radio" id="mismo-domicilio-si" name="conyuge_dependiente-habita_domicilio" value="true" class="custom-control-input" {% if not conyuge_dependiente_form.habita_domicilio.initial %}checked{% endif %}  {% if conyuge_dependiente_form.habita_domicilio.initial == True %}checked{% endif %} >
+                      <label class="custom-control-label text-rg" for="mismo-domicilio-si">Sí</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="custom-control custom-radio custom-control-inline radio-secondary">
+                      <input type="radio" id="mismo-domicilio-no" name="conyuge_dependiente-habita_domicilio" value="false" class="custom-control-input" {% if conyuge_dependiente_form.habita_domicilio.initial == False %}checked{% endif %}>
+                      <label class="custom-control-label text-rg" for="mismo-domicilio-no">No</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    {% include 'elementos/label.html' with text_label="DOMICILIO DEL DEPENDIENTE" title_button="Dirección en la que habita el Dependiente." is_required=False %}
+                  </div>
+                </div>
+                {% include 'declaracion/direccion.html' with form=domicilio_form pais=True vacio=True nombre_via=True exterior=True %}
+                <div class="row">
+                  <div class="col-md-12">
+                    {% include 'elementos/label.html' with text_label="ACTIVIDAD LABORAL" title_button="Elegir el ambito de pertenencia: sector publico, privado o social." is_required=True %}
+                    {% include 'layout/radiobuttons.html' with field_select=conyuge_dependiente_form.fields.cat_ambitos_laborales  field_name=conyuge_dependiente_form.cat_ambitos_laborales otro_name=conyuge_dependiente_form.otro_ambitos_laborales col=2 col_o=4 field_class="ambitoslaborales" %}
+                  </div>
+                </div>
+              <div id="id_conyuge-dependiente_container_trabajo">
+                <div class="row">
+                  <div class="col-md-6" id="orden_gobierno">
+                    {% include 'elementos/label.html' with for_label="experiencia-nivel" text_label="NIVEL / ORDEN DE GOBIERNO" title_button="Elegir la opción estatal (local)" is_required=True %}
+                    {% bootstrap_field conyuge_dependiente_form.cat_ordenes_gobierno show_label=False %}
+                  </div>
+                  <div class="col-6" id="poderes">
+                    {% include 'elementos/label.html' with text_label="ÁMBITO PÚBLICO" title_button="Elegir la naturaleza jurídica como: Ejecutivo, Legislativo, Judicial, órgano constitucional autónomo" is_required=True %}
+                    {% bootstrap_field conyuge_dependiente_form.cat_poderes show_label=False %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8">
+                    {% include 'elementos/label.html' with for_label="exp-institucion" text_label="NOMBRE DEL ENTE PÚBLICO / NOMBRE DE LA EMPRESA, SOCIEDAD O ASOCIACION" title_button="Nombre de la unidad administrativa o área en la que se desempeña." is_required=True %}
+                    {% bootstrap_field  conyuge_dependiente_form.nombre_institucion  show_label=False placeholder="" %}
+                  </div>
+                  <div class="col-md-4" id="rfc-pareja-moral">
+                    {% include 'elementos/label.html' with for_label="rfc" text_label="RFC" apply=True title_button="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave." is_required=False %}
+                    {% bootstrap_field conyuge_dependiente_form.rfc field_class='valida_rfc_moral' show_label=False placeholder="RFC" %}
+                  </div>
+                </div>
+                <div class="row" id="area_adscrip">
+                  <div class="col-md-6">
+                    {% include 'elementos/label.html' with text_label="ÁREA DE ADSCRIPCIÓN / ÁREA" apply=False title_button="Nombre de la unidad administrativa ó área en la que se desempeña el declarante." is_required=True %}
+                    {% bootstrap_field  conyuge_dependiente_form.unidad_area_administrativa  show_label=False placeholder="Unidad administrativa / área" %}
+                  </div>
+                  <div class="col-md-6">
+                    {% include 'elementos/label.html' with text_label="EMPLEO, CARGO O COMISIÓN / PUESTO" apply=False title_button="Indicar el puesto o cargo ocupado por el declarante." is_required=True %}
+                    {% bootstrap_field  conyuge_dependiente_form.cargo_puesto show_label=False placeholder="Cargo / Puesto" %}
+                  </div>
+                </div>
+                <div class="row" id="funcion_principal">
+                  <div class="col-md-8">
+                    {% include 'elementos/label.html' with text_label="ESPECIFIQUE FUNCIÓN PRINCIPAL" apply=False title_button="Funciones definidas para el encargo del declarante." is_required=True %}
+                    {# include 'layout/radiobuttons.html' with field_select=conyuge_dependiente_form.fields.cat_funciones_principales  field_name=conyuge_dependiente_form.cat_funciones_principales otro_name=conyuge_dependiente_form.otro_funcion col=4 col_o=4 #}
+                    {% bootstrap_field conyuge_dependiente_form.cat_funciones_principales field_class='entidad' show_label=False %}
+                  </div>
+                  <div class="col-md-4" id="otro-{{ conyuge_dependiente_form.cat_funciones_principales.html_name }}">
+                    {% include 'elementos/label.html' with text_label="OTRO" title_button="Indicar el tipo de relación con el cónyuge o dependiente económico." %}
+                      <input type="text" name="{{ conyuge_dependiente_form.otro_funcion.html_name }}" maxlength="128" class="form-control" placeholder="Especifique" title="Especifique" id="id_{{ conyuge_dependiente_form.otro_funcion.html_name }}" value="{% if conyuge_dependiente_form.otro_funcion.initial %}{{ conyuge_dependiente_form.otro_funcion.initial }}{% endif %}">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with text_label="SALARIO MENSUAL NETO" apply=False title_button="Monto mensual neto sin centavos." is_required=True %}
+                    {% bootstrap_field conyuge_dependiente_form.ingresosPropios show_label=False placeholder="" %}
+                  </div>
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with text_label="FECHA DE INGRESO" apply=False title_button="Fecha de ingreso donde se realiza el encargo." is_required=True %}
+                    {% bootstrap_field  conyuge_dependiente_form.fecha_ingreso show_label=False placeholder="Fecha de ingreso" %}
+                  </div>
+                </div>
+                <div class="row mb-3 sector">
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with text_label="¿ES PROVEEDOR O CONTRATISTA DEL GOBIERNO?" apply=False title_button="Sector o Área laboral al que pertenece el encargo." is_required=True %}
+                    <div class="col-auto custom-control custom-radio custom-control-inline radio-secondary">
+                      <input type="radio" id="proveedor-gobierno-no" name="conyuge_dependiente-proveedor_contratista" {% if conyuge_dependiente_form.proveedor_contratista.initial == 0 %} checked {% endif %} value="false" class="custom-control-input">
+                      <label class="custom-control-label text-rg" for="proveedor-gobierno-no">No</label>
+                    </div>
+                    <div class="col-auto custom-control custom-radio custom-control-inline radio-secondary">
+                      <input type="radio" id="proveedor-gobierno-si" name="conyuge_dependiente-proveedor_contratista" {% if conyuge_dependiente_form.proveedor_contratista.initial == 1 %} checked {% endif %} value="true" class="custom-control-input">
+                      <label class="custom-control-label text-rg" for="proveedor-gobierno-si">Sí</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row sector">
+                  <div class="col-md-5">
+                    {% include 'elementos/label.html' with text_label="SECTOR AL QUE PERTENECE" apply=False title_button="Sector o Área laboral al que pertenece el encargo." is_required=True %}
+                    {% bootstrap_field conyuge_dependiente_form.cat_sectores_industria field_class='entidad' show_label=False %}
+                    {# include 'layout/radiobuttons.html' with field_select=conyuge_dependiente_form.fields.cat_sectores_industria  field_name=conyuge_dependiente_form.cat_sectores_industria otro_name=conyuge_dependiente_form.otro_sector col=4 col_o=4 #}
+                  </div>
+                  <div class="col-md-4" id="otro-{{ conyuge_dependiente_form.cat_sectores_industria.html_name }}">
+                    {% include 'elementos/label.html' with text_label="OTRO" title_button="Indicar el tipo de relación con el cónyuge o dependiente económico." %}
+                    <input type="text" name="{{ conyuge_dependiente_form.otro_sector.html_name }}" maxlength="128" class="form-control" placeholder="Especifique" title="Especifique" id="id_{{ conyuge_dependiente_form.otro_sector.html_name }}" value="{% if conyuge_dependiente_form.otro_sector.initial %}{{ conyuge_dependiente_form.otro_sector.initial }}{% endif %}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                {% include 'elementos/textarea_aclaraciones_observaciones.html' with save_add=True %}
+              </div>
+            </div>
+            {% include 'layout/guardar.html' %}
+          </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'select2/i18n/es.js' %}"></script>
+  <script src="/static/smart-selects/admin/js/chainedfk.js"></script>
+  <script src="/static/smart-selects/admin/js/bindfields.js"></script>
+
+  {{ domicilio_form.media.js }}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load static %}
+        </div>
+        <footer class="footer">
+            <div class="container-fluid py-3">
+                <div class="row">
+                    <div class="col-lg-auto mb-3 mb-md-0">
+                        <a class="navbar-brand" href="{% url 'declaracion:perfil' %}">
+                            <img src="{% static 'src/img/Logo_CDMX.png' %}" alt="Gobierno de la Ciudad de México" class="footer__logo">
+                        </a>
+                    </div>
+                    <div class="col-lg-auto mb-2 mb-md-0">
+                        <p class="footer__heading text-uppercase">¿Tienes dudas?</p>
+                        <div class="d-flex">
+                            <img src="{% static 'src/img/telefono.png' %}" class="mr-2 footer__icon">
+                            <div>
+                                <!-- <p class="m-0">Teléfono para dudas y aclaraciones <strong>56279700</strong></p>
+                                <p class="m-0">Extensión 50027, 50028, , 50029, 50031, 50220, 50226, 50232, 50240 y 51252.</p> -->
+                                <p>Asesoría técnica 55 56279700 ext. 50033 al 50040</p>
+                                <!-- <p>Correo electrónico es: declara@cdmx.gob.mx</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="d-flex mb-2">
+                            <img src="{% static 'src/img/ubicacion.png' %}" class="mr-2 footer__icon">
+                            <p class="m-0">Av. Arcos de Belén #2 Col. Doctores, C.P 06720, Alcaldía Cuauhtémoc, Ciudad de México | Lunes a Viernes de 9:00 a 18:00 hrs.</p>
+                        </div>
+                        <div class="">
+                            <img src="{% static 'src/img/mensaje.png' %}" class="mr-2 footer__icon"><a href="mailto:declara@cdmx.gob.mx">declara@cdmx.gob.mx</a>.
+                        </div>
+                    </div>
+                    <div class="col-lg-auto text-center mt-3 mt-lg-0">
+                        <p class="mb-1 text-lg-left">Desarrollado por</p>
+                        <a href="https://adip.cdmx.gob.mx/" target="_blank" rel="noopener noreferrer">
+                            <img src="{% static 'src/img/logo-dark.svg' %}" alt="Agencia Digital de Innovación Pública">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="{% static 'app.js' %}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130624596-40"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-130624596-40');
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+ {% load secciones %}
+ {% load static %}
+ {% load flujo_declaracion %}
+ <div class="container-fluid h-100">
+    <div class="row h-100">
+      <div class="col-md-9 py-4 printable">
+        <div class="row">
+            <div class="col-md-6">
+              <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'isr_anual' '0' %} text-uppercase">
+                <dt>¿RESPECTO DEL EJERCICIO FISCAL INMEDIATO ANTERIOR, PRESENTÓ DECLARACIÓN ANUAL DEL IMPUESTO SOBRE LA RENTA?</dt>
+                <dd class="text-black_opciones">{{ declaracion_fiscal.isr_anual|yesno:"SI,NO" }}</dd>
+              </dl>
+              {% if declaracion_fiscal.isr_anual %}
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'presentacion' '0' %} text-uppercase">
+                  <dt>FECHA DE PRESENTACIÓN</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.presentacion|date:"j \d\e F \d\e Y"|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'num_sat' '0' %} text-uppercase">
+                  <dt>NÚMERO DE OPERACIÓN DE OPERACIÓN PROPORCIONADO POR EL SAT</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.num_sat|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'ingreso_isr' '0' %} text-uppercase">
+                  <dt>INGRESO SEÑALADO EN LA DECLARACIÓN DE ISR</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.ingreso_isr|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal.impuesto_isr '1.6' 'impuesto_isr' '0' %} text-uppercase">
+                  <dt>IMPUESTO A CARGO EN LA DECLARACIÓN DEL ISR</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.impuesto_isr|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'mes_inicio' '0' %} text-uppercase">
+                  <dt>MES INICIO</dt>
+                    {% mes_tag declaracion_fiscal.mes_inicio as mes_inicio %}
+                    <dd class="text-black_opciones">{{ mes_inicio }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'mes_final' '0' %} text-uppercase">
+                  <dt>MES FINAL</dt>
+                  {% mes_tag declaracion_fiscal.mes_final as mes_final %}
+                  <dd class="text-black_opciones">{{ mes_final }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'num_empleado' '0' %} text-uppercase">
+                  <dt>NÚMERO DE EMPLEADO</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.num_empleado|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'sueldos_total' '0' %} text-uppercase">
+                  <dt>TOTAL DE SUELDOS, SALARIOS Y CONCEPTOS ASIMILADOS</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.sueldos_total|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'impuesto_retenidos' '0' %} text-uppercase">
+                  <dt>IMPUESTO RETENIDO AL CONTRIBUYENTE</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.impuesto_retenidos|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante empresa '2.1' 'declarante' '0' %} text-uppercase">
+                  <dt>CONSTANCIA DE DECLARACIÓN FISCAL:</dt>
+                  <dd class="text-black_opciones">
+                      {% if declaracion_fiscal.archivo and declaracion_fiscal.file_size > 10 %}
+                          <a href="{% url 'declaracion:declaracion-fiscal-pdf' folio_declaracion declaracion_fiscal.id %}" target="_blank">{{ declaracion_fiscal.nombre }}</a>
+                      {% else %}
+                          -
+                      {% endif %}
+                  </dd>
+                </dl>
+              {% else %}
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'mes_inicio' '0' %} text-uppercase">
+                  <dt>MES INICIO</dt>
+                    {% mes_tag declaracion_fiscal.mes_inicio as mes_inicio %}
+                    <dd class="text-black_opciones">{{ mes_inicio }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'mes_final' '0' %} text-uppercase">
+                  <dt>MES FINAL</dt>
+                  {% mes_tag declaracion_fiscal.mes_final as mes_final %}
+                  <dd class="text-black_opciones">{{ mes_final }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'num_empleado' '0' %} text-uppercase">
+                  <dt>NÚMERO DE EMPLEADO</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.num_empleado|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'sueldos_total' '0' %} text-uppercase">
+                  <dt>TOTAL DE SUELDOS, SALARIOS Y CONCEPTOS ASIMILADOS</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.sueldos_total|default_if_none:"-" }}</dd>
+                </dl>
+                <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'impuesto_retenidos' '0' %} text-uppercase">
+                  <dt>IMPUESTO RETENIDO AL CONTRIBUYENTE</dt>
+                  <dd class="text-black_opciones">{{ declaracion_fiscal.impuesto_retenidos|default_if_none:"-" }}</dd>
+                </dl>
+              {% endif %}
+              {% comment %}<dl class="p_opciones{% obligatorio_faltante declaracion_fiscal '1.6' 'is_retencion' '0' %} text-uppercase">
+                <dt>¿Usted tuvo retención de impuesto en el año inmediato anterior por el Gobierno de la Ciudad de México?</dt>
+                <dd class="text-black_opciones">{{ declaracion_fiscal.is_retencion|yesno:"SI,NO" }}</dd>
+              </dl>{% endcomment %}
+              <dl class="p_opciones{% obligatorio_faltante declaracion_fiscal.observaciones '1.6' 'observacion' '0' %} text-uppercase">
+                <dt>Aclaraciones/Observaciones</dt>
+                <dd class="text-black_opciones">{{ declaracion_fiscal.observaciones.observacion|default_if_none:"-" }}</dd>
+              </dl>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>

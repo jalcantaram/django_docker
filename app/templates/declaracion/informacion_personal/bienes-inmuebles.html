@@ -1,0 +1,386 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Bienes inmuebles</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">I. DECLARACIÓN DE SITUACIÓN PATRIMONIAL<span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 mb-3 text-uppercase">
+          {% tipo_declaracion_code as tipo %}
+          {% if tipo == 'MODIFICACION'%}
+            9. BIENES INMUEBLES
+            <span class="text-primary">(ENTRE EL 1 DE ENERO Y EL 31 DE DICIEMBRE DEL AÑO INEDIATO ANTERIOR)</span>
+          {% else %}
+            10. BIENES INMUEBLES
+            <span class="text-primary">(SITUACIÓN ACTUAL)</span>
+          {% endif %}
+        </h2>
+        {% tipo_declaracion_code as tipo %}
+        {% if tipo == 'INICIAL' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos bienes inmuebles que hayas adquirido en el mes inmediato.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'CONCLUSION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos bienes inmuebles que hayas adquirido entre el 01 de enero y 31 de diciembre 2020.</li>
+            </ul>
+          </div>
+        {% elif tipo == 'MODIFICACION' %}
+          <div class="text-blue">
+            <h4>En caso de haber aceptado cargar tu información de declaraciones previas, es importante que:</h4>
+            <ol style="list-style-type:none;">
+              <li>1) Verifiques que los datos sean correctos y elimines cualquier registro duplicado.</li>
+              <li>2) Para aquellos registros que no elimines, ingresa y verifica que la información y todos los campos están debidamente llenados y actualizados.</li>
+              <li>3) Ingresa la información de aquellos bienes inmuebles que hayas adquirido entre el 01 de enero y 31 de diciembre 2020.</li>
+            </ul>
+          </div>
+        {% endif %}
+        <p class="text-muted mb-3 mt-3 font-weight-bold">BIENES DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS</p>
+        <p class="text-md text-muted font-weight-normal">TODOS LOS DATOS DE BIENES DECLARADOS A NOMBRE DE LA PAREJA, DEPENDIENTES ECONÓMICOS Y/O TERCEROS O QUE SEAN EN COPROPIEDAD CON EL DECLARANTE NO SERÁN PÚBLICOS</p>
+        {% if messages %}
+          {% for message in messages %}
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:bienes-inmuebles-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:bienes-inmuebles-editar' folio_declaracion editar_id %}" method="post" novalidate>
+        {% else %}
+        {% comment %} href="{% url 'declaracion:bienes-inmuebles-agregar' folio_declaracion %}" {% endcomment %}
+          <a href="javascript:alta('declaracion:bienes-inmuebles-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+            Agregar bien inmueble
+            <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+          </a>
+          <form action="{% url 'declaracion:bienes-inmuebles' folio_declaracion %}" method="post" novalidate>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE INMUEBLE / DESCRIPCIÓN" titulo_dos="FORMA DE ADQUISICIÓN" titulo_tres="TITULAR / DESCRIPCIÓN" agregar=agregar editar_id=editar_id %}
+            {% csrf_token %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <input type="hidden" name="no_aplica" value="on">
+            {% aplica as not_submit %}
+            {% include 'layout/guardar.html' with not_submit=not_submit %}
+          </form>
+          <form style="display: none;" action="{% url 'declaracion:bienes-inmuebles' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+            {% csrf_token %}
+            <div class="row">
+              {% include 'layout/no_aplica.html' %}
+            </div>
+            {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE INMUEBLE" titulo_dos="FORMA DE ADQUISICIÓN" titulo_tres="TITULAR / DESCRIPCIÓN" agregar=agregar editar_id=editar_id %}
+            {% if informacion_registrada %}
+              <div class="w-100" id="buttonDeleteAllDataList">
+                <input type="submit" value="Eliminar datos seleccionados" class="btn btn-danger btn-md btn-block text-uppercase font-weight-bold mb-3 mt-0">
+              </div>
+            {% endif %}
+            <div class="row-form" style="{% if checked %}display: none;{% endif %}">
+                <div class="row" style="{% if baja %}display: block; {% else %} display: none; {% endif %}">
+                  <div class="col-12 my-2">
+                    <label class="label-secondary">EN CASO DE BAJA DEL INMUEBLE INCLUIR MOTIVO</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Indicar el motivo de la baja.">
+                      <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+                    </button>
+                    <div class="row">
+                      <div class="col-md-6">
+                        {% bootstrap_field bienes_inmuebles_form.tipoMotivoBaja show_label=False %}
+                      </div>
+                      <div class="col-md-3">
+                        {% bootstrap_field bienes_inmuebles_form.otro_motivoBaja show_label=False %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <div style="{% if baja %}display: none; {% else %} display: block; {% endif %}">
+                <div class="row">
+                  <div class="col-md-6">
+                    {% include 'elementos/label.html' with text_label="TIPO DE INMUEBLE" title_button="Indicar tipo de bien inmueble que se declara." is_required=True %}
+                    {% bootstrap_field bienes_inmuebles_form.cat_tipos_inmuebles show_label=False %}
+                  </div>
+                  <div class="col-md-3" id="otro-{{ bienes_inmuebles_form.cat_tipos_inmuebles.html_name }}">
+                    {% include 'elementos/label.html' with text_label="OTRO INMUEBLE" title_button="Indicar tipo de bien inmueble que se declara." is_required=False %}
+                    {% bootstrap_field bienes_inmuebles_form.otro_inmueble show_label=False %}
+                  </div>
+                </div>
+                <div id="formset_propietarios">
+                  {{ propietarios_formset.management_form }}
+                  {% for propietario_form in propietarios_formset %}
+                    <div id="copropietario{{ forloop.counter }}">
+                      <div class="row">
+                        {{ propietario_form.id }}
+                        <div class="col-md-6">
+                          <label for="{{ propietario_form.id_for_label }}" class="label-secondary mb-2">
+                            {% cycle 'TITULAR DEL INMUEBLE' 'COPROPIETARIO' 'COPROPIETARIO' %}
+                            <span class="text-danger text-lg font-weight-bold">*</span>
+                          </label>
+                          {% bootstrap_field propietario_form.cat_titular_bienes show_label=False field_class="titular_bien" %}
+                        </div>
+                        <div class="col-md-3" id="dependientes-list" style="display:none;">
+                          <label class="label-secondary mb-2">DEPENDIENTES
+                            <span class="text-danger text-lg font-weight-bold">*</span>
+                            <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccione algún dependiente que agregó en la sección 7. Datos del dependiente económico">
+                              <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                            </button>
+                          </label>
+                          {% bootstrap_field propietario_form.dependiente_economico show_label=False %}
+                        </div>
+                        <div class="col-md-3">
+                          <label class="label-secondary mb-2">PORCENTAJE
+                            <span class="text-danger text-lg font-weight-bold">*</span>
+                            <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indique el porcentaje de propiedad">
+                              <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                            </button>
+                          </label>
+                          {% bootstrap_field propietario_form.porcentaje show_label=False placeholder="Porcentaje de propiedad" field_class="porcentaje" %}
+                          <div class="invalid-feedback porcentaje-lbl" style="display:none;">La suma del porcentaje tiene que ser igual a 100</div>
+                        </div>
+                      </div>
+                      <!-- identificación con terceros -->
+                      <div id="third-co" style="display:none;">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h6>Identificación de Terceros</h6>
+                          </div>
+                        </div>
+                        {% include 'layout/persona.html' with form=propietario_form curp_disable=True title="Tipo de persona del copropietario" label="del copropietario" tipo=True %}
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="rfc-dueño" class="label-secondary mb-2 ">RFC del Tercero</label>
+                              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                                <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                              </button>
+                              <small class="text-help text-primary">(Si aplica)</small>
+                              {% bootstrap_field propietario_form.rfc show_label=False field_class='valida_rfc' placeholder="RFC CON HOMOCLAVE" %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- end identificación con terceros -->
+                    </div>
+                  {% endfor %}
+                  {{ propietarios_formset.non_form_errors.0 }}
+                  <input type="hidden" id="is_conyuge" value="{{is_conyugue}}">
+                  <input type="hidden" id="is_concubina" value="{{is_concubina}}">
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    {% include 'elementos/label.html' with text_label="SUPERFICIE DEL TERRENO" title_button="Superficie total del bien inmueble." is_required=True %}
+                    <div class="input-group">
+                      <input 
+                        class="form-control {% if bienes_inmuebles_form.cat_superficie_terreno.errors %}is-invalid{% endif %}"
+                        type="number"
+                        name="{{ bienes_inmuebles_form.superficie_terreno.html_name }}"
+                        id="{{ bienes_inmuebles_form.superficie_terreno.auto_id }}"
+                        step="0.01"
+                        min="0"
+                        max="100000"
+                        placeholder="{{ bienes_inmuebles_form.superficie_terreno.label }}"
+                        value="{{ bienes_inmuebles_form.superficie_terreno.value }}"
+                      >
+                      <select class="form-control {% if bienes_inmuebles_form.cat_superficie_terreno.errors %}is-invalid{% endif %}" name="{{ bienes_inmuebles_form.cat_superficie_terreno.html_name }}">
+                        {% for cst in bienes_inmuebles_form.cat_superficie_terreno %}
+                          {{ cst }}
+                        {% endfor %}
+                      </select>
+                    </div>
+                    {% if bienes_inmuebles_form.cat_superficie_terreno.errors %}
+                      {% for cst_error in bienes_inmuebles_form.cat_superficie_terreno.errors %}
+                        <div class="invalid-feedback">{{ cst_error|escape }}</div>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                    {% include 'elementos/label.html' with text_label="SUPERFICIE DE CONSTRUCCIÓN" title_button="Superficie de construcción del bien inmueble." is_required=True %}
+                    <div class="input-group">
+                      <input 
+                        class="form-control {% if bienes_inmuebles_form.cat_superficie_construccion.errors %}is-invalid{% endif %}"
+                        type="number"
+                        name="{{ bienes_inmuebles_form.superficie_construccion.html_name }}"
+                        id="{{ bienes_inmuebles_form.superficie_construccion.auto_id }}"
+                        step="0.01"
+                        min="0"
+                        max="100000"
+                        placeholder="{{ bienes_inmuebles_form.superficie_construccion.label }}"
+                        value="{{ bienes_inmuebles_form.superficie_construccion.value }}"
+                      >
+                      <select class="form-control {% if bienes_inmuebles_form.cat_superficie_construccion.errors %}is-invalid{% endif %}" name="{{ bienes_inmuebles_form.cat_superficie_construccion.html_name }}">
+                        {% for csc in bienes_inmuebles_form.cat_superficie_construccion %}
+                          {{ csc }}
+                        {% endfor %}
+                      </select>
+                    </div>
+                    {% if bienes_inmuebles_form.cat_superficie_construccion.errors %}
+                      {% for csc_error in bienes_inmuebles_form.cat_superficie_construccion.errors %}
+                        <div class="invalid-feedback">{{ csc_error|escape }}</div>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <hr>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 my-2">
+                    <label class="label-secondary">FORMA DE ADQUISICIÓN<span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Indicar la forma como se obtuvo el bien inmueble (compra, herencia, etc.)">
+                      <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field bienes_inmuebles_form.cat_formas_adquisiciones show_label=False %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 my-2">
+                    <label class="label-secondary">FORMA DE PAGO <span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Indicar la forma en que se pago la propiedad">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field bienes_inmuebles_form.tipoFormaPago show_label=False %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h6>Identificación de la persona física o moral que le transfirió el inmueble</h6>
+                  </div>
+                </div>
+                {% include 'layout/persona.html' with form=propietario_anterior_form curp_disable=True nombre=True apellido1=True apellido2=True %}
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="rfc-dueño" class="label-secondary mb-2">RFC de la persona física o moral que le transfirió el inmueble<span class="text-danger text-lg font-weight-bold">*</span></label>
+                      <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                        <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                      </button>
+                      {% comment %} <small class="text-help text-primary">(Si aplica)</small> {% endcomment %}
+                      {% bootstrap_field propietario_anterior_form.rfc  show_label=False  field_class='valida_rfc' placeholder="RFC CON HOMOCLAVE" %}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    {% include 'elementos/label.html' with text_label="RELACIÓN DE LA PERSONA FÍSICA O MORAL QUE LE TRANSFIRIÓ EL INMUEBLE CON EL TITULAR" title_button="Indicar la Relación con la persona a quien adquisió el inmueble." is_required=True %}
+                  </div>
+                </div>
+                {# El siguiente div tenía el id "titular" Se comentó porque por alguna razón el campo se ocultaba #}
+                <!-- <div id="titular"> -->
+                <div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      {% bootstrap_field bienes_personas_form.tipo_relacion show_label=False %}
+                    </div>
+                    <div class="col-md-3">
+                      {% bootstrap_field bienes_personas_form.otra_relacion show_label=False %}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 form-group">
+                    {% include 'elementos/label.html' with text_label="VALOR DE ADQUISICIÓN" title_button="Monto según la escritura." is_required=True %}
+                    {% bootstrap_field bienes_inmuebles_form.precio_adquisicion show_label=False placeholder="Precio de adquisición" %}
+                  </div>
+                  <div class="col-md-4 form-group">
+                    {% include 'elementos/label.html' with text_label="TIPO DE MONEDA" title_button="Tipo de moneda." is_required=True %}
+                    {% bootstrap_field bienes_inmuebles_form.cat_monedas show_label=False placeholder="Moneda" %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with text_label="FECHA DE ADQUISICIÓN DEL INMUEBLE" title_button="Fecha de adquisición del inmueble conforme al documento con el que se acredito la propiedad" is_required=True %}
+                    {% bootstrap_field bienes_inmuebles_form.fecha_contrato_compra show_label=False placeholder="Fecha de contrato de compra-venta privado" %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-8">
+                    {% include 'elementos/label.html' with text_label="DATO DEL REGISTRO PÚBLICO DE LA PROPIEDAD FOLIO REAL U OTRO DATO QUE PERMITA SU IDENTIFICACIÓN" title_button="Ingrese Número de escritura pública, folio u otro dato de identificación." is_required=True %}
+                    {% bootstrap_field bienes_inmuebles_form.num_escritura_publica show_label=False placeholder="Dato del registro público" %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    {% include 'elementos/label.html' with text_label="¿EL VALOR DE ADQUISICIÓN DEL INMUEBLE ES CONFORME A?" title_button="Indicar tipo de operación realizada al bien inmueble." is_required=True %}
+                    {% bootstrap_field bienes_inmuebles_form.tipoValorAdquisicion show_label=False %}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h6>Ubicación del Inmueble</h6>
+                    {% include 'elementos/label.html' with text_label="Domicilio" title_button="Domicilio del inmueble." is_required=True %}
+                  </div>
+                </div>
+                {% include 'declaracion/direccion.html' with form=domicilio_form my_3=True nombre_via=True exterior=True entidad=True %}
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="label-secondary" for="textForm">ACLARACIONES/OBSERVACIONES</label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"  title="Detallar información respecto al inmueble.">
+                      <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+                    </button> {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-6 row-form justify-content-end" style="{% if checked %}display: none;{% endif %}">
+              <div class="col-6 text-right">
+                <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-primary font-weight-semibold text-uppercase">Guardar y agregar otro bien inmueble <img src="{% static 'src/img/plus.svg'%}" alt="agregar" class="svg">
+                </button>
+              </div>
+            </div>
+            {% include 'layout/guardar.html' %}
+        </form>
+      </div>
+    </div>
+    {% include 'layout/modal_conyuge.html' %}
+  </div>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'select2/i18n/es.js' %}"></script>
+  <script src="/static/smart-selects/admin/js/chainedfk.js"></script>
+  <script src="/static/smart-selects/admin/js/bindfields.js"></script>
+
+  {{ domicilio_form.media.js }}
+  <!-- <script>
+    var _rfc = document.getElementsByClassName('valida_rfc');
+    Array.from(_rfc).forEach(element => {
+      console.log(element);
+      element.firstElementChild.addEventListener('click', function () {
+        this.parentElement.parentElement.parentElement.innerHTML += '<h5 class="text-justify mt-1">En caso de que no se cuente con la clave en el RFC, se consignará la clave genérica en el RFC: XEXX010101000 y cuando se trate de operaciones efectuadas con residentes en el extranjero, que no se encuentren inscritos en el RFC, se señalará la clave genérica en el RFC: XEXX010101000.</h5>';
+      });
+    });
+  </script> -->
+{% endblock %}

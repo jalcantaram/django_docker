@@ -1,0 +1,33 @@
+{% load bootstrap4 %}
+{% load static %}
+<div class="col-md-12">
+  <div class="d-flex flex-wrap">
+      <div class="flex-fill my-lg-2">
+        <div class="custom-control custom-checkbox my-1">
+          <input {% if not form.declarante.initial %} unchecked{% endif %}  {% if form.declarante.initial == True %}checked{% endif %} type="checkbox" class="custom-control-input" id="id_{{ form.declarante.html_name }}" name="{{ form.declarante.html_name }}" >
+          <label class="custom-control-label" for="id_{{ form.declarante.html_name }}">Declarante</label>
+          <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"title="Declarante">
+            <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+          </button>
+        </div>
+      </div>
+      <div class="flex-fill my-lg-2">
+        <div class="custom-control custom-checkbox my-1">
+          <input {% if not form.pareja.initial %} unchecked{% endif %}  {% if form.pareja.initial == True %}checked{% endif %}  type="checkbox" class="custom-control-input" id="id_{{ form.pareja.html_name }}" name="{{ form.pareja.html_name }}"  >
+          <label class="custom-control-label" for="id_{{ form.pareja.html_name }}">Pareja</label>
+          <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"title="Pareja">
+            <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+          </button>
+        </div>
+      </div>
+      <div class="flex-fill my-lg-2">
+        <div class="custom-control custom-checkbox my-1">
+          <input {% if not form.dependiente.initial %} unchecked{% endif %}  {% if form.dependiente.initial == True %}checked{% endif %}  type="checkbox" class="custom-control-input" id="id_{{ form.dependiente.html_name }}" name="{{ form.dependiente.html_name }}"   >
+          <label class="custom-control-label" for="id_{{ form.dependiente.html_name }}">Dependiente Económico</label>
+          <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999"title="Dependiente.">
+            <img src="{% static 'src/img/info.svg' %}" alt="info" class="svg">
+          </button>
+        </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,218 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load flujo_declaracion %}
+{% load no_aplica %}
+
+{% block content %}
+  {% no_aplica as checked %}
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      {% include 'layout/sidebar.html'%}
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb text-sm text-uppercase font-weight-extralight">
+            <li class="breadcrumb-item"><a href="#" class="text-reset">Declaración en curso</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Beneficios Privados</li>
+          </ol>
+        </nav>
+        <h1 class="text-uppercase text-black h5">II. DECLARACIÓN DE INTERESES <span class="text-primary">{% tipo_declaracion %}</span></h1>
+        <h2 class="h6 text-uppercase mb-3">6. BENEFICIOS PRIVADOS </span><span class="text-primary">(HASTA LOS 2 ÚLTIMOS AÑOS)</span></h2>
+        <div class="text-primary">
+            Es la contribución monetaria o en especie que otorga una persona física o moral con recursos privados al Declarante o alguna de las personas señaladas en el catálogo.
+        </div>
+        <div class="text-blue">
+            En caso de que hayas autorizado cargar tu información, es muy IMPORTANTE ingresar a cada uno de los apartados de la declaración patrimonial para verificar que tus datos estén completos y correctos de lo contrario es necesario que los actualices
+        </div>
+        {% if messages %}
+          {% for message in messages %}
+            <br>
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}info{% endif %}{% endif %} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% if agregar %}
+          <form class="areyousure" action="{% url 'declaracion:beneficios-privados-agregar' folio_declaracion %}" method="post" novalidate>
+        {% elif editar_id %}
+          <form class="areyousure" action="{% url 'declaracion:beneficios-privados-editar' folio_declaracion editar_id %}" method="post"novalidate>
+        {% else %}
+        {% comment %} href="{% url 'declaracion:beneficios-privados-agregar' folio_declaracion %}" {% endcomment %}
+            <a href="javascript:alta('declaracion:beneficios-privados-agregar', '{{folio_declaracion}}');" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+              Agregar beneficio privado
+              <img src="{% static 'src/img/plus.svg' %}" alt="agregar" class="svg">
+            </a>
+            {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE BENEFICIO" titulo_dos="BENEFICIO" titulo_tres="SECTOR / INDUSTRIA" agregar=agregar editar_id=editar_id %}
+            <form action="{% url 'declaracion:beneficios-privados' folio_declaracion %}" method="post" novalidate>
+              {% csrf_token %}
+              <input type="hidden" name="no_aplica" value="on">
+              {% aplica as not_submit %}
+              {% include 'layout/guardar.html' with not_submit=not_submit %}
+            </form>
+            <form style="display: none;" action="{% url 'declaracion:beneficios-privados' folio_declaracion %}" method="post" novalidate>
+        {% endif %}
+          {% csrf_token %}
+          <br>
+          <div class="row">
+            {% include 'layout/no_aplica.html' %}
+          </div>
+          {% include 'layout/informacion-registrada.html' with registros=informacion_registrada titulo_uno="TIPO DE BENEFICIO" titulo_dos="BENEFICIO" titulo_tres="SECTOR / INDUSTRIA" agregar=agregar editar_id=editar_id %}
+          <div class="row row-form" style="{% if checked %}display: none;{% endif %}">
+            <div class="col-12 my-2">
+              <label class="label-secondary">TIPO DE BENEFICIO<span class="text-danger text-lg font-weight-bold">*</span></label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Indicar tipo de beneficio.">
+                <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+              </button>
+              <div class="row">
+                <div class="col-md-8">
+                  {% bootstrap_field beneficios_gratuitos_form.cat_tipos_beneficios show_label=False %}
+                </div>
+                <div class="col-md-4" id="otro-{{ beneficios_gratuitos_form.cat_tipos_beneficios.html_name }}">
+                  {% bootstrap_field beneficios_gratuitos_form.otros_beneficios show_label=False %}
+                </div>
+              </div>
+              <!-- {% include 'layout/radiobuttons.html' with field_select=beneficios_gratuitos_form.fields.cat_tipos_beneficios field_name=beneficios_gratuitos_form.cat_tipos_beneficios otro_name=beneficios_gratuitos_form.otros_beneficios col=2 col_o=4%} -->
+            </div>
+            <div class="col-12 my-2">
+              <div class="row">
+                <div class="col-md-8">
+                  <label class="label-secondary">BENEFICIARIO<span class="text-danger text-lg font-weight-bold">*</span>
+                  </label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar el tipo de participación.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field beneficios_gratuitos_form.TipoBeneficiario show_label=False %}
+                </div>
+                <div class="col-md-4" id="otro-{{ beneficios_gratuitos_form.TipoBeneficiario.html_name }}">
+                  <label class="label-secondary">OTRO</label>
+                  {% bootstrap_field beneficios_gratuitos_form.otro_TipoBeneficiario show_label=False %}
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              {% include 'layout/persona.html' with form=otorgante_infopersonalvar_form title="IDENTIFICACION DEL OTORGANTE" label=" del otorgante" rfc=True tipo=True nombre=True razon_social=True curp_disable=True razon=True %}
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="otorgante-rfc" class="label-secondary">RFC <span class="text-danger text-lg font-weight-bold">*</span></label>
+                    <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Los 10 caracteres básicos y los 3 caracteres de la homoclave. Si es una persona moral son 9 caracteres básicos y los 3 de la homoclave.">
+                      <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                    </button>
+                    {% bootstrap_field otorgante_infopersonalvar_form.rfc field_class='valida_rfc' show_label=False placeholder="RFC de otorgante" %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 my-2">
+              <label class="label-secondary">FORMA DE RECEPCIÓN DEL BENEFICIO<span class="text-danger text-lg font-weight-bold">*</span> </label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar la forma de recepción.">
+                <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+              </button>
+              {% include 'layout/radiobuttons.html' with field_select=beneficios_gratuitos_form.fields.recepcion_beneficio field_name=beneficios_gratuitos_form.recepcion_beneficio col=4 col_o=4 %}
+            </div>
+            <div class="col-md-12" id="especie-ben">
+              <div class="form-group">
+                <label class="label-secondary">ESPECIFIQUE EL BENEFICIO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="En que cosiste el beneficio.">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+                {% bootstrap_field beneficios_gratuitos_form.origen_beneficio show_label=False%}
+              </div>
+            </div>
+            <div class="col-md-6" id="monto-mensual">
+              <div class="form-group">
+                <label class="label-secondary">MONTO MENSUAL APROXIMADO DEL BENEFICIO<span class="text-danger text-lg font-weight-bold">*</span></label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Sin comas, sin puntos, sin centavos y sin ceros a la izquierda).">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+                {% bootstrap_field beneficios_gratuitos_form.valor_beneficio show_label=False placeholder="Valor del beneficio" %}
+              </div>
+            </div>
+            <div class="col-md-6" id="moneda-tipo">
+              <label class="label-secondary mb-2 ">TIPO DE MONEDA<span class="text-danger text-lg font-weight-bold">*</span></label>
+              <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Especificar la moneda con la que participo.">
+                <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+              </button>
+              {% bootstrap_field beneficios_gratuitos_form.cat_monedas field_class="moneda" show_label=False%}
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-8">
+                  <label class="label-secondary mb-2">SECTOR PRODUCTIVO AL QUE PERTENECE<span class="text-danger text-lg font-weight-bold">*</span></label>
+                  <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Seleccionar el sector del beneficiario.">
+                    <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                  </button>
+                  {% bootstrap_field beneficios_gratuitos_form.cat_sectores_industria show_label=False%}
+                </div>
+                <div class="col-md-4" id="otro-{{ beneficios_gratuitos_form.cat_sectores_industria.html_name }}">
+                  <label class="label-secondary mb-2">OTRO SECTOR</label>
+                  {% bootstrap_field beneficios_gratuitos_form.otro_sector show_label=False%}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="label-secondary" for="textForm">ACLARACIONES/OBSERVACIONES</label>
+                <button type="button" class="btn btn-link p-0 btn-information" data-toggle="tooltip" tabindex="9999" title="Detallar información de los beneficios.">
+                  <img src="{% static 'src/img/info.svg'%}" alt="info" class="svg">
+                </button>
+                {% bootstrap_field observaciones_form.observacion show_label=False placeholder="Aclaraciones y Observaciones" %}
+              </div>
+            </div>
+          </div>
+          <div class="text-right row-form" style="{% if checked %}display: none;{% endif %}">
+            <button type="submit" name="accion" value="guardar_otro" class="btn btn-link btn-link-plus text-success font-weight-semibold text-uppercase">
+              Guardar y agregar otro beneficio
+              <img src="/static/src/img/plus.svg" alt="agregar" class="svg">
+            </button>
+          </div>
+          {% include 'layout/guardar.html' %}
+          <div class="row">
+            <div class="col-12"><br /></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  const monetario = document.getElementById('id_beneficios_gratuitos-recepcion_beneficio-1');
+  const especie = document.getElementById('id_beneficios_gratuitos-recepcion_beneficio-2');
+  let beneficio_especie = document.getElementById("especie-ben");
+  let monto = document.getElementById("monto-mensual");
+  let moneda = document.getElementById("moneda-tipo");
+
+  if(especie.checked){
+    beneficio_especie.style.display = "block";
+    monto.style.display = "none";
+    moneda.style.display = "none";
+  }else{
+    beneficio_especie.style.display = "none";
+    monto.style.display = "block";
+    moneda.style.display = "block";
+  }
+
+  monetario.addEventListener('change', () => {
+    // Si eligen monetario
+     beneficio_especie.style.display = "none";
+     monto.style.display = "block";
+     moneda.style.display = "block";
+  });
+
+  especie.addEventListener('change', () => {
+    // Si eligen representado
+     beneficio_especie.style.display = "block";
+     monto.style.display = "none";
+     moneda.style.display = "none";
+  });
+</script>
+{% endblock %}
