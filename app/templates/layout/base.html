@@ -1,7 +1,5 @@
 {% load static %}
-{% load img_data %}
-{% load auth_users %}
-{% load flujo_declaracion %}
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -14,20 +12,20 @@
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <!--  Meta tags para Redes Sociales, por ejemplo para la imagen pequenia que se muestra al compartir -->
             <!-- Primary Meta Tags -->
-            <title>Sistema de declaraciones de la Ciudad de México</title>
-            <meta name="title" content="Sistema de declaraciones de la Ciudad de México">
-            <meta name="description" content="Esta herramienta está diseñada para que los servidores públicos de la CDMX presenten sus declaraciones.">
+            <title>ISJURIS – Ilustre Sociedad de Jurisconsultos de México A.C.</title>
+            <meta name="title" content="ISJURIS – Ilustre Sociedad de Jurisconsultos de México A.C.">
+            <meta name="description" content="Prestar institucionalmente servicios de asesoría, capacitaciones, talleres, cursos, conferencias en materia Legal, Financiera, Política-Electoral, Estrategia de Comunicación, Marketing, Psicológica, Médica entre otras disciplinas integradas a este gran colegio de manera integral y de altos niveles de calidad transmitiendo la seguridad de que la capacitación y el servicio que encomienden son la prioridad en atención y profesionalismo.">
             <!-- Open Graph / Facebook -->
             <meta property="og:type" content="website">
-            <meta property="og:url" content="https://declara.cdmx.gob.mx/">
-            <meta property="og:title" content="Sistema de declaraciones de la Ciudad de México">
-            <meta property="og:description" content="Esta herramienta está diseñada para que los servidores públicos de la CDMX presenten sus declaraciones.">
+            <meta property="og:url" content="https://isjuris.org">
+            <meta property="og:title" content="ISJURIS – Ilustre Sociedad de Jurisconsultos de México A.C.">
+            <meta property="og:description" content="Prestar institucionalmente servicios de asesoría, capacitaciones, talleres, cursos, conferencias en materia Legal, Financiera, Política-Electoral, Estrategia de Comunicación, Marketing, Psicológica, Médica entre otras disciplinas integradas a este gran colegio de manera integral y de altos niveles de calidad transmitiendo la seguridad de que la capacitación y el servicio que encomienden son la prioridad en atención y profesionalismo.">
             <meta property="og:image" content="{% static 'src/img/network.png' %}">
             <!-- Twitter -->
             <meta property="twitter:card" content="summary_large_image">
-            <meta property="twitter:url" content="https://declara.cdmx.gob.mx/">
-            <meta property="twitter:title" content="Sistema de declaraciones de la Ciudad de México">
-            <meta property="twitter:description" content="Esta herramienta está diseñada para que los servidores públicos de la CDMX presenten sus declaraciones.">
+            <meta property="twitter:url" content="https://isjuris.org">
+            <meta property="twitter:title" content="ISJURIS – Ilustre Sociedad de Jurisconsultos de México A.C.">
+            <meta property="twitter:description" content="Prestar institucionalmente servicios de asesoría, capacitaciones, talleres, cursos, conferencias en materia Legal, Financiera, Política-Electoral, Estrategia de Comunicación, Marketing, Psicológica, Médica entre otras disciplinas integradas a este gran colegio de manera integral y de altos niveles de calidad transmitiendo la seguridad de que la capacitación y el servicio que encomienden son la prioridad en atención y profesionalismo.">
             <meta property="twitter:image" content="{% static 'src/img/network.png' %}">
             <meta name="theme-color" content="#417505">
         {% endif %}
@@ -41,14 +39,14 @@
         <div class="page-container">
             <nav class="navbar navbar-expand-lg navbar-dark bg-success-lighter header">
                 <a class="navbar-brand" href="{% url 'index' %}">
-                    <img src="{% static 'src/img/Logo_CDMX.png' %}" alt="Gobierno de la Ciudad de México" class="">
+                    <img src="{% static 'src/img/isjuris.png' %}" alt="ISJURIS - Ilustre Sociedad de Jurisconsultos de México A.C." class="">
                 </a>
                 <button class="navbar-toggler custom-toggler btn" type="button" data-toggle="collapse" data-target="#header-nav" aria-controls="header-nav" aria-expanded="false" aria-label="Toggle navigation">
                     <div class="custom-toggler__box">
                         <div class="custom-toggler__bar"></div>
                     </div>
                 </button>
-                <div class="collapse navbar-collapse" id="header-nav">
+                {% comment %}<div class="collapse navbar-collapse" id="header-nav">
                     <div class="navbar-nav mr-auto text-sm align-items-lg-center font-weight-semibold mt-3 mt-lg-0">
                         <a class="nav-item nav-link text-uppercase" href="{% url 'preguntas-frecuentes' %}">Preguntas frecuentes</a>
                         <a class="nav-item nav-link text-uppercase" href="{% url 'aviso_privacidad' %}">Aviso de privacidad</a>
@@ -58,7 +56,6 @@
                             <a class="nav-item nav-link text-uppercase" href="{% url 'informacion' %}">Información</a>
                             <a class="nav-item nav-link text-uppercase" href="{% url 'declaraciones-previas' %}">Declaraciones previas</a>
                             <a class="nav-item nav-link text-uppercase d-lg-none" href="{% url 'logout' %}">Cerrar sesión</a>
-                            {% get_auth_items %}
                         {% endif %}
                     </div>
                     <div class="vl pl-3 d-none d-lg-block">
@@ -88,7 +85,7 @@
                         </a>
                     {% endif %}
                     </div>
-                </div>
+                </div>{% endcomment %}
             </nav>
             <div class="page-content">
                 {% block content %}
@@ -98,8 +95,8 @@
                 <div class="container-fluid py-3">
                     <div class="row">
                         <div class="col-lg-auto mb-3 mb-md-0">
-                            <a class="navbar-brand" href="{% url 'declaracion:perfil' %}">
-                                <img src="{% static 'src/img/Logo_CDMX.png' %}" alt="Gobierno de la Ciudad de México" class="footer__logo">
+                            <a class="navbar-brand" href="">
+                                <img src="{% static 'src/img/isjuris.png' %}" alt="ISJURIS - Ilustre Sociedad de Jurisconsultos de México A.C." class="footer__logo">
                             </a>
                         </div>
                         <div class="col-lg-auto mb-2 mb-md-0">
@@ -120,13 +117,13 @@
                                 <p class="m-0">Av. Arcos de Belén #2 Col. Doctores, C.P 06720, Alcaldía Cuauhtémoc, Ciudad de México | Lunes a Viernes de 9:00 a 18:00 hrs.</p>
                             </div>
                             <div class="">
-                                <img src="{% static 'src/img/mensaje.png' %}" class="mr-2 footer__icon"><a href="mailto:declara@cdmx.gob.mx">declara@cdmx.gob.mx</a>.
+                                <img src="{% static 'src/img/mensaje.png' %}" class="mr-2 footer__icon"><a href="mailto:isjuris@isjuris.org">isjuris@isjuris.org</a>.
                             </div>
                         </div>
                         <div class="col-lg-auto text-center mt-3 mt-lg-0">
                             <p class="mb-1 text-lg-left">Desarrollado por</p>
-                            <a href="https://adip.cdmx.gob.mx/" target="_blank" rel="noopener noreferrer">
-                                <img src="{% static 'src/img/logo-dark.svg' %}" alt="Agencia Digital de Innovación Pública">
+                            <a href="https://isjuris.org" target="_blank" rel="noopener noreferrer">
+                                <img src="{% static 'src/img/1.svg' %}" alt="">
                             </a>
                         </div>
 
@@ -164,119 +161,14 @@
         <script src="{% static 'app.js' %}"></script>
         {% block js %}
         {% endblock %}
-        <script typeText="javascript">
-            document.addEventListener('DOMContentLoaded', () => {
-                var buttons = document.querySelectorAll("[data-target='#confirmModal']");
-                for (const button of buttons) {
-                    button.addEventListener("click", function(event) {
-                        var modal = document.getElementById("confirmModal");
-                        modal.setAttribute("caller-id", this.getAttribute("id"));
-                        if ("message" in this.dataset) {
-                            document.getElementById("modal-message").innerHTML = this.dataset.message;
-                        }
-                        if ("buttontext" in this.dataset) {
-                            document.getElementById("confirmButtonModal").innerHTML = this.dataset.buttontext;
-                        }
-                        if ("thead" in this.dataset) {
-                            let data = this.dataset.thead.split(',');
-                            let dataHead = document.getElementById("tableData").getElementsByTagName('thead')[0];
-                            if(dataHead.children.length > 0){
-                                dataHead.deleteRow(0);
-                            }
-                            let row = dataHead.insertRow();
-                            let cell0 = row.insertCell();
-                            let cell1 = row.insertCell();
-                            let cell2 = row.insertCell();
-                            let cell3 = row.insertCell();
-                            cell0.innerHTML = '#';
-                            cell1.innerHTML = '<strong>'+ data[0] + '</strong>';
-                            cell2.innerHTML = '<strong>'+ data[1] + '</strong>';
-                            cell3.innerHTML = '<strong>'+ data[2] + '</strong>';
-                        }
-                        if ("info" in this.dataset) {
-                            let data = this.dataset.info.split('|');
-                            let dataBody = document.getElementById("tableData").getElementsByTagName('tbody')[0];
-                            if(dataBody.children.length > 0){
-                                dataBody.deleteRow(0);
-                            }
-                            let row = dataBody.insertRow();
-                            let cell0 = row.insertCell();
-                            let cell1 = row.insertCell();
-                            let cell2 = row.insertCell();
-                            let cell3 = row.insertCell();
-                            cell0.innerHTML = 1;
-                            cell1.innerHTML = data[0];
-                            cell2.innerHTML = data[1];
-                            cell3.innerHTML = data[2];
-                        }
-                        if ('urlborrar' in this.dataset) {
-                            let form = document.getElementById('deleteModalConfirm');
-                            form.setAttribute('action', this.dataset.urlborrar);
-                        }
-                    })
-                }
-            });
-            var checks = document.querySelectorAll('[name="delete_field"]');
-            if(checks) {
-                var select_all = document.getElementById('selectAllDataList');
-                var but = document.getElementById('buttonDeleteAllDataList');
-                var list_object_ = new Object();
-                var sum_checks = 0;
-                var markedCheckbox = document.querySelectorAll('input[name="delete_field"]:checked');  
-                for (var checkbox of markedCheckbox) {
-                    sum_checks ++;
-                }
-                if (sum_checks == 0) {
-                    if (select_all && select_all.checked === true) {
-                        if (but) {
-                            but.style.display = 'block';
-                        }
-                    } else {
-                        if (but) {
-                            but.style.display = 'none';
-                        }
-                    }
-                } else {
-                    if (but) {
-                        but.style.display = 'block';
-                    }
-                }
-                checks.forEach(element => {
-                    element.addEventListener('change', e => {
-                        list_object_[e.target.id] = e.target.checked;
-                        let found = Object.values(list_object_).includes(true);
-                        if (found === true) {
-                            but.style.display = 'block';
-                        } else {
-                            but.style.display = 'none';
-                        }
-                    });
-                });
-                if (select_all) {
-                    select_all.addEventListener('click', function (e) {
-                        checks.forEach(element => {
-                            if (e.target.checked === true) {
-                                element.checked = true;
-                                but.style.display = 'block';
-                            } else {
-                                element.checked = false;
-                                but.style.display = 'none';
-                            }
-                        });
-                    });
-                }
-            }
-        </script>
-        {% can_edit_declaracion as can_edit %}
-        <input id="can_edit_field" type="hidden" name="can_edit" value="{{ can_edit }}">
         <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130624596-40"></script>
+        <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130624596-40"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
             gtag('config', 'UA-130624596-40');
-        </script>
+        </script> -->
     </body>
 </html>
