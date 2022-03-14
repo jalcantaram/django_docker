@@ -30,7 +30,32 @@
             <meta name="theme-color" content="#417505">
         {% endif %}
         <link rel="stylesheet" href="{% static 'app.css' %}">
-        <link rel='icon' href="{% static 'src/img/favicon.png' %}" type='image/x-icon'/ >
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'src/img/favicon/apple-touch-icon.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="{% static 'src/img/favicon/apple-touch-startup-image-1182x2208.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="{% static 'src/img/favicon/apple-touch-startup-image-1242x2148.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="{% static 'src/img/favicon/apple-touch-startup-image-1496x2048.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="{% static 'src/img/favicon/apple-touch-startup-image-1536x2008.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="{% static 'src/img/favicon/apple-touch-startup-image-320x460.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'src/img/favicon/apple-touch-startup-image-640x1096.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'src/img/favicon/apple-touch-startup-image-640x920.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="{% static 'src/img/favicon/apple-touch-startup-image-748x1024.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'src/img/favicon/apple-touch-startup-image-750x1294.png' %}">
+        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="{% static 'src/img/favicon/apple-touch-startup-image-768x1004.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'src/img/favicon/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="230x230" href="{% static 'src/img/favicon/favicon-230x230.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'src/img/favicon/android-chrome-192x192.png' %}">
+        <link rel="icon" type="image/png" sizes="228x228" href="{% static 'src/img/favicon/coast-228x228.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'src/img/favicon/favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'src/img/favicon/site.webmanifest' %}">
+        <link rel="mask-icon" href="{% static 'src/img/favicon/safari-pinned-tab.svg' %}" color="#ffffff">
+        <link rel="yandex-tableau-widget" href="{% static 'src/img/favicon/yandex-browser-manifest.json' %}">
+        <meta property="og:image" content="{% static 'src/img/favicon/open-graph.png' %}">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="{% static 'src/img/favicon/mstile-144x144.png' %}">
+        <meta name="theme-color" content="#ffffff">
+        <!-- <link rel='icon' href="{% static 'src/img/favicon.png' %}" type='image/x-icon'/ > -->
+
         {% block css %}
         {% endblock %}
     </head>
@@ -106,7 +131,7 @@
                                 <div>
                                     <!-- <p class="m-0">Teléfono para dudas y aclaraciones <strong>56279700</strong></p>
                                     <p class="m-0">Extensión 50027, 50028, , 50029, 50031, 50220, 50226, 50232, 50240 y 51252.</p> -->
-                                    <p>Asesoría técnica 55 56279700 ext. 50033 al 50040</p>
+                                    <p>Asesoría técnica 55 66 23 57 83</p>
                                     <!-- <p>Correo electrónico es: declara@cdmx.gob.mx</p> -->
                                 </div>
                             </div>
@@ -114,14 +139,14 @@
                         <div class="col-md">
                             <div class="d-flex mb-2">
                                 <img src="{% static 'src/img/ubicacion.png' %}" class="mr-2 footer__icon">
-                                <p class="m-0">Av. Arcos de Belén #2 Col. Doctores, C.P 06720, Alcaldía Cuauhtémoc, Ciudad de México | Lunes a Viernes de 9:00 a 18:00 hrs.</p>
+                                <!-- <p class="m-0">Av. Arcos de Belén #2 Col. Doctores, C.P 06720, Alcaldía Cuauhtémoc, Ciudad de México | Lunes a Viernes de 9:00 a 18:00 hrs.</p> -->
                             </div>
                             <div class="">
                                 <img src="{% static 'src/img/mensaje.png' %}" class="mr-2 footer__icon"><a href="mailto:isjuris@isjuris.org">isjuris@isjuris.org</a>.
                             </div>
                         </div>
                         <div class="col-lg-auto text-center mt-3 mt-lg-0">
-                            <p class="mb-1 text-lg-left">Desarrollado por</p>
+                            <p class="mb-1 text-lg-left">Desarrollado por <strong><a href="https://github.com/jalcantaram" target="_blank">@jalcantaram</a></strong></p>
                             <a href="https://isjuris.org" target="_blank" rel="noopener noreferrer">
                                 <img src="{% static 'src/img/1.svg' %}" alt="">
                             </a>
