@@ -10,25 +10,35 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-from pathlib import Path
-
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+)
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-# SECRET_KEY = 'django-insecure-zxn2!4uuc)d6+=uy)o&ost3s%w09_9^08**dwft*9j@+^4n)om'
+#SECRET_KEY = env("SECRET_KEY")
+#SECRET_KEY = 'django-insecure-zxn2!4uuc)d6+=uy)o&ost3s%w09_9^08**dwft*9j@+^4n)om'
+DEBUG = env("DEBUG")
 
+
+# SECRET_KEY = '8n5+_04kmm0y44-vtd^rtjgm$4ydvrj71l7coj=(r*!&!e!=lc'
+SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", default=0))
-# DEBUG = True
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-# ALLOWED_HOSTS = []
-
+#DEBUG = int(env("DEBUG", default=0))
+#ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(" ")
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [env("DJANGO_ALLOWED_HOSTS")]
+# print(env("DJANGO_ALLOWED_HOSTS"))
 
 # Application definition
 
@@ -57,7 +67,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,13 +88,21 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
+    # "default": {
+    #     "ENGINE": env("SQL_ENGINE"),
+    #     "NAME": env("SQL_DATABASE"),
+    #     "USER": env("SQL_USER"),
+    #     "PASSWORD": env("SQL_PASSWORD"),
+    #     "HOST": env("SQL_HOST"),
+    #     "PORT": env("SQL_PORT"),
+    # }
 }
 
 
@@ -152,15 +170,15 @@ DATE_INPUT_FORMATS = [
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+	os.path.join(BASE_DIR, "static"),
 ]
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "mediafiles"
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = "/home/ubuntu/django_docker/app/mediafiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
