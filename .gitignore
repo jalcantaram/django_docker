@@ -30,7 +30,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
 node_modules/
 
 # PyInstaller
@@ -107,3 +106,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# media
+media/
+.idea
