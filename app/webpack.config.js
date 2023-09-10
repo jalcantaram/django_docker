@@ -3,7 +3,7 @@
 const path = require('path')
 const autoprefixer = require('autoprefixer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const miniCssExtractPlugin = require('mini-css-extract-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
     mode: 'development',
@@ -17,49 +17,60 @@ module.exports = {
         port: 8080,
         hot: true
     },
-    plugins: [
-        // new HtmlWebpackPlugin({ template: './templates/index.html' }),
-        new miniCssExtractPlugin()
-    ],
     module: {
         rules: [
-        {
-            mimetype: 'image/svgxml',
-            scheme: 'data',
-            type: 'asset/resource',
-            generator: {
-                filename: 'icons/[hash].svg'
-            }
-        },
-        {
-            test: /\.(scss)$/,
-            use: [
-                {
-                    // Adds CSS to the DOM by injecting a `<style>` tag
-                    // loader: 'style-loader'
-                    loader: miniCssExtractPlugin.loader
-                },
-                {
-                    // Interprets `@import` and `url()` like `import/require()` and will resolve them
-                    loader: 'css-loader'
-                },
-                {
-                    // Loader for webpack to process CSS with PostCSS
-                    loader: 'postcss-loader',
-                    options: {
+            // {
+            //     mimetype: 'image/svgxml',
+            //     scheme: 'data',
+            //     type: 'asset/resource',
+            //     generator: {
+            //         filename: 'icons/[hash].svg'
+            //     }
+            // },
+            {
+                test: /\.(scss)$/,
+                use: [
+                    {
+                        // Adds CSS to the DOM by injecting a `<style>` tag
+                        loader: MiniCssExtractPlugin.loader
+                    },
+                    {
+                        // Interprets `@import` and `url()` like `import/require()` and will resolve them
+                        loader: 'css-loader'
+                    },
+                    {
+                        // Loader for webpack to process CSS with PostCSS
+                        loader: 'postcss-loader',
+                        options: {
                         postcssOptions: {
-                            plugins: [
-                                autoprefixer
-                            ]
+                                plugins: [
+                                    autoprefixer
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        // Loads a SASS/SCSS file and compiles it to CSS
+                        loader: 'sass-loader'
+                    }
+                ]
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                        name: '[name].[ext]',
+                        outputPath: 'fonts/'
                         }
                     }
-                },
-                {
-                    // Loads a SASS/SCSS file and compiles it to CSS
-                    loader: 'sass-loader'
-                }
-            ]
-        }
+                ]
+            }
         ]
-    }
-}
+    },
+    plugins: [
+        // new HtmlWebpackPlugin({ template: './templates/index.html' }),
+        new MiniCssExtractPlugin({ filename: 'app.css'})
+    ],
+};

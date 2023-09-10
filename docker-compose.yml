@@ -51,7 +51,7 @@ services:
       working_dir: /usr/src/app
       command: >
         sh -c "npm install
-              npm start"
+              npm run build"
       depends_on:
         - web
 
