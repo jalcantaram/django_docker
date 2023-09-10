@@ -1,6 +1,4 @@
-*
 !assets/
 !src/
 !src/img/
 !.gitignore
-app.css

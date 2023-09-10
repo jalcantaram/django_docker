@@ -1,56 +1,56 @@
 @charset "utf-8";
 
 // Varaibles
-@import "utils/variables";
-@import "~bootstrap/scss/bootstrap";
+// @import "utils/variables";
+@import "bootstrap/scss/bootstrap";
 
-// Utilities styles
-@import "utils/mixins";
-@import "utils/selectize";
-@import "utils/general";
-@import "utils/utilities";
-@import "utils/separators";
-@import "utils/scaffolding";
+// // Utilities styles
+// @import "utils/mixins";
+// @import "utils/selectize";
+// @import "utils/general";
+// @import "utils/utilities";
+// @import "utils/separators";
+// @import "utils/scaffolding";
 
-// Global styles
-@import "global/sidebar";
-@import "global/form";
-@import "global/lists";
-@import "global/datepicker";
-@import "global/svg";
-@import "global/tooltip";
-@import "global/ventanasModales";
-@import "global/type";
-@import "global/datepicker";
-@import "global/background";
-@import "global/close";
-@import "global/buttons";
+// // Global styles
+// @import "global/sidebar";
+// @import "global/form";
+// @import "global/lists";
+// @import "global/datepicker";
+// @import "global/svg";
+// @import "global/tooltip";
+// @import "global/ventanasModales";
+// @import "global/type";
+// @import "global/datepicker";
+// @import "global/background";
+// @import "global/close";
+// @import "global/buttons";
 
 // Base styles
-@import "base/header";
-@import "base/footer";
-@import "base/menu-resultados";
+// @import "base/header";
+// @import "base/footer";
+// @import "base/menu-resultados";
 
 // Declaraciones styles
-@import "declaraciones/declaraciones-den01";
-@import "declaraciones/declaraciones-den02";
-@import "declaraciones/declaraciones-den03";
+// @import "declaraciones/declaraciones-den01";
+// @import "declaraciones/declaraciones-den02";
+// @import "declaraciones/declaraciones-den03";
 
 // Secciones styles
-@import "secciones/faq";
-@import "secciones/info";
-@import "~select2/src/scss/core.scss";
+// @import "secciones/faq";
+// @import "secciones/info";
+// @import "~select2/src/scss/core.scss";
 
 // Visor
-@import "declaraciones/visor/general";
-@import "declaraciones/visor/navbar";
-@import "declaraciones/visor/filtro";
+// @import "declaraciones/visor/general";
+// @import "declaraciones/visor/navbar";
+// @import "declaraciones/visor/filtro";
 
 // Select2
-@import "declaraciones/select2/select";
+//@import "declaraciones/select2/select";
 
 // Icons
-@import "icons/scss/fontawesome.scss";
-@import "icons/scss/solid.scss";
-@import "icons/scss/regular.scss";
-@import "icons/scss/brands.scss";
+// @import "icons/scss/fontawesome.scss";
+// @import "icons/scss/solid.scss";
+// @import "icons/scss/regular.scss";
+// @import "icons/scss/brands.scss";

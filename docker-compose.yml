@@ -45,13 +45,13 @@ services:
             - web
 
     webpack:
-      image: node:12.13-alpine
+      image: node:18.17.1-alpine
       volumes:
         - ./app:/usr/src/app
       working_dir: /usr/src/app
       command: >
         sh -c "npm install
-              npm run watch"
+              npm start"
       depends_on:
         - web
 
