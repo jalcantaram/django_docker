@@ -1,4 +1,4 @@
-Django==4.0.3
+Django==4.2.3
 flake8
 django-anymail
 reportlab
